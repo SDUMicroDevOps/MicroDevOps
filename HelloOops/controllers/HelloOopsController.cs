@@ -16,7 +16,7 @@ namespace HelloOops.API
         [HttpGet("data")]
         public ActionResult GetData()
         {
-            return new JsonResult(new { data = "1234567", timeSpent = $"{42} seconds" });
+            return new JsonResult(new { data = "1234567", timeSpent = "42" });
         }
     }
 }
