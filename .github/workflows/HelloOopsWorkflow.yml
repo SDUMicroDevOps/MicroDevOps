@@ -1,9 +1,6 @@
 name: dotnet package
 
-on:
-  push:
-    branches:
-      - 'feature/**'
+on: [push]
 
 jobs:
   HelloOopsBuildAndTest:
