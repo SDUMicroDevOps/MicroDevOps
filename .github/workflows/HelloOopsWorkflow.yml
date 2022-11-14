@@ -5,7 +5,6 @@ on: push
 jobs:
   HelloOopsBuildAndTest:
     runs-on: ubuntu-latest
-    container: ubuntu
     
     env:
       working-directory: HelloOopsSolution
@@ -23,12 +22,7 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: ${{ matrix.dotnet-version }}
-        
       - name: Install dependencies
         run: dotnet restore
-      - name: Build
-        run: nohub dotnet run --project ./HelloOops/ --no-restore > /dev/null 2>&1 &
-      - name: sleep
-        run: sleep 10
       - name: Test
         run: dotnet test CI_UnitTests_HelloOops/ --no-restore --verbosity normal
