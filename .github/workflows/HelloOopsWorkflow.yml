@@ -1,0 +1,26 @@
+name: dotnet package
+
+on:
+  push:
+    branches:
+      - 'feature/**'
+
+jobs:
+  HelloOopsBuildAndTest:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dotnet-version: ['5.0.x' ]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup .NET Core SDK ${{ matrix.dotnet-version }}
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+      - name: Install dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet run
+      - name: Test
+        run: dotnet test CI_UnitTests_HelloOops/ --no-restore --verbosity normal
