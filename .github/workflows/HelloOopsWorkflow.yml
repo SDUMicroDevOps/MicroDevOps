@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     
     env:
-      working-dir: ./HelloOopsSolution
+      working-directory: ./HelloOopsSolution
       
     defaults:
       run:
