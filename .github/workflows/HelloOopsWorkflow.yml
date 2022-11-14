@@ -5,6 +5,7 @@ on: push
 jobs:
   HelloOopsBuildAndTest:
     runs-on: ubuntu-latest
+    container: ubuntu
     
     env:
       working-directory: HelloOopsSolution
@@ -28,6 +29,6 @@ jobs:
       - name: Build
         run: nohub dotnet run --project ./HelloOops/ --no-restore > /dev/null 2>&1 &
       - name: sleep
-        run: sleep 20
+        run: sleep 10
       - name: Test
         run: dotnet test CI_UnitTests_HelloOops/ --no-restore --verbosity normal
