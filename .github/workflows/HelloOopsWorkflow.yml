@@ -5,6 +5,8 @@ on: [push]
 jobs:
   HelloOopsBuildAndTest:
     runs-on: ubuntu-latest
+    env:
+      working-dir: ./HelloOopsSolution
     strategy:
       matrix:
         dotnet-version: ['5.0.x' ]
@@ -18,6 +20,6 @@ jobs:
       - name: Install dependencies
         run: dotnet restore
       - name: Build
-        run: dotnet run
+        run: dotnet run --project ./HelloOops/ --no-restore
       - name: Test
         run: dotnet test CI_UnitTests_HelloOops/ --no-restore --verbosity normal
