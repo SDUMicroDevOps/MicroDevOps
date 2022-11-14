@@ -16,6 +16,7 @@ namespace CI_UnitTests_HelloOops
 
             //Act
             var result = await client.GetAsync("http://localhost:5216/api/response");
+            result = result;
 
             //Assert
             result.Should().BeSuccessful();
