@@ -5,8 +5,13 @@ on: [push]
 jobs:
   HelloOopsBuildAndTest:
     runs-on: ubuntu-latest
+    
     env:
       working-dir: ./HelloOopsSolution
+      
+    defaults:
+      run:
+        working-directory: ${{ env.working-directory }}
     strategy:
       matrix:
         dotnet-version: ['5.0.x' ]
@@ -17,8 +22,6 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: ${{ matrix.dotnet-version }}
-      - name: Pwd
-        run: pwd
       - name: Install dependencies
         run: dotnet restore
       - name: Build
