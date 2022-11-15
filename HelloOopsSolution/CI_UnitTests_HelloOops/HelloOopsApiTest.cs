@@ -27,8 +27,7 @@ namespace CI_UnitTests_HelloOops
             var client = new HttpClient();
 
             //Act
-            var result = await client.GetAsync("http://localhost:5216/api/response");
-            result = result;
+            var result = await client.GetAsync("http://localhost:5000/api/response");
 
             //Assert
             result.Should().BeSuccessful();
@@ -41,7 +40,7 @@ namespace CI_UnitTests_HelloOops
             var client = new HttpClient();
 
             //Act
-            var result = await client.GetAsync("http://localhost:5216/api/data");
+            var result = await client.GetAsync("http://localhost:5000/api/data");
 
             //Assert
             result.Content.Should().NotBeNull();
