@@ -23,7 +23,6 @@ jobs:
         name: Build and push HelloOops
         uses: docker/build-push-action@v3
         with:
-          context: .
-          file: ./HelloOopsSolution/HelloOops/Dockerfile
+          context: ./HelloOopsSolution/HelloOops/
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/oopsTest:latest
