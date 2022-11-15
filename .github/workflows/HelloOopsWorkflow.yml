@@ -24,7 +24,15 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: ${{ matrix.dotnet-version }}
-      - name: Install dependencies
-        run: dotnet restore
-      - name: Test
-        run: dotnet test CI_UnitTests_HelloOops/ --no-restore --verbosity normal
+
+      - name: Build HelloOops image
+        run: docker build -t hellooops ./HelloOops
+
+      - name: Run HelloOops container
+        run: docker run -d -p 5000:5000 hellooops
+
+      - name: Wait on server to open
+        run: while (! timeout 1 bash -c "echo > /dev/tcp/localhost/5000"); do sleep 1; done
+
+      - name: Running tests
+        run: dotnet test CI_UnitTests_HelloOops/
