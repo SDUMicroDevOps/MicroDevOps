@@ -32,7 +32,7 @@ jobs:
       - name: Wait on
         uses: iFaxity/wait-on-action@v1
         with:
-          resource: http://localhost:5000
+          resource: http://localhost:5000/api/response
 
       - name: Running tests
         run: dotnet test CI_UnitTests_HelloOops/
