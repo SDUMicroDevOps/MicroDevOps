@@ -19,17 +19,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+      - name: Build HelloOops image
+        run: docker build -t hellooops
 
-      - name: Build and push
-        uses: docker/build-push-action@v3
-        with:
-          push: true
-          tags: user/app:latest
-
-      - name: Run Server
+      - name: Run HelloOops container
         run: docker run -d -p 5000:5000 hellooops
 
-      - name: Test
-        run: dotnet test CI_UnitTests_HelloOops/ --no-restore --verbosity normal
+      - name: Running tests
+        run: dotnet test CI_UnitTests_HelloOops/ --no-restore --verbosity minimal
