@@ -29,8 +29,10 @@ jobs:
       - name: Run HelloOops container
         run: docker run -d -p 5000:5000 hellooops
 
-      - name: Sleep
-        run: sleep 5
+      - name: Wait on
+        uses: iFaxity/wait-on-action@v1
+        with:
+          resource: http://localhost:5000
 
       - name: Running tests
         run: dotnet test CI_UnitTests_HelloOops/
