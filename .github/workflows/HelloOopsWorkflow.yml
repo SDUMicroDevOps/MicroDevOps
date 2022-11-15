@@ -18,6 +18,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      - name: Setup .NET Core SDK ${{ matrix.dotnet-version }}
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
 
       - name: Build HelloOops image
         run: docker build -t hellooops ./HelloOops
