@@ -1,5 +1,8 @@
 name: ci
-
+on: 
+  push:
+    branches:
+      -"DO NOT RUN"
 jobs:
   build:
     runs-on: ubuntu-latest
