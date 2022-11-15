@@ -15,6 +15,4 @@ RUN dotnet restore
 # Build and publish a release
 RUN dotnet publish -c Release -o out
 
-COPY out ./
-
 ENTRYPOINT ["dotnet", "out/HelloOops.dll"]
