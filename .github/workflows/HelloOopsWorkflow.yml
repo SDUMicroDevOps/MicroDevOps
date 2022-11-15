@@ -20,7 +20,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Build HelloOops image
-        run: docker build -t hellooops .
+        run: docker build -t hellooops ./HelloOops
 
       - name: Run HelloOops container
         run: docker run -d -p 5000:5000 hellooops
