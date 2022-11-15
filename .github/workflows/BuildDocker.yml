@@ -25,4 +25,4 @@ jobs:
         with:
           context: ./HelloOopsSolution/HelloOops
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/oopsTest:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/oopstest:latest
