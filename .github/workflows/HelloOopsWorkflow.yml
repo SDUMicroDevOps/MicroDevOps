@@ -3,7 +3,7 @@ name: HelloOopsTest
 on: 
   push:
     branches:
-      - feature/*
+      - feature/**
 
 jobs:
   HelloOopsBuildAndTest:
