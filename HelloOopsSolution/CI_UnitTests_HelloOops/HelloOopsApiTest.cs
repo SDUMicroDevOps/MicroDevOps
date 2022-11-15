@@ -9,7 +9,7 @@ namespace CI_UnitTests_HelloOops
     public class HelloOopsApiTest
     {
         [TestMethod]
-        public async Task TestCalc()
+        public void TestCalc()
         {
             //Arrange
             var CalcObject = new Calculations(5);
@@ -20,6 +20,7 @@ namespace CI_UnitTests_HelloOops
             //Assert
             result.Should().Be(10);
         }
+
         [TestMethod]
         public async Task GetResponse_HasCorrectStatusCode()
         {
