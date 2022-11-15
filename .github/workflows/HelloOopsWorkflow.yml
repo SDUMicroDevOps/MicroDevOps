@@ -1,6 +1,9 @@
 name: HelloOopsTest
 
-on: push
+on: 
+  push:
+    branches:
+      - feature/*
 
 jobs:
   HelloOopsBuildAndTest:
