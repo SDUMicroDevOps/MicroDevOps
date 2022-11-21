@@ -1,31 +1,33 @@
 package com.oops.app;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.oops.app.exceptions.BadRequestException;
 import com.oops.app.responseType.Greeting;
+import com.oops.app.responseType.User;
 
 @SpringBootApplication
 @RestController
-public class Controller 
-{
-    public static String ip;
-    public static String username;
-    public static String pwd;
+public class Controller {
+    public static SQLController sqlController;
     public static void main( String[] args ) {
         if(args.length < 3) {
             System.err.println("Not enough arguments to run. Make sure there is an ip/url, username and a password");
             System.exit(-1);
         }
-        ip = args[0];
-        username = args[1];
-        pwd = args[2];
-        System.out.println(ip + " " + username + " " + pwd);
+        sqlController  = new SQLController(args[0], "oops_test", args[1], args[2]);
         SpringApplication.run(Controller.class, args);
     }
 
@@ -36,5 +38,26 @@ public class Controller
     @GetMapping("/greeting/{name}")
     public Greeting  greeting(@PathVariable String name) {
         return new Greeting(counter.incrementAndGet(), String.format(template, name));
+    }
+
+    @GetMapping("/users")
+    public List<User> allUsers() {
+        return sqlController.getAllUser();
+    }
+
+    @GetMapping("/users/{username}")
+    @ResponseBody
+    public ResponseEntity<User> getUserByName(@PathVariable String username) {
+        return new ResponseEntity<User>(sqlController.getUser(username), HttpStatus.OK);
+    }
+
+    @PostMapping("/users")
+    @ResponseBody
+    public ResponseEntity<User> addUser(@RequestBody User newUser) {
+        User user = sqlController.addUser(newUser);
+        if(user == null) {
+            throw new BadRequestException();
+        }
+        return new ResponseEntity<User>(HttpStatus.OK);
     }
 }
