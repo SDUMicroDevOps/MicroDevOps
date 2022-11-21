@@ -7,6 +7,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,7 +49,11 @@ public class Controller {
     @GetMapping("/users/{username}")
     @ResponseBody
     public ResponseEntity<User> getUserByName(@PathVariable String username) {
-        return new ResponseEntity<User>(sqlController.getUser(username), HttpStatus.OK);
+        User user = sqlController.getUser(username);
+        if(user == null) {
+            
+        }
+        return new ResponseEntity<User>(user, HttpStatus.OK);
     }
 
     @PostMapping("/users")
@@ -59,5 +64,17 @@ public class Controller {
             throw new BadRequestException();
         }
         return new ResponseEntity<User>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/users/{username}")
+    @ResponseBody
+    public ResponseEntity<User> deleteUser(@PathVariable String username) {
+        int status = sqlController.deleteUser(username);
+
+        switch (status) {
+            case 200: return new ResponseEntity<>(HttpStatus.OK);
+            default: return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
+        }
+
     }
 }

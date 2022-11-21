@@ -70,4 +70,15 @@ public class SQLController {
         }
         return newUser;
     }
+
+    public int deleteUser(String username) {
+        try {
+            Connection conn = DriverManager.getConnection(ip, user, pwd);
+            Statement stmt = conn.createStatement();
+            stmt.executeUpdate("delete from User where username='" + username + "'");
+        } catch(SQLException e) {
+            e.printStackTrace();
+        }
+        return 200;
+    }
 }
