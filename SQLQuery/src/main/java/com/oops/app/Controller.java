@@ -19,6 +19,10 @@ import com.oops.app.exceptions.BadRequestException;
 import com.oops.app.responseType.Greeting;
 import com.oops.app.responseType.User;
 
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
 @SpringBootApplication
 @RestController
 public class Controller {
@@ -56,6 +60,10 @@ public class Controller {
         return new ResponseEntity<User>(user, HttpStatus.OK);
     }
 
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "OK", content = @Content),
+        @ApiResponse(responseCode = "400", description = "BAD REQUEST", content = @Content)
+    })
     @PostMapping("/users")
     @ResponseBody
     public ResponseEntity<User> addUser(@RequestBody User newUser) {
