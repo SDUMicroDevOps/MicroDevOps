@@ -11,7 +11,7 @@ public class User {
 
     public User(String username, String pwd, int privilege_id, int vCPULimit) {
         this.username = username;
-        this.pwd = pwd; //This should probably be hashed to be more secure 
+        this.pwd = pwd;
         this.privilege_id = privilege_id;
         this.vCPULimit = vCPULimit;
     }

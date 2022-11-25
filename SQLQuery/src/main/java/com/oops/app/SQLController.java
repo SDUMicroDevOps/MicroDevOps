@@ -8,7 +8,12 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.oops.app.responseType.AvailableSolver;
+import com.oops.app.responseType.Privilage;
+import com.oops.app.responseType.Solution;
 import com.oops.app.responseType.User;
+
+import requestType.SolutionRequest;
 
 public class SQLController {
     
@@ -80,5 +85,53 @@ public class SQLController {
             e.printStackTrace();
         }
         return 200;
+    }
+
+    public List<Privilage> getAllPrivilages() {
+        return null;
+    }
+
+    public Privilage getPrivilage(int id) {
+        return null;
+    }
+
+    public Privilage addPrivilage(String newRoleName) {
+        return null;
+    }
+
+    public int deletePrivilage(int id) {
+        return 0;
+    }
+
+    public List<AvailableSolver> getAllSolvers() {
+        return null;
+    }
+
+    public AvailableSolver getSolver(int id) {
+        return null;
+    }
+
+    public AvailableSolver addSolver(String solverName) {
+        return null;
+    }
+
+    public int deleteSolver(int id) {
+        return 0;
+    }
+
+    public List<Solution> getAllSolutions() {
+        return null;
+    }
+
+    public Solution getSolution(int id) {
+        return null;
+    }
+
+    public int deleteSolution(int id) {
+        return 0;
+    }
+
+    public Solution addSolution(SolutionRequest newsolutionName) {
+        return null;
     }
 }

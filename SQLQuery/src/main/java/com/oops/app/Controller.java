@@ -16,12 +16,18 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.oops.app.exceptions.BadRequestException;
+import com.oops.app.responseType.AvailableSolver;
 import com.oops.app.responseType.Greeting;
+import com.oops.app.responseType.Privilage;
+import com.oops.app.responseType.Solution;
 import com.oops.app.responseType.User;
 
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import requestType.AvailableSolverRequest;
+import requestType.PrivilageRequest;
+import requestType.SolutionRequest;
 
 @SpringBootApplication
 @RestController
@@ -84,5 +90,113 @@ public class Controller {
             default: return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
         }
 
+    }
+
+    @GetMapping("/privilages")
+    public List<Privilage> allPrivilages() {
+        return sqlController.getAllPrivilages();
+    }
+
+    @GetMapping("/privilages/{id}")
+    @ResponseBody
+    public ResponseEntity<Privilage> getPrivilageById(@PathVariable int id) {
+        Privilage privilage = sqlController.getPrivilage(id);
+        if(privilage == null) {
+
+        }
+        return new ResponseEntity<Privilage>(privilage, HttpStatus.OK);
+    }
+
+    @PostMapping("/privilages")
+    @ResponseBody
+    public ResponseEntity<Privilage> addPrivilage(@RequestBody PrivilageRequest newRoleName) {
+        Privilage privilage = sqlController.addPrivilage(newRoleName.getRoleName());
+        if(privilage == null){
+
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/privilages/{id}")
+    @ResponseBody
+    public ResponseEntity<Privilage> deletePrivilage(@PathVariable int id) {
+        int status = sqlController.deletePrivilage(id);
+        
+        switch (status) {
+            case 200: return new ResponseEntity<>(HttpStatus.OK);
+            default: return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
+        }
+    }
+
+    @GetMapping("/solvers")
+    public List<AvailableSolver> allSolvers() {
+        return sqlController.getAllSolvers();
+    }
+
+    @GetMapping("solvers/{id}")
+    @ResponseBody
+    public ResponseEntity<AvailableSolver> getSolverById(@PathVariable int id) {
+        AvailableSolver solver = sqlController.getSolver(id);
+        if(solver == null) {
+
+        }
+        return new ResponseEntity<AvailableSolver>(solver, HttpStatus.OK);
+    }
+
+    @PostMapping("/solvers")
+    @ResponseBody
+    public ResponseEntity<AvailableSolver> addSolver(@RequestBody AvailableSolverRequest newSolverName) {
+        AvailableSolver solver = sqlController.addSolver(newSolverName.getSolverName());
+        if(solver == null) {
+
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/solvers/{id}")
+    @ResponseBody
+    public ResponseEntity<AvailableSolver> deleteSolver(@PathVariable int id) {
+        int status = sqlController.deleteSolver(id);
+
+        switch (status) {
+            case 200: return new ResponseEntity<>(HttpStatus.OK);
+            default: return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
+        }
+    }
+
+    @GetMapping("/solutions")
+    public List<Solution> allSolutions() {
+        return sqlController.getAllSolutions();
+    }
+
+    @GetMapping("solutions/{id}")
+    @ResponseBody
+    public ResponseEntity<Solution> getSolutionById(@PathVariable int id) {
+        Solution solution = sqlController.getSolution(id);
+        if(solution == null) {
+
+        }
+        return new ResponseEntity<Solution>(solution, HttpStatus.OK);
+    }
+
+    @PostMapping("/solutions")
+    @ResponseBody
+    public ResponseEntity<Solution> addSolution(@RequestBody SolutionRequest newsolutionName) {
+        Solution solution = sqlController.addSolution(newsolutionName);
+        if(solution == null) {
+
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/solutions/{id}")
+    @ResponseBody
+    public ResponseEntity<Solution> deleteSolution(@PathVariable int id) {
+        int status = sqlController.deleteSolution(id);
+
+        switch (status) {
+            case 200: return new ResponseEntity<>(HttpStatus.OK);
+            default: return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
+        }
     }
 }
