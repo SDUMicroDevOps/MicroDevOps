@@ -7,11 +7,16 @@ namespace ChuffedSolver.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class SolverInstance : ControllerBase
+public class SolverController : ControllerBase
 {
     List<(string userID, SolverService service, CancellationTokenSource cancellationToken)> ongoingSolvers;
     HttpClient client = new HttpClient();
 
+    /// <summary>
+    /// Starts a new solver of type {solver}
+    /// </summary>
+    /// <param name="solver"></param>
+    /// <returns></returns>
     [HttpPost]
     [Route("Solve/{solver}")]
     public string Solve(string uid, string mznFile, string solver)
@@ -38,14 +43,18 @@ public class SolverInstance : ControllerBase
         solverToStart.StartCalculation(solver);     //Intended behaviour, don't wait for call
     }
 
+    /// <summary>
+    /// Stops the calculation for any solver from uid.
+    /// </summary>
     [HttpPost]
     [Route("Stop")]
-    private void StopCalculation(string uid)
+    public void StopCalculation(string uid)
     {
         var solverToStop = ongoingSolvers.Where(x => x.userID == uid).First();
         solverToStop.cancellationToken.Cancel();
     }
 
+    [ApiExplorerSettings(IgnoreApi = true)]
     public async Task ComputationCompleted(bool solverCompleted, string uid)
     {
         if (solverCompleted)
@@ -53,8 +62,6 @@ public class SolverInstance : ControllerBase
             var solution = System.IO.File.ReadAllLines($"{uid}_output.txt");
             var jsonResult = JsonSerializer.Serialize((uid, solution));
             await client.PostAsJsonAsync("http://localhost:5000/solverResult", jsonResult);
-
         }
     }
-
 }

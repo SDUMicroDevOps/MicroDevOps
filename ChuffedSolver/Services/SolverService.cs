@@ -7,12 +7,12 @@ namespace ChuffedSolver.Services
     public class SolverService
     {
 
-        SolverInstance initiator;
+        SolverController initiator;
         string userID;
         CancellationToken token;
         HttpClient client = new HttpClient();
 
-        public SolverService(SolverInstance initiator, string userID, CancellationToken token)
+        public SolverService(SolverController initiator, string userID, CancellationToken token)
         {
             this.initiator = initiator;
             this.userID = userID;
