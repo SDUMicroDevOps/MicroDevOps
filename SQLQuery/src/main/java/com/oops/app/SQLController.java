@@ -8,12 +8,11 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.oops.app.requestType.SolutionRequest;
 import com.oops.app.responseType.AvailableSolver;
 import com.oops.app.responseType.Privilage;
 import com.oops.app.responseType.Solution;
 import com.oops.app.responseType.User;
-
-import requestType.SolutionRequest;
 
 public class SQLController {
     

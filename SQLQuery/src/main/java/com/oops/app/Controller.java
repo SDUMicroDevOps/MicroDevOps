@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.oops.app.exceptions.BadRequestException;
+import com.oops.app.requestType.AvailableSolverRequest;
+import com.oops.app.requestType.PrivilageRequest;
+import com.oops.app.requestType.SolutionRequest;
 import com.oops.app.responseType.AvailableSolver;
 import com.oops.app.responseType.Greeting;
 import com.oops.app.responseType.Privilage;
@@ -25,9 +28,6 @@ import com.oops.app.responseType.User;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import requestType.AvailableSolverRequest;
-import requestType.PrivilageRequest;
-import requestType.SolutionRequest;
 
 @SpringBootApplication
 @RestController

@@ -1,4 +1,4 @@
-package requestType;
+package com.oops.app.requestType;
 
 public class SolutionRequest {
     private String user;
