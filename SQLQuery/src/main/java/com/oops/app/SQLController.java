@@ -15,6 +15,7 @@ import com.oops.app.responseType.User;
 
 import requestType.SolutionRequest;
 
+//TODO REWORK THIS FILE COMPLETLY
 public class SQLController {
     
     private final String ip;
