@@ -1,14 +1,16 @@
 package com.oops.app.responseType;
 
+import java.sql.Date;
+
 public class Solution {
     
     private int id;
     private String user;
     private String content;
-    private String date;
+    private Date date;
 
     Solution() {}
-    public Solution(int id, String user, String content, String date) {
+    public Solution(int id, String user, String content, Date date) {
         this.id = id;
         this.user = user;
         this.content = content;
@@ -27,7 +29,7 @@ public class Solution {
         return content;
     }
 
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
@@ -43,7 +45,7 @@ public class Solution {
         this.content = content;
     }
 
-    public void setDate(String date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 }

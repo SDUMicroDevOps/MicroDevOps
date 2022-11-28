@@ -1,12 +1,14 @@
 package com.oops.app.requestType;
 
+import java.sql.Date;
+
 public class SolutionRequest {
     private String user;
     private String content;
-    private String date;
+    private Date date;
 
     SolutionRequest() {}
-    public SolutionRequest(String user, String content, String date) {
+    public SolutionRequest(String user, String content, Date date) {
         this.user = user;
         this.content = content;
         this.date = date;
@@ -20,7 +22,7 @@ public class SolutionRequest {
         return content;
     }
 
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
@@ -32,7 +34,7 @@ public class SolutionRequest {
         this.content = content;
     }
 
-    public void setDate(String date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 }
