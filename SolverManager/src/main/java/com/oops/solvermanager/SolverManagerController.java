@@ -1,5 +1,7 @@
 package com.oops.solvermanager;
 
+import java.io.IOException;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.HttpStatus;
@@ -13,6 +15,15 @@ import org.springframework.web.bind.annotation.RestController;
 import com.oops.solvermanager.Requests.ProblemRequest;
 import com.oops.solvermanager.Requests.SolverBody;
 
+import io.kubernetes.client.openapi.ApiClient;
+import io.kubernetes.client.openapi.ApiException;
+import io.kubernetes.client.openapi.Configuration;
+import io.kubernetes.client.openapi.apis.CoreV1Api;
+import io.kubernetes.client.openapi.models.V1Job;
+import io.kubernetes.client.openapi.models.V1Pod;
+import io.kubernetes.client.openapi.models.V1PodList;
+import io.kubernetes.client.util.Config;
+
 @SpringBootApplication
 @RestController
 public class SolverManagerController {
@@ -24,6 +35,19 @@ public class SolverManagerController {
     @PostMapping("/new")
     public ResponseEntity<String> createJob(@RequestBody ProblemRequest newProblem) {
         SolverBody test = newProblem.getSolversToUse()[0];
+        try{
+        CoreV1Api api = makeKubernetesClient();
+        try{
+            V1PodList list = api.listPodForAllNamespaces(null, null, null, null, null, null, null, null, null, null);
+            for (V1Pod item : list.getItems()) {
+                System.out.println(item.getMetadata().getName());
+            }
+        }catch(ApiException e){
+            return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body("Unable to communicate with the K8 cluster"); //TODO actually make this make sense
+        }
+        }catch(IOException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error");
+        }
         return ResponseEntity.status(HttpStatus.OK).body(test.getSolverName());
     }
     @GetMapping("/test")
@@ -36,5 +60,12 @@ public class SolverManagerController {
     public ResponseEntity<String> cancelTask(@PathVariable String taskID){
         
         return ResponseEntity.status(HttpStatus.OK).body("OK");
+    }
+
+    private CoreV1Api makeKubernetesClient() throws IOException{
+        ApiClient client =  Config.defaultClient();
+        Configuration.setDefaultApiClient(client);
+        return new CoreV1Api();
+        
     }
 }
