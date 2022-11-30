@@ -1,5 +1,6 @@
 package com.oops.solvermanager;
 
+import java.io.FileReader;
 import java.io.IOException;
 
 import org.springframework.boot.SpringApplication;
@@ -22,7 +23,9 @@ import io.kubernetes.client.openapi.apis.CoreV1Api;
 import io.kubernetes.client.openapi.models.V1Job;
 import io.kubernetes.client.openapi.models.V1Pod;
 import io.kubernetes.client.openapi.models.V1PodList;
+import io.kubernetes.client.util.ClientBuilder;
 import io.kubernetes.client.util.Config;
+import io.kubernetes.client.util.KubeConfig;
 
 @SpringBootApplication
 @RestController
@@ -63,7 +66,9 @@ public class SolverManagerController {
     }
 
     private CoreV1Api makeKubernetesClient() throws IOException{
-        ApiClient client =  Config.defaultClient();
+        String kubeConfigPath = System.getenv("HOME") + "/.kube/config";
+        ApiClient client =
+        ClientBuilder.kubeconfig(KubeConfig.loadKubeConfig(new FileReader(kubeConfigPath))).build();
         Configuration.setDefaultApiClient(client);
         return new CoreV1Api();
         
