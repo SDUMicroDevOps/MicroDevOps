@@ -36,6 +36,7 @@ import io.kubernetes.client.openapi.models.V1PodSpec;
 import io.kubernetes.client.openapi.models.V1PodTemplateSpec;
 import io.kubernetes.client.proto.V1.Container;
 import io.kubernetes.client.util.ClientBuilder;
+import io.kubernetes.client.openapi.models.V1PodBuilder;
 import io.kubernetes.client.util.Config;
 import io.kubernetes.client.util.KubeConfig;
 
@@ -51,7 +52,6 @@ public class SolverManagerController {
     public ResponseEntity<String> createJob(@RequestBody ProblemRequest newProblem) {
         SolverBody test = newProblem.getSolversToUse()[0];
         try{
-            CoreV1Api api = makeKubernetesClient();
             createSolverJobs(newProblem);
     
         }catch(IOException e){
@@ -70,7 +70,8 @@ public class SolverManagerController {
         
         return ResponseEntity.status(HttpStatus.OK).body("OK");
     }
-    private void createSolverJobs(ProblemRequest newProblem){
+    private void createSolverJobs(ProblemRequest newProblem) throws IOException{
+        CoreV1Api api = makeKubernetesClient();
         for (SolverBody solver : newProblem.getSolversToUse()){
             V1ObjectMeta meta = new V1ObjectMeta();
             meta.name("solver");
@@ -101,6 +102,7 @@ public class SolverManagerController {
             jobSpec.template(podTemplateSpec);
             jobSpec.backoffLimit(4);
             jobBody.spec(jobSpec);
+            
         }
     }
     private CoreV1Api makeKubernetesClient() throws IOException{

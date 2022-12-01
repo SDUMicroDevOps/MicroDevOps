@@ -14,8 +14,8 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>11</maven.compiler.source>
-    <maven.compiler.target>11</maven.compiler.target>
+    <maven.compiler.source>16</maven.compiler.source>
+    <maven.compiler.target>16</maven.compiler.target>
   </properties>
 
   <dependencies>
@@ -41,6 +41,13 @@
       <artifactId>client-java</artifactId>
       <version>15.0.1</version>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/io.fabric8/kubernetes-client -->
+    <dependency>
+      <groupId>io.fabric8</groupId>
+      <artifactId>kubernetes-client</artifactId>
+    <version>6.2.0</version>
+</dependency>
+
   </dependencies>
 
   <build>
