@@ -1,6 +1,7 @@
 import asyncio
 import requests
 import json
+import time
 import os
 from minizinc import Instance, Model, Solver, Result, Status
 import sys
@@ -64,14 +65,16 @@ class SolverInstance:
         
         result = to_solve.solutions(processes=int(self.number_processors))
 
-        timer = 0
+        zero_time = time.time()             #Returns current time in seconds
+        next_update_interval = zero_time    #Always send first satisfied solution
+
         async for i in result:
-            if (timer % 100 == 0):
+            timer = time.time() - zero_time
+            if ( (zero_time + timer) >= next_update_interval):    #Post the first solution, and thereafter one every 20 seconds
                 self.notify_intermediate_solution_found(i)
-            result
+                next_update_interval += 20                        #Wait 20 seconds to send next message
             timer += 1
             bestResult = i
-            print(i.status)
 
         self.notify_final_solution_found(bestResult)
 
