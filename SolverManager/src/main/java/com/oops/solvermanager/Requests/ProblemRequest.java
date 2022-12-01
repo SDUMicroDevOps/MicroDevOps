@@ -4,6 +4,7 @@ public class ProblemRequest {
     private String problemID;
     private String dataID;
     private SolverBody[] solversToUse;
+    private String userID;
 
     ProblemRequest() {
     }
@@ -18,5 +19,8 @@ public class ProblemRequest {
 
     public SolverBody[] getSolversToUse() {
         return solversToUse;
+    }
+    public String getUserID() {
+        return userID;
     }
 }
