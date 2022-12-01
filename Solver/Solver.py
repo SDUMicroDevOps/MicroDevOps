@@ -11,9 +11,9 @@ import sys
 This class represents a solver
 
 Arguments excpected:
-    mzn_file                                - The url of the mzn file
     solver_name                             - The name of the solver to use
     number_processors                       - The number of processors to use
+    mzn_file                                - The url of the mzn file
     dzn_file                                - The url of the dzn file
 
 Environment variables expected:
@@ -21,6 +21,8 @@ Environment variables expected:
     TASKID                                  - A unique ID for this task
     SOLVER_MANAGER_SERVICE                  - The K8 service for DNS lookup 
     SOLUTION_MANAGER_SERVICE                - The K8 service for DNS lookup
+    SOLVER_MANAGER_PORT                     - The port for the solver manager
+    SOLUTION_MANAGER_PORT                   - The port for the solution manager
 '''
 class SolverInstance:
 
@@ -42,7 +44,7 @@ class SolverInstance:
         requests.post(self.solver_manager_url + "/Solution/{taskID}".format(taskID = self.taskID), data=json.dumps({"UserID" : self.userID}))
         requests.post(self.solution_manager_url + "/SolutionFound", data=result_as_json)
     
-    #This function is here to download the files at some point
+    #TODO: This function is here to download the files at some point
     async def get_file(self, path : str):
         await asyncio.sleep(1)
         return path
@@ -58,7 +60,6 @@ class SolverInstance:
         if (self.dzn_file):
             dzn = await self.get_file(self.dzn_file)
             minizinc_model.add_file(dzn)      
-          
 
         to_solve = Instance(solver, minizinc_model)
         
@@ -83,17 +84,19 @@ class SolverInstance:
         self.taskID = os.getenv("TASKID") if os.getenv("TASKID") else "testTask"
         self.solver_manager_service = os.getenv("SOLVER_MANAGER_SERVICE") if os.getenv("SOLVER_MANAGER_SERVICE") else ("0.0.0.0")
         self.solution_manager_service = os.getenv("SOLUTION_MANAGER_SERVICE") if os.getenv("SOLUTION_MANAGER_SERVICE") else ("0.0.0.0")
+        self.solver_manager_port = os.getenv("SOLVER_MANAGER_PORT") if os.getenv("SOLVER_MANAGER_PORT") else ("8000")
+        self.solution_manager_port = os.getenv("SOLUTION_MANAGER_PORT") if os.getenv("SOLUTION_MANAGER_PORT") else ("8001")
         
-        self.mzn_file = args[1]
-        self.solver_name = args[2]
-        self.number_processors = args[3]
+        self.solver_name = args[1]
+        self.number_processors = args[2]
+        self.mzn_file = args[3]
         if (len(args) == 5):
             self.dzn_file = args[4]
         else:
             self.dzn_file = None
         
-        self.solver_manager_url = "http://{service}:{port}".format(service=self.solver_manager_service, port=5000)
-        self.solution_manager_url = "http://{service}:{port}".format(service=self.solution_manager_service, port=5001)
+        self.solver_manager_url = "http://{service}:{port}".format(service=self.solver_manager_service, port=self.solver_manager_port)
+        self.solution_manager_url = "http://{service}:{port}".format(service=self.solution_manager_service, port=self.solution_manager_port)
 
 
 if __name__ == '__main__':
