@@ -4,8 +4,7 @@ WORKDIR "/app"
 
 COPY Solver.py .
 COPY requirements.txt .
-COPY Examples/shortest.mzn Test/shortest.mzn
-COPY Examples/shortest.dzn Test/shortest.dzn
+COPY TestData/ .
 
 RUN  apt-get update \
   && apt-get install -y wget \
