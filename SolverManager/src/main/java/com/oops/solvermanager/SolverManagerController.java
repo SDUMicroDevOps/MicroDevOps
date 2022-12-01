@@ -2,6 +2,11 @@ package com.oops.solvermanager;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -20,9 +25,16 @@ import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.ApiException;
 import io.kubernetes.client.openapi.Configuration;
 import io.kubernetes.client.openapi.apis.CoreV1Api;
+import io.kubernetes.client.openapi.models.V1Container;
 import io.kubernetes.client.openapi.models.V1Job;
+import io.kubernetes.client.openapi.models.V1JobSpec;
+import io.kubernetes.client.openapi.models.V1JobTemplateSpec;
+import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import io.kubernetes.client.openapi.models.V1Pod;
 import io.kubernetes.client.openapi.models.V1PodList;
+import io.kubernetes.client.openapi.models.V1PodSpec;
+import io.kubernetes.client.openapi.models.V1PodTemplateSpec;
+import io.kubernetes.client.proto.V1.Container;
 import io.kubernetes.client.util.ClientBuilder;
 import io.kubernetes.client.util.Config;
 import io.kubernetes.client.util.KubeConfig;
@@ -39,15 +51,9 @@ public class SolverManagerController {
     public ResponseEntity<String> createJob(@RequestBody ProblemRequest newProblem) {
         SolverBody test = newProblem.getSolversToUse()[0];
         try{
-        CoreV1Api api = makeKubernetesClient();
-        try{
-            V1PodList list = api.listPodForAllNamespaces(null, null, null, null, null, null, null, null, null, null);
-            for (V1Pod item : list.getItems()) {
-                System.out.println(item.getMetadata().getName());
-            }
-        }catch(ApiException e){
-            return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body("Unable to communicate with the K8 cluster"); //TODO actually make this make sense
-        }
+            CoreV1Api api = makeKubernetesClient();
+            createSolverJobs(newProblem);
+    
         }catch(IOException e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error");
         }
@@ -64,7 +70,39 @@ public class SolverManagerController {
         
         return ResponseEntity.status(HttpStatus.OK).body("OK");
     }
-
+    private void createSolverJobs(ProblemRequest newProblem){
+        for (SolverBody solver : newProblem.getSolversToUse()){
+            V1ObjectMeta meta = new V1ObjectMeta();
+            meta.name("solver");
+            Map<String,String> labels = new HashMap<>();
+            labels.put("user", newProblem.getUserID());
+            labels.put("problem",newProblem.getProblemID());
+            labels.put("solver_name", solver.getSolverName());
+            meta.labels(labels);
+            V1Job jobBody = new V1Job();
+            jobBody.apiVersion("v1");
+            jobBody.kind("Job");
+            jobBody.metadata(meta);
+            V1Container container = new V1Container();
+            container.name("SolverContainer");
+            container.image("perl:5.34.0");
+            List<String> command = new LinkedList<>();
+            command.add("perl");
+            command.add("-Mbignum=bpi");
+            command.add("-wle");
+            command.add("print bpi(2000)");
+            container.command(command);
+            V1JobSpec jobSpec = new V1JobSpec();
+            V1PodTemplateSpec podTemplateSpec = new V1PodTemplateSpec();
+            V1PodSpec podSpec = new V1PodSpec();
+            podSpec.containers(Arrays.asList(container));
+            podSpec.restartPolicy("Never");
+            podTemplateSpec.spec(podSpec);
+            jobSpec.template(podTemplateSpec);
+            jobSpec.backoffLimit(4);
+            jobBody.spec(jobSpec);
+        }
+    }
     private CoreV1Api makeKubernetesClient() throws IOException{
         String kubeConfigPath = System.getenv("HOME") + "/.kube/config";
         ApiClient client =
