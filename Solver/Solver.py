@@ -19,30 +19,31 @@ Arguments expected:
 
 class SolverInstance:
 
-    userID = ""
-    taskID = ""
-    has_dzn_file = False
-    solver_name = ""
-    #mzn_file = ""
-    mzn_file = "Examples/shortest.mzn"
-    # number_processors = ""
-    #dzn_file = ""
-    dzn_file = "Examples/shortest.dzn"
+    userID = "testUser"
+    taskID = "testTask"
+    has_dzn_file = True
+    solver_name = "chuffed"
+    mzn_file = "Test/shortest.mzn"
+    number_processors = "2"
+    dzn_file = "Test/shortest.dzn"
+
+    def get_result_as_json(self, result: Result):
+        return json.dumps(
+            {
+                "TaskID": self.taskID,
+                "Solution": str(result.solution),
+                "UserID" : self.userID
+            })
 
     def notify_intermediate_solution_found(self, result: Result):
-        return
-        result_as_json = json.dumps(
-            {
-                "TaskID":"{id}".format(id = self.taskID),
-                "Solution":"{result}".format(result = result.solution),
-                "UserID" : "{UserID}".format(UserID = self.userID)
-            })
+        result_as_json = self.get_result_as_json(result)
         self.solution_manager_connection.request(method="POST", url="/SolutionFound", body= result_as_json)
-        pass
+        
 
-    def notify_final_solution_found(self, result: AsyncIterator[Result]):
-        pass
-
+    def notify_final_solution_found(self, result: Result):
+        result_as_json = self.get_result_as_json(result)
+        self.solver_manager_connection.request(method="POST", url="/Solution/{taskID}".format(taskID = self.taskID), body= json.dumps({"UserID" : self.userID}))
+        self.solution_manager_connection.request(method="POST", url="/SolutionFound", body= result_as_json)
     
     #This function is here to download the files at some point
     async def get_file(self, path : str):
@@ -63,39 +64,33 @@ class SolverInstance:
                 
         to_solve = Instance(solver, minizinc_model)
         
-        result = to_solve.solutions()
+        result = to_solve.solutions(processes=int(self.number_processors))
 
         timer = 0
-
         async for i in result:
             if (timer % 100 == 0):
                 self.notify_intermediate_solution_found(i)
             print(i)
             result
             timer += 1
+            bestResult = i
 
-        self.notify_final_solution_found(result)
+        self.notify_final_solution_found(bestResult)
 
     def __init__(self, args):
-        self.userID = args[1]
-        self.taskID = args[2]
-        self.has_dzn_file = args[3].upper() == "TRUE"
-        self.solver_name = args[4]
-        #mzn_file = args[5]
-        self.mzn_file = "Examples/shortest.mzn"
-        # number_processors = args[6]
-        #dzn_file = ""
-        self.dzn_file = "Examples/shortest.dzn"
+        if (len(args) > 1):
+            self.userID = args[1]
+            self.taskID = args[2]
+            self.has_dzn_file = args[3].upper() == "TRUE"
+            self.solver_name = args[4]
+            self.mzn_file = args[5]
+            self.number_processors = args[6]
+            self.dzn_file = args[7]
         
-        self.solver_manager_connection = hc.HTTPConnection(host="http://solver_manager_servie", port=5000)
-        self.solution_manager_connection = hc.HTTPConnection(host="http://solution_manager_connnection", port=5000)
+        self.solver_manager_connection = hc.HTTPConnection(host="http://solver_manager_service", port=5000)
+        self.solution_manager_connection = hc.HTTPConnection(host="http://solution_manager_service", port=5000)
 
         asyncio.run(self.main())
 
-
-            
-
-
 if __name__ == '__main__':
-
     solver = SolverInstance(sys.argv)

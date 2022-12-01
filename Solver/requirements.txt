@@ -1,0 +1,2 @@
+#### Requirements for running the image ####
+minizinc >= 0.7.0       #The version of minizinc that the image was first created with
