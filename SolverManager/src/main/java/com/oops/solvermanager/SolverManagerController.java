@@ -55,9 +55,9 @@ public class SolverManagerController {
         return ResponseEntity.status(HttpStatus.OK).body("OK");
     }
 
-    @PostMapping("/cancel/task/{taskID}")
-    public ResponseEntity<String> cancelTask(@PathVariable String taskID) {
-
+    @PostMapping("/cancel/task/{problemID}")
+    public ResponseEntity<String> cancelTask(@PathVariable String problemID) {
+        
         return ResponseEntity.status(HttpStatus.OK).body("OK");
     }
 
@@ -69,14 +69,18 @@ public class SolverManagerController {
             command.add("-Mbignum=bpi");
             command.add("-wle");
             command.add("print bpi(2000)");
+            Map<String,String> labels = new HashMap<>();
+            labels.put("user", newProblem.getUserID());
+            labels.put("problen_id", newProblem.getProblemID());
+            labels.put("solver", solver.getSolverName());
             Job job = new JobBuilder()
                     .withApiVersion("v1")
                     .withNewMetadata()
                     .withName("pi")
-                    .withLabels(Collections.singletonMap("label1", "maximum-length-of-63-characters"))
-                    .withAnnotations(Collections.singletonMap("annotation1", "some-very-long-annotation"))
+                    .withLabels(labels)
                     .endMetadata()
                     .withNewSpec()
+                    .withTtlSecondsAfterFinished(30)
                     .withNewTemplate()
                     .withNewSpec()
                     .addNewContainer()
