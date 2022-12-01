@@ -40,12 +40,7 @@ public class SolverManagerController {
     @PostMapping("/new")
     public ResponseEntity<String> createJob(@RequestBody ProblemRequest newProblem) {
         SolverBody test = newProblem.getSolversToUse()[0];
-        try {
-            createSolverJobs(newProblem);
-
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error");
-        }
+        createSolverJobs(newProblem);
         return ResponseEntity.status(HttpStatus.OK).body(test.getSolverName());
     }
 
@@ -61,7 +56,7 @@ public class SolverManagerController {
         return ResponseEntity.status(HttpStatus.OK).body("OK");
     }
 
-    private void createSolverJobs(ProblemRequest newProblem) throws IOException {
+    private void createSolverJobs(ProblemRequest newProblem) {
         KubernetesClient api = makeKubernetesClient();
         for (SolverBody solver : newProblem.getSolversToUse()) {
             List<String> command = new LinkedList<>();
@@ -98,9 +93,8 @@ public class SolverManagerController {
         }
     }
 
-    private KubernetesClient makeKubernetesClient() throws IOException {
-        KubernetesClient client = new KubernetesClientBuilder().build();
-        return client;
+    private KubernetesClient makeKubernetesClient() {
+        return new KubernetesClientBuilder().build();
 
     }
 }
