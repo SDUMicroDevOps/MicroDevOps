@@ -4,7 +4,6 @@ WORKDIR "/app"
 
 COPY Solver.py .
 COPY requirements.txt .
-COPY TestData/ .
 
 RUN  apt-get update \
   && apt-get install -y wget \

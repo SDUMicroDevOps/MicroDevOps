@@ -3,7 +3,7 @@ import requests
 import json
 import time
 import os
-from minizinc import Instance, Model, Solver, Result, Status
+from minizinc import Instance, Model, Solver, Result
 import sys
 
 
@@ -15,7 +15,6 @@ Arguments excpected:
     solver_name                             - The name of the solver to use
     number_processors                       - The number of processors to use
     dzn_file                                - The url of the dzn file
-
 
 Environment variables expected:
     USERID                                  - The UserID of the user creating this task
@@ -49,8 +48,8 @@ class SolverInstance:
         return path
 
     async def solve(self):
-        solver = Solver.lookup(self.solver_name)
 
+        solver = Solver.lookup(self.solver_name)
         minizinc_model = Model()
 
         mzn = await self.get_file(self.mzn_file)
