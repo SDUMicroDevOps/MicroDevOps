@@ -1,12 +1,12 @@
 package com.oops.app.responseType;
 
-public class AvailableSolver {
+public class Solver {
     
     private int id;
     private String solverName;
 
-    AvailableSolver() {}
-    public AvailableSolver(int id, String solverName) {
+    Solver() {}
+    public Solver(int id, String solverName) {
         this.id = id;
         this.solverName = solverName;
     }

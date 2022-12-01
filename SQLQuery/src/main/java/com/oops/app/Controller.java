@@ -1,5 +1,6 @@
 package com.oops.app;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -16,10 +17,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.oops.app.exceptions.BadRequestException;
-import com.oops.app.requestType.AvailableSolverRequest;
+import com.oops.app.requestType.SolverRequest;
 import com.oops.app.requestType.PrivilageRequest;
 import com.oops.app.requestType.SolutionRequest;
-import com.oops.app.responseType.AvailableSolver;
+import com.oops.app.responseType.Solver;
 import com.oops.app.responseType.Greeting;
 import com.oops.app.responseType.Privilage;
 import com.oops.app.responseType.Solution;
@@ -32,13 +33,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 @SpringBootApplication
 @RestController
 public class Controller {
-    public static SQLController sqlController;
+    public static SQLController sqlController = null;
     public static void main( String[] args ) {
-        if(args.length < 3) {
-            System.err.println("Not enough arguments to run. Make sure there is an ip/url, username and a password");
-            System.exit(-1);
+        boolean containsNoSQL = Arrays.stream(args).map(String::toLowerCase).anyMatch("--nosql"::equals);
+        if(!containsNoSQL) {
+            sqlController  = new SQLController();
         }
-        sqlController  = new SQLController(args[0], "oops_test", args[1], args[2]);
         SpringApplication.run(Controller.class, args);
     }
 
@@ -129,24 +129,24 @@ public class Controller {
     }
 
     @GetMapping("/solvers")
-    public List<AvailableSolver> allSolvers() {
+    public List<Solver> allSolvers() {
         return sqlController.getAllSolvers();
     }
 
     @GetMapping("solvers/{id}")
     @ResponseBody
-    public ResponseEntity<AvailableSolver> getSolverById(@PathVariable int id) {
-        AvailableSolver solver = sqlController.getSolver(id);
+    public ResponseEntity<Solver> getSolverById(@PathVariable int id) {
+        Solver solver = sqlController.getSolver(id);
         if(solver == null) {
 
         }
-        return new ResponseEntity<AvailableSolver>(solver, HttpStatus.OK);
+        return new ResponseEntity<Solver>(solver, HttpStatus.OK);
     }
 
     @PostMapping("/solvers")
     @ResponseBody
-    public ResponseEntity<AvailableSolver> addSolver(@RequestBody AvailableSolverRequest newSolverName) {
-        AvailableSolver solver = sqlController.addSolver(newSolverName.getSolverName());
+    public ResponseEntity<Solver> addSolver(@RequestBody SolverRequest newSolverName) {
+        Solver solver = sqlController.addSolver(newSolverName.getSolverName());
         if(solver == null) {
 
         }
@@ -155,7 +155,7 @@ public class Controller {
 
     @DeleteMapping("/solvers/{id}")
     @ResponseBody
-    public ResponseEntity<AvailableSolver> deleteSolver(@PathVariable int id) {
+    public ResponseEntity<Solver> deleteSolver(@PathVariable int id) {
         int status = sqlController.deleteSolver(id);
 
         switch (status) {
@@ -169,10 +169,10 @@ public class Controller {
         return sqlController.getAllSolutions();
     }
 
-    @GetMapping("solutions/{id}")
+    @GetMapping("solutions/{taskId}")
     @ResponseBody
-    public ResponseEntity<Solution> getSolutionById(@PathVariable int id) {
-        Solution solution = sqlController.getSolution(id);
+    public ResponseEntity<Solution> getSolutionById(@PathVariable String taskId) {
+        Solution solution = sqlController.getSolution(taskId);
         if(solution == null) {
 
         }
@@ -189,10 +189,10 @@ public class Controller {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping("/solutions/{id}")
+    @DeleteMapping("/solutions/{taskId}")
     @ResponseBody
-    public ResponseEntity<Solution> deleteSolution(@PathVariable int id) {
-        int status = sqlController.deleteSolution(id);
+    public ResponseEntity<Solution> deleteSolution(@PathVariable String taskId) {
+        int status = sqlController.deleteSolution(taskId);
 
         switch (status) {
             case 200: return new ResponseEntity<>(HttpStatus.OK);

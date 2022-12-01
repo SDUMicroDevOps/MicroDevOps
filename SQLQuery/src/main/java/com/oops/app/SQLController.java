@@ -10,7 +10,7 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import com.oops.app.requestType.SolutionRequest;
-import com.oops.app.responseType.AvailableSolver;
+import com.oops.app.responseType.Solver;
 import com.oops.app.responseType.Privilage;
 import com.oops.app.responseType.Solution;
 import com.oops.app.responseType.User;
@@ -19,7 +19,7 @@ public class SQLController {
     
     private DataSource pool;
 
-    public SQLController(String ip, String db, String user, String pwd) {
+    public SQLController() {
         pool = SQLCloudController.createConnectionPool();
     }
 
@@ -29,7 +29,7 @@ public class SQLController {
         try {
             Connection conn = pool.getConnection();
             Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("select * from User");
+            ResultSet rs = stmt.executeQuery("select * from user");
 
             while(rs.next()) {
                 User user = new User(rs.getString(1), rs.getString(2), rs.getInt(3), rs.getInt(4));
@@ -49,7 +49,7 @@ public class SQLController {
         try {
             Connection conn = pool.getConnection();
             Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("select * from User where username='" + username + "'");
+            ResultSet rs = stmt.executeQuery("select * from user where username='" + username + "'");
 
             while(rs.next()) {
                 user = new User(rs.getString(1), rs.getString(2), rs.getInt(3), rs.getInt(4));
@@ -64,7 +64,7 @@ public class SQLController {
         try {
             Connection conn = pool.getConnection();
             Statement stmt = conn.createStatement();
-            stmt.executeUpdate("insert into User (username, password, privilege_id, vCPULimit) values ('" + newUser.getUsername() + "','" + newUser.getPwd() + "','" + newUser.getPrivilege_id() + "','" + newUser.getVCPULimit() + "')");
+            stmt.executeUpdate(String.format("INSERT INTO `user`(`username`, `pwd`, `privilage_id`, `vCPU_limit`) VALUES ('%s','%s','%d','%d')", newUser.getUsername(), newUser.getPwd(), newUser.getPrivilege_id(), newUser.getVCPULimit()));
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
@@ -76,7 +76,7 @@ public class SQLController {
         try {
             Connection conn = pool.getConnection();
             Statement stmt = conn.createStatement();
-            stmt.executeUpdate("delete from User where username='" + username + "'");
+            stmt.executeUpdate("delete from user where username='" + username + "'");
         } catch(SQLException e) {
             e.printStackTrace();
         }
@@ -88,7 +88,7 @@ public class SQLController {
         try {
             Connection conn = pool.getConnection();
             Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("select * from Privilages");
+            ResultSet rs = stmt.executeQuery("SELECT * FROM `privilage`");
 
             while(rs.next()) {
                 Privilage privilage = new Privilage(rs.getInt(1), rs.getString(2));
@@ -104,7 +104,7 @@ public class SQLController {
         Privilage privilage = null;
         try (Connection conn = pool.getConnection()) {
             Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("select * from Privilages where id=" + id);
+            ResultSet rs = stmt.executeQuery("SELECT * FROM `privilage` WHERE id=" + id);
             while(rs.next()) {
                 privilage = new Privilage(id, rs.getString(2));
             }
@@ -117,7 +117,7 @@ public class SQLController {
     public Privilage addPrivilage(String newRoleName) {
         try (Connection conn = pool.getConnection()) {
             Statement stmt = conn.createStatement();
-            stmt.executeUpdate(String.format("INSERT INTO Privilages(roleName) VALUES ('%s')", newRoleName));
+            stmt.executeUpdate(String.format("INSERT INTO `privilage`(`role_name`) VALUES ('%s')", newRoleName));
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -128,7 +128,7 @@ public class SQLController {
     public int deletePrivilage(int id) {
         try (Connection conn = pool.getConnection()) {
             Statement stmt = conn.createStatement();
-            stmt.executeUpdate(String.format("DELETE FROM Privilages WHERE id=%d", id));
+            stmt.executeUpdate(String.format("DELETE FROM `privilage` WHERE id=%d", id));
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -136,13 +136,13 @@ public class SQLController {
         return 200;
     }
 
-    public List<AvailableSolver> getAllSolvers() {
-        List<AvailableSolver> solvers = new ArrayList<>();
+    public List<Solver> getAllSolvers() {
+        List<Solver> solvers = new ArrayList<>();
         try (Connection conn = pool.getConnection()) {
             Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM AvailableSolvers");
+            ResultSet rs = stmt.executeQuery("SELECT * FROM `solver`");
             while(rs.next()) {
-                solvers.add(new AvailableSolver(rs.getInt(1), rs.getString(2)));
+                solvers.add(new Solver(rs.getInt(1), rs.getString(2)));
             }
         } catch (SQLException e) {
             // TODO Auto-generated catch block
@@ -151,13 +151,13 @@ public class SQLController {
         return solvers;
     }
 
-    public AvailableSolver getSolver(int id) {
-        AvailableSolver solver = null;
+    public Solver getSolver(int id) {
+        Solver solver = null;
         try (Connection conn = pool.getConnection()) {
             Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM AvailableSolvers where id=" + id);
+            ResultSet rs = stmt.executeQuery("SELECT * FROM `solver` WHERE id=" + id);
             while(rs.next()) {
-                solver = new AvailableSolver(rs.getInt(1), rs.getString(2));
+                solver = new Solver(rs.getInt(1), rs.getString(2));
             }
         } catch (SQLException e) {
             // TODO Auto-generated catch block
@@ -166,10 +166,10 @@ public class SQLController {
         return solver;
     }
 
-    public AvailableSolver addSolver(String solverName) {
+    public Solver addSolver(String solverName) {
         try (Connection conn = pool.getConnection()) {
             Statement stmt = conn.createStatement();
-            stmt.executeUpdate(String.format("INSERT INTO AvailableSolvers(solver_name) VALUES ('%s')", solverName));
+            stmt.executeUpdate(String.format("INSERT INTO `solver`(`solver_name`) VALUES ('%s')", solverName));
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -180,7 +180,7 @@ public class SQLController {
     public int deleteSolver(int id) {
         try (Connection conn = pool.getConnection()) {
             Statement stmt = conn.createStatement();
-            stmt.executeUpdate(String.format("DELETE FROM `AvailableSolvers` WHERE id=%d", id));
+            stmt.executeUpdate(String.format("DELETE FROM `solver` WHERE id=%d", id));
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -192,9 +192,9 @@ public class SQLController {
         List<Solution> solutions = new ArrayList<>();
         try (Connection conn = pool.getConnection()) {
             Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM Solutions");
+            ResultSet rs = stmt.executeQuery("SELECT * FROM `solution`");
             while(rs.next()) {
-                solutions.add(new Solution(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getDate(4)));
+                solutions.add(new Solution(rs.getString(1), rs.getString(2), rs.getString(3), rs.getDate(4), rs.getBoolean(5)));
             }
         } catch (SQLException e) {
             // TODO Auto-generated catch block
@@ -204,13 +204,13 @@ public class SQLController {
         return solutions;
     }
 
-    public Solution getSolution(int id) {
+    public Solution getSolution(String taskId) {
         Solution solution = null;
         try (Connection conn = pool.getConnection()) {
             Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM Solutions WHERE=" + id);
+            ResultSet rs = stmt.executeQuery(String.format("SELECT * FROM `solution` WHERE task_id=%s", taskId));
             while(rs.next()) {
-                solution = new Solution(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getDate(4));
+                solution = new Solution(rs.getString(1), rs.getString(2), rs.getString(3), rs.getDate(4), rs.getBoolean(5));
             }
         } catch (SQLException e) {
             // TODO Auto-generated catch block
@@ -219,10 +219,10 @@ public class SQLController {
         return solution;
     }
 
-    public int deleteSolution(int id) {
+    public int deleteSolution(String taskId) {
         try (Connection conn = pool.getConnection()) {
             Statement stmt = conn.createStatement();
-            stmt.executeUpdate(String.format("DELETE FROM `Solutions` WHERE id=%d", id));
+            stmt.executeUpdate(String.format("DELETE FROM `solution` WHERE task_id=%s", taskId));
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

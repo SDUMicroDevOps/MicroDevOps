@@ -1,11 +1,11 @@
 package com.oops.app.requestType;
 
-public class AvailableSolverRequest {
+public class SolverRequest {
     
     private String solverName;
 
-    AvailableSolverRequest() {}
-    public AvailableSolverRequest(String solverName) {
+    SolverRequest() {}
+    public SolverRequest(String solverName) {
         this.solverName = solverName;
     }
 

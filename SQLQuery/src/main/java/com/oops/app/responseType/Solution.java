@@ -4,21 +4,23 @@ import java.sql.Date;
 
 public class Solution {
     
-    private int id;
+    private String taskId;
     private String user;
     private String content;
     private Date date;
+    private boolean isOptimal;
 
     Solution() {}
-    public Solution(int id, String user, String content, Date date) {
-        this.id = id;
+    public Solution(String taskId, String user, String content, Date date, boolean isOptimal) {
+        this.taskId = taskId;
         this.user = user;
         this.content = content;
         this.date = date;
+        this.isOptimal = isOptimal;
     }
 
-    public int getId() {
-        return id;
+    public String getTaskId() {
+        return taskId;
     }
 
     public String getUser() {
@@ -33,8 +35,12 @@ public class Solution {
         return date;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public boolean getIsOptimal() {
+        return isOptimal;
+    }
+
+    public void setTaskId(String taskId) {
+        this.taskId = taskId;
     }
 
     public void setUser(String user) {
@@ -47,5 +53,9 @@ public class Solution {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public void setIsOptimal(boolean isOptimal) {
+        this.isOptimal = isOptimal;
     }
 }
