@@ -46,13 +46,9 @@ public class SolverManagerController {
     }
 
     @PostMapping("/cancel/task/{problemID}")
-    public ResponseEntity<String> cancelTask(@PathVariable String problemID, @RequestBody CancelTaskRequest req) { // TODO
-                                                                                                                   // make
-                                                                                                                   // user
-                                                                                                                   // verification
-                                                                                                                   // here
+    public ResponseEntity<String> cancelTask(@PathVariable String problemID, @RequestBody CancelTaskRequest req) {
         KubernetesClient api = makeKubernetesClient();
-        api.batch().v1().jobs().inNamespace("default").withName(problemID).delete();
+        api.batch().v1().jobs().inNamespace("default").withName(problemID).delete(); // TODO use user auth here
         return ResponseEntity.status(HttpStatus.OK).body("Problem cancelled with ID : " + problemID);
     }
 
