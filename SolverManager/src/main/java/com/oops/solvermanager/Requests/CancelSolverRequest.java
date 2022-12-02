@@ -1,14 +1,14 @@
 package com.oops.solvermanager.Requests;
 
 public class CancelSolverRequest {
-    private String TaskToCancel;
+    private String problemID;
     private String userID;
 
     CancelSolverRequest() {
     }
 
-    public String getTaskToCancel() {
-        return TaskToCancel;
+    public String getProblemID() {
+        return problemID;
     }
 
     public String getUserID() {

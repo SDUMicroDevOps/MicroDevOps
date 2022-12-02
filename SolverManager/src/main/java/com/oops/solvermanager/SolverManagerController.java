@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.oops.solvermanager.Requests.CancelSolverRequest;
 import com.oops.solvermanager.Requests.CancelTaskRequest;
 import com.oops.solvermanager.Requests.ProblemRequest;
 import com.oops.solvermanager.Requests.SolverBody;
@@ -47,9 +48,21 @@ public class SolverManagerController {
 
     @PostMapping("/cancel/task/{problemID}")
     public ResponseEntity<String> cancelTask(@PathVariable String problemID, @RequestBody CancelTaskRequest req) {
-        KubernetesClient api = makeKubernetesClient();
-        api.batch().v1().jobs().inNamespace("default").withName(problemID).delete(); // TODO use user auth here
+        KubernetesClient api = makeKubernetesClient(); // TODO make the user auth connect to the database, to check
+                                                       // whether or not the user is an admin
+        api.batch().v1().jobs().inNamespace("default").withLabel("problem", problemID)
+                .withLabel("user", req.getUserId()).delete();
         return ResponseEntity.status(HttpStatus.OK).body("Problem cancelled with ID : " + problemID);
+    }
+
+    @PostMapping("/cancel/solver/{solverName}")
+    public ResponseEntity<String> cancelSolver(@PathVariable String solverName, @RequestBody CancelSolverRequest req) {
+        KubernetesClient api = makeKubernetesClient();
+        api.batch().v1().jobs().inNamespace("default").withLabel("problem", req.getProblemID())
+                .withLabel("solver", solverName)
+                .withLabel("user", req.getUserID()).delete();
+        return ResponseEntity.status(HttpStatus.OK)
+                .body("Cancelled solver with name " + solverName + " on task" + req.getProblemID());
     }
 
     private void createSolverJobs(ProblemRequest newProblem) {
@@ -63,10 +76,11 @@ public class SolverManagerController {
             Map<String, String> labels = new HashMap<>();
             labels.put("user", newProblem.getUserID());
             labels.put("solver", solver.getSolverName());
+            labels.put("problem", newProblem.getProblemID());
             Job job = new JobBuilder()
                     .withApiVersion("v1")
                     .withNewMetadata()
-                    .withName(newProblem.getProblemID())
+                    .withName(newProblem.getProblemID().toLowerCase() + solver.getSolverName().toLowerCase())
                     .withLabels(labels)
                     .endMetadata()
                     .withNewSpec()
