@@ -78,10 +78,12 @@ public class SolverManagerController {
         KubernetesClient api = makeKubernetesClient();
         for (SolverBody solver : newProblem.getSolversToUse()) {
             List<String> command = new LinkedList<>();
-            command.add("perl");
-            command.add("-Mbignum=bpi");
-            command.add("-wle");
-            command.add("print bpi(2000)");
+            command.add("python3");
+            command.add("Solver.py");
+            command.add(solver.getSolverName());
+            command.add(solver.numberVCPU());
+            command.add(newProblem.getProblemId());
+            command.add(newProblem.getDataId());
             Map<String, String> labels = new HashMap<>();
             labels.put("user", newProblem.getUserID());
             labels.put("solver", solver.getSolverName());
