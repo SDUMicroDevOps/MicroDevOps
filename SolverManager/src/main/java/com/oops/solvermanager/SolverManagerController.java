@@ -113,6 +113,5 @@ public class SolverManagerController {
 
     private KubernetesClient makeKubernetesClient() {
         return new KubernetesClientBuilder().build();
-
     }
 }
