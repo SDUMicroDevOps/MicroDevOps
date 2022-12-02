@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.oops.solvermanager.Requests.CancelSolverRequest;
 import com.oops.solvermanager.Requests.CancelTaskRequest;
+import com.oops.solvermanager.Requests.CancelUserTasksRequest;
 import com.oops.solvermanager.Requests.ProblemRequest;
 import com.oops.solvermanager.Requests.SolverBody;
 
@@ -63,6 +64,14 @@ public class SolverManagerController {
                 .withLabel("user", req.getUserID()).delete();
         return ResponseEntity.status(HttpStatus.OK)
                 .body("Cancelled solver with name " + solverName + " on task" + req.getProblemID());
+    }
+
+    @PostMapping("/cancel/User")
+    public ResponseEntity<String> cancelUserTasks(@RequestBody CancelUserTasksRequest req) {
+        KubernetesClient api = makeKubernetesClient();
+        api.batch().v1().jobs().inNamespace("default").withLabel("user", req.getUserID()).delete();
+        return ResponseEntity.status(HttpStatus.OK)
+                .body("Cancelled all tasks for the user: " + req.getUserID());
     }
 
     private void createSolverJobs(ProblemRequest newProblem) {
