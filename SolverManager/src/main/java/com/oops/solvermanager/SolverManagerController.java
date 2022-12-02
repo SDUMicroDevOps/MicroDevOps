@@ -1,9 +1,5 @@
 package com.oops.solvermanager;
 
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -13,7 +9,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,10 +20,8 @@ import com.oops.solvermanager.Requests.CancelUserTasksRequest;
 import com.oops.solvermanager.Requests.ProblemRequest;
 import com.oops.solvermanager.Requests.SolverBody;
 
-import io.fabric8.kubernetes.api.model.Config;
 import io.fabric8.kubernetes.api.model.batch.v1.Job;
 import io.fabric8.kubernetes.api.model.batch.v1.JobBuilder;
-import io.fabric8.kubernetes.client.ConfigBuilder;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClientBuilder;
 
@@ -81,9 +74,9 @@ public class SolverManagerController {
             command.add("python3");
             command.add("Solver.py");
             command.add(solver.getSolverName());
-            command.add(solver.numberVCPU());
-            command.add(newProblem.getProblemId());
-            command.add(newProblem.getDataId());
+            command.add(String.valueOf(solver.getNumberVCPU()));
+            command.add(newProblem.getProblemID());
+            command.add(newProblem.getDataID());
             Map<String, String> labels = new HashMap<>();
             labels.put("user", newProblem.getUserID());
             labels.put("solver", solver.getSolverName());
