@@ -25,4 +25,4 @@ jobs:
         with:
           context: ./Solver
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/oopstest:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/solver:latest
