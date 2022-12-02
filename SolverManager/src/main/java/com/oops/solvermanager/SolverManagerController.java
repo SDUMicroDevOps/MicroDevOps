@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.oops.solvermanager.Requests.CancelTaskRequest;
 import com.oops.solvermanager.Requests.ProblemRequest;
 import com.oops.solvermanager.Requests.SolverBody;
 
@@ -44,16 +45,15 @@ public class SolverManagerController {
         return ResponseEntity.status(HttpStatus.OK).body(test.getSolverName());
     }
 
-    @GetMapping("/test")
-    public ResponseEntity<String> test() {
-
-        return ResponseEntity.status(HttpStatus.OK).body("OK");
-    }
-
     @PostMapping("/cancel/task/{problemID}")
-    public ResponseEntity<String> cancelTask(@PathVariable String problemID) {
-        
-        return ResponseEntity.status(HttpStatus.OK).body("OK");
+    public ResponseEntity<String> cancelTask(@PathVariable String problemID, @RequestBody CancelTaskRequest req) { // TODO
+                                                                                                                   // make
+                                                                                                                   // user
+                                                                                                                   // verification
+                                                                                                                   // here
+        KubernetesClient api = makeKubernetesClient();
+        api.batch().v1().jobs().inNamespace("default").withName(problemID).delete();
+        return ResponseEntity.status(HttpStatus.OK).body("Problem cancelled with ID : " + problemID);
     }
 
     private void createSolverJobs(ProblemRequest newProblem) {
@@ -64,14 +64,13 @@ public class SolverManagerController {
             command.add("-Mbignum=bpi");
             command.add("-wle");
             command.add("print bpi(2000)");
-            Map<String,String> labels = new HashMap<>();
+            Map<String, String> labels = new HashMap<>();
             labels.put("user", newProblem.getUserID());
-            labels.put("problen_id", newProblem.getProblemID());
             labels.put("solver", solver.getSolverName());
             Job job = new JobBuilder()
                     .withApiVersion("v1")
                     .withNewMetadata()
-                    .withName("pi")
+                    .withName(newProblem.getProblemID())
                     .withLabels(labels)
                     .endMetadata()
                     .withNewSpec()
