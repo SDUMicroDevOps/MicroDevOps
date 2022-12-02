@@ -1,6 +1,6 @@
 name: Solver Tests
 
-on:
+on: 
   push:
     branches:
       - feature/**
