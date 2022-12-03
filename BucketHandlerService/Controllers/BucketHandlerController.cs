@@ -1,5 +1,4 @@
 using System.Text.Json;
-using Google.Apis.Auth.OAuth2;
 using Google.Cloud.Storage.V1;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,12 +20,11 @@ public class BucketHandlerController : ControllerBase
     public StorageClient client = StorageClient.Create();
     public string tasksBucket = "microservices22tasks_bucket";
 
-    //TODO: Make this work where userID is appended in front of taskID such that each file is unique
     [HttpGet("{taskID}")]
-    public string GetMznAndDzn(string userID, string taskID)
+    public string GetMznAndDzn(string taskID)
     {
         var urlSigner = UrlSigner.FromServiceAccountPath(credentialFilePath);   //TODO: Use K8 secret for this
-        var responseData = new BucketResponse() { TaskID = taskID };
+        var responseData = new BucketResponse() { TaskID = taskID, MethodAllowed = "GET" };
 
         if (!client.ListObjects(tasksBucket).Any(x => x.Name.StartsWith($"{taskID}")))
         {
@@ -38,25 +36,44 @@ public class BucketHandlerController : ControllerBase
         //The following lines will mean that problems can no longer be downloaded using the same url after 1 day
         //This means that this endpoint needs to be called before downloading the data everytime
         responseData.ProblemFileUrl = urlSigner.Sign(tasksBucket, $"{taskID}.mzn", TimeSpan.FromDays(1), HttpMethod.Get);
-        Console.WriteLine(responseData.ProblemFileUrl);
         if (hasDznFile)
         {
             responseData.DataFileUrl = urlSigner.Sign(tasksBucket, $"{taskID}.dzn", TimeSpan.FromDays(1), HttpMethod.Get);
-            Console.WriteLine(responseData.ProblemFileUrl);
         }
         var jsonData = JsonSerializer.Serialize(responseData);
         return jsonData;
     }
 
-    [HttpPost("problem")]
-    public string PostMzn(string jsonProblemAndTaskID)
+    [HttpGet("uploadurl/{taskID}")]
+    public string PostMzn(string taskID)
     {
-        return "123";
-    }
+        var urlSigner = UrlSigner.FromServiceAccountPath(credentialFilePath);   //TODO: Use K8 secret for this
+        var responseData = new BucketResponse() { TaskID = taskID, MethodAllowed = "PUT" };
 
-    [HttpPost("data")]
-    public string PostDzn(string jsonDataAndTaskID)
-    {
-        return "123";
+        var contentHeaders = new Dictionary<string, IEnumerable<string>>
+        {
+            { "Content-Type", new[] { "text/plain" } }
+        };
+
+        UrlSigner.Options options = UrlSigner.Options.FromDuration(TimeSpan.FromDays(1));
+
+        UrlSigner.RequestTemplate mznTemplate = UrlSigner.RequestTemplate
+            .FromBucket(tasksBucket)
+            .WithObjectName($"{taskID}.mzn")
+            .WithHttpMethod(HttpMethod.Put)
+            .WithContentHeaders(contentHeaders);
+
+        UrlSigner.RequestTemplate dznTemplate = UrlSigner.RequestTemplate
+            .FromBucket(tasksBucket)
+            .WithObjectName($"{taskID}.mzn")
+            .WithHttpMethod(HttpMethod.Post)
+            .WithContentHeaders(contentHeaders);
+
+        responseData.ProblemFileUrl = urlSigner.Sign(mznTemplate, options);
+        Console.WriteLine(responseData.ProblemFileUrl);
+        responseData.DataFileUrl = urlSigner.Sign(dznTemplate, options);
+
+        var jsonData = JsonSerializer.Serialize(responseData);
+        return jsonData;
     }
 }
