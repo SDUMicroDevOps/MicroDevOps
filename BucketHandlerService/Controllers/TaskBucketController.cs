@@ -13,7 +13,7 @@ namespace BucketHandlerService.Controllers;
 */
 [ApiController]
 [Route("[controller]")]
-public class BucketHandlerController : ControllerBase
+public class TaskBucketController : ControllerBase
 {
     public string? projectID = Environment.GetEnvironmentVariable("PROJECT_ID");
     public string? credentialFilePath = Environment.GetEnvironmentVariable("GOOGLE_SERVICE_ACCOUNT_KEY");
