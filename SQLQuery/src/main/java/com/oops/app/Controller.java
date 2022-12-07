@@ -13,14 +13,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.oops.app.exceptions.BadRequestException;
 import com.oops.app.requestType.SolverRequest;
 import com.oops.app.requestType.PrivilageRequest;
-import com.oops.app.requestType.SolutionRequest;
 import com.oops.app.responseType.Solver;
+import com.oops.app.responseType.TaskQueue;
 import com.oops.app.responseType.Greeting;
 import com.oops.app.responseType.Privilage;
 import com.oops.app.responseType.Solution;
@@ -42,7 +43,14 @@ public class Controller {
         SpringApplication.run(Controller.class, args);
     }
 
-    
+    /*
+     * Should only be used if you know what you are doing or when you
+     * are not using the main function.
+     */
+    public static void initSQL() {
+        sqlController = new SQLController();
+    }
+
     private static final String template =  "Hello, %s";
     private final AtomicLong counter = new AtomicLong();
     
@@ -181,7 +189,7 @@ public class Controller {
 
     @PostMapping("/solutions")
     @ResponseBody
-    public ResponseEntity<Solution> addSolution(@RequestBody SolutionRequest newsolutionName) {
+    public ResponseEntity<Solution> addSolution(@RequestBody Solution newsolutionName) {
         Solution solution = sqlController.addSolution(newsolutionName);
         if(solution == null) {
 
@@ -199,4 +207,36 @@ public class Controller {
             default: return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
         }
     }
+
+    @GetMapping("/tasks")
+    @ResponseBody
+    public ResponseEntity<List<TaskQueue>> allQueuedTask(@RequestParam(value = "username", defaultValue = "") String username, @RequestParam(value = "task_id", defaultValue = "") String taskId) {
+        if(username.length() != 0 && taskId.length() != 0) return new ResponseEntity<List<TaskQueue>>(HttpStatus.BAD_REQUEST);
+        List<TaskQueue> tasks;
+        if(username.length() != 0) tasks = sqlController.getQueuedTaskByUser(username);
+        else if(taskId.length() != 0) tasks = sqlController.getQueuedTaskByTaskId(taskId);
+        else tasks = sqlController.getAllQueuedTask();
+        return new ResponseEntity<List<TaskQueue>>(tasks, HttpStatus.OK);
+    }
+
+    @PostMapping("/tasks")
+    @ResponseBody
+    public ResponseEntity<TaskQueue> addTask(@RequestBody TaskQueue taskQueue) {
+        int status = sqlController.addTask(taskQueue);
+        switch (status) {
+            case 200: return new ResponseEntity<>(HttpStatus.OK);
+            default: return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
+        }
+    }
+
+    @DeleteMapping("/tasks")
+    @ResponseBody
+    public ResponseEntity<TaskQueue> deleteTask(@RequestParam(value = "task_id") String taskId, @RequestParam(value  = "solver") int solver) {
+        int status = sqlController.deleteTask(taskId, solver);
+        switch (status) {
+            case 200: return new ResponseEntity<>(HttpStatus.OK);
+            default: return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
+        }
+    }
+
 }

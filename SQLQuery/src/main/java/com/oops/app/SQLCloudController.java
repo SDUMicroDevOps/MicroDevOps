@@ -9,11 +9,11 @@ import javax.sql.DataSource;
 
 public class SQLCloudController {
 
-    private static final String DB_USER = "";
-    private static final String DB_PASS = "";
-    private static final String DB_NAME = "";
+    private static final String DB_USER = System.getenv("DB_USER");
+    private static final String DB_PASS = System.getenv("DB_PASS");
+    private static final String DB_NAME = System.getenv("DB_NAME");
 
-    private static final String CONNECTION_NAME = "";
+    private static final String CONNECTION_NAME = System.getenv("CONNECTION_NAME");
 
 
     //Simple test file

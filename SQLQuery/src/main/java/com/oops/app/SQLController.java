@@ -9,8 +9,8 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import com.oops.app.requestType.SolutionRequest;
 import com.oops.app.responseType.Solver;
+import com.oops.app.responseType.TaskQueue;
 import com.oops.app.responseType.Privilage;
 import com.oops.app.responseType.Solution;
 import com.oops.app.responseType.User;
@@ -208,7 +208,7 @@ public class SQLController {
         Solution solution = null;
         try (Connection conn = pool.getConnection()) {
             Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(String.format("SELECT * FROM `solution` WHERE task_id=%s", taskId));
+            ResultSet rs = stmt.executeQuery(String.format("SELECT * FROM `solution` WHERE task_id='%s'", taskId));
             while(rs.next()) {
                 solution = new Solution(rs.getString(1), rs.getString(2), rs.getString(3), rs.getDate(4), rs.getBoolean(5));
             }
@@ -222,7 +222,7 @@ public class SQLController {
     public int deleteSolution(String taskId) {
         try (Connection conn = pool.getConnection()) {
             Statement stmt = conn.createStatement();
-            stmt.executeUpdate(String.format("DELETE FROM `solution` WHERE task_id=%s", taskId));
+            stmt.executeUpdate(String.format("DELETE FROM `solution` WHERE task_id='%s'", taskId));
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -230,14 +230,114 @@ public class SQLController {
         return 200;
     }
 
-    public Solution addSolution(SolutionRequest newSolutionName) {
+    public Solution addSolution(Solution newSolutionName) {
         try (Connection conn = pool.getConnection()) {
             Statement stmt = conn.createStatement();
-            stmt.executeUpdate(String.format("INSERT INTO Solutions(user_id, content, time_created) VALUES ('%s','%s','%t')", newSolutionName.getUser(), newSolutionName.getContent(), newSolutionName.getDate()));
+            stmt.executeUpdate(String.format("INSERT INTO `solution`(`task_id`, `user`, `content`, `date`, `is_optimal`) VALUES ('%s','%s','%s','%s','%d')", 
+                newSolutionName.getTaskId(), newSolutionName.getUser(), newSolutionName.getContent(), newSolutionName.getDate(), newSolutionName.getIsOptimal() ? 1 : 0 ));
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return null;
+    }
+
+    public List<TaskQueue> getAllQueuedTask() {
+        List<TaskQueue> tasks = new ArrayList<>();
+        try (Connection conn = pool.getConnection()) {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM `task_queue` ORDER BY user");
+            while(rs.next()) {
+                tasks.add(new TaskQueue(
+                    rs.getString(1), 
+                    rs.getInt(2), 
+                    rs.getString(3), 
+                    rs.getTimestamp(4), 
+                    rs.getInt(5), 
+                    rs.getInt(6), 
+                    rs.getString(7), 
+                    rs.getString(8)));
+            }
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return tasks;
+    }
+
+    public List<TaskQueue> getQueuedTaskByUser(String username) {
+        List<TaskQueue> tasks = new ArrayList<>();
+        try (Connection conn = pool.getConnection()) {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(String.format("SELECT * FROM `task_queue` WHERE user='%s' ORDER BY solver_timestamp", username));
+            while(rs.next()) {
+                tasks.add(new TaskQueue(
+                    rs.getString(1), 
+                    rs.getInt(2), 
+                    rs.getString(3), 
+                    rs.getTimestamp(4), 
+                    rs.getInt(5), 
+                    rs.getInt(6), 
+                    rs.getString(7), 
+                    rs.getString(8)));
+            }
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return tasks;
+    }
+
+    public List<TaskQueue> getQueuedTaskByTaskId(String taskId) {
+        List<TaskQueue> tasks = new ArrayList<>();
+        try (Connection conn = pool.getConnection()) {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(String.format("SELECT * FROM `task_queue` WHERE task_id='%s' ORDER BY solver_timestamp", taskId));
+            while(rs.next()) {
+                tasks.add(new TaskQueue(
+                    rs.getString(1), 
+                    rs.getInt(2), 
+                    rs.getString(3), 
+                    rs.getTimestamp(4), 
+                    rs.getInt(5), 
+                    rs.getInt(6), 
+                    rs.getString(7), 
+                    rs.getString(8)));
+            }
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return tasks;
+    }
+
+    public int addTask(TaskQueue taskQueue) {
+        try (Connection conn = pool.getConnection()) {
+            Statement stmt = conn.createStatement();
+            stmt.executeUpdate(String.format("INSERT INTO `task_queue`(`user`, `solver`, `task_id`, `solver_timestamp`, `vCPU`, `max_memory`, `mzn`, `dzn`) VALUES ('%s','%d','%s','%s','%d','%d','%s','%s')", 
+                taskQueue.getUsername(), 
+                taskQueue.getSolver(), 
+                taskQueue.getTaskId(), 
+                taskQueue.getSolverTimestamp(), 
+                taskQueue.getVCPU(), 
+                taskQueue.getMaxMemory(), 
+                taskQueue.getMzn(), 
+                taskQueue.getDzn()));
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return 200;
+    }
+
+    public int deleteTask(String taskId, int solver) {
+        try (Connection conn = pool.getConnection()) {
+            Statement stmt = conn.createStatement();
+            stmt.executeUpdate(String.format("DELETE FROM `task_queue` WHERE task_id='%s' AND solver='%d'", taskId, solver));
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return 200;
     }
 }
