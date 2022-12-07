@@ -68,14 +68,28 @@ public class SolverManagerController {
                 .body("Cancelled all tasks for the user: " + req.getUserID());
     }
 
-    @GetMapping("/user/{userid}/jobs")
+    @GetMapping("/user/{userid}/solvers")
     public ResponseEntity<SolverBody[]> getJobsForUser(@PathVariable String userid) {
         KubernetesClient api = makeKubernetesClient();
         List<Job> running_solvers = api.batch().v1().jobs().inNamespace("default").withLabel("user", userid).list()
                 .getItems();
-        SolverBody[] solvers = new SolverBody[running_solvers.size()];
-        for (int i = 0; i < running_solvers.size(); i++) {
-            Job currentSolver = running_solvers.get(i);
+        SolverBody[] solvers = constructSolversFromJobs(running_solvers);
+        return ResponseEntity.status(HttpStatus.OK).body(solvers);
+    }
+
+    @GetMapping("/problem/{problemID}/solvers")
+    public ResponseEntity<SolverBody[]> getSolversForJob(@PathVariable String problemID) {
+        KubernetesClient api = makeKubernetesClient();
+        List<Job> running_solvers = api.batch().v1().jobs().inNamespace("default").withLabel("problem", problemID)
+                .list().getItems();
+        SolverBody[] solvers = constructSolversFromJobs(running_solvers);
+        return ResponseEntity.status(HttpStatus.OK).body(solvers);
+    }
+
+    private SolverBody[] constructSolversFromJobs(List<Job> jobs) {
+        SolverBody[] solvers = new SolverBody[jobs.size()];
+        for (int i = 0; i < jobs.size(); i++) {
+            Job currentSolver = jobs.get(i);
             String solverName = currentSolver.getMetadata().getLabels().get("solver");
             int numberVCPU = Integer.parseInt(currentSolver.getMetadata().getLabels().get("numberVCPU"));
             int maxMemory = Integer.parseInt(currentSolver.getMetadata().getLabels().get("maxMemory"));
@@ -83,7 +97,7 @@ public class SolverManagerController {
             SolverBody toInsert = new SolverBody(maxMemory, numberVCPU, timeout, solverName);
             solvers[i] = toInsert;
         }
-        return ResponseEntity.status(HttpStatus.OK).body(solvers);
+        return solvers;
     }
 
     private void createSolverJobs(ProblemRequest newProblem) {
