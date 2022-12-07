@@ -68,7 +68,7 @@ public class SolverManagerController {
                 .body("Cancelled all tasks for the user: " + req.getUserID());
     }
 
-    @GetMapping("/{userid}/jobs")
+    @GetMapping("/user/{userid}/jobs")
     public ResponseEntity<SolverBody[]> getJobsForUser(@PathVariable String userid) {
         KubernetesClient api = makeKubernetesClient();
         List<Job> running_solvers = api.batch().v1().jobs().inNamespace("default").withLabel("user", userid).list()
