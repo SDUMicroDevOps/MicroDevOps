@@ -14,5 +14,9 @@ spec:
       containers:
         - name: solver-manager
           image: oops/solver-manager
+          resources:
+            limits:
+              memory: "500MI"
+              cpu: "500m"
           ports:
             - containerPort: 8080
