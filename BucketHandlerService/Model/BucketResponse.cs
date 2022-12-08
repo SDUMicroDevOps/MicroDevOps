@@ -1,4 +1,4 @@
-public class BucketResponse
+public sealed class BucketResponse
 {
     public string? TaskID { get; set; }
     public string? ProblemFileUrl { get; set; }

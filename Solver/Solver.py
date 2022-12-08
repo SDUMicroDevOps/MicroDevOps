@@ -6,7 +6,6 @@ import os
 from minizinc import Instance, Model, Solver, Result
 import sys
 
-
 '''
 This class represents a solver
 
@@ -61,7 +60,6 @@ class SolverInstance:
             return False
 
     async def solve(self):
-
         solver = Solver.lookup(self.solver_name)
         minizinc_model = Model()
 

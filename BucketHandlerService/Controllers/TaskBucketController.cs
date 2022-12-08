@@ -1,5 +1,4 @@
 using System.Text.Json;
-using Google.Api.Gax.ResourceNames;
 using Google.Cloud.SecretManager.V1;
 
 using Google.Cloud.Storage.V1;
@@ -87,7 +86,6 @@ public class TaskBucketController : ControllerBase
                 .WithContentHeaders(contentHeaders);
 
             responseData.ProblemFileUrl = urlSigner.Sign(mznTemplate, options);
-            Console.WriteLine(responseData.ProblemFileUrl);
             responseData.DataFileUrl = urlSigner.Sign(dznTemplate, options);
 
             var jsonData = JsonSerializer.Serialize(responseData);
@@ -99,7 +97,6 @@ public class TaskBucketController : ControllerBase
     {
         var secretResourceName = "projects/859134286483/secrets/default_service_account_key/versions/1";
         var secret = secretManager.AccessSecretVersion(secretResourceName).Payload.Data.ToStringUtf8();
-        Console.Write(secret);
         return GenerateStreamFromString(secret);
     }
 
