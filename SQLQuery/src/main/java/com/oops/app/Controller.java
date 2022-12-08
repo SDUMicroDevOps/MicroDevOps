@@ -34,7 +34,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 @SpringBootApplication
 @RestController
 public class Controller {
-    public static SQLController sqlController = null;
+    private static SQLController sqlController = null;
     public static void main( String[] args ) {
         boolean containsNoSQL = Arrays.stream(args).map(String::toLowerCase).anyMatch("--nosql"::equals);
         if(!containsNoSQL) {
