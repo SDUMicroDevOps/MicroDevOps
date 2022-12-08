@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: solver-manager
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: solver-manager
@@ -13,10 +14,6 @@ spec:
     spec:
       containers:
         - name: solver-manager
-          image: oopsaccount/solver-manager:latest
-          resources:
-            limits:
-              memory: "500MI"
-              cpu: "500m"
+          image: oopsaccount/solver-manager:latest"
           ports:
             - containerPort: 8080
