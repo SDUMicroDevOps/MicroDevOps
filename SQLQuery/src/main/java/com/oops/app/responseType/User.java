@@ -47,4 +47,15 @@ public class User {
     public void setVCPULimit(int vCPULimit) {
         this.vCPULimit = vCPULimit;
     }
+    
+    public boolean equals(Object obj) {
+        if(this == obj) return true;
+        if(!(obj instanceof User)) return false;
+        User other = (User) obj;
+        if(!(this.username.equals(other.username) &&
+            this.pwd.equals(other.pwd) &&
+            this.privilege_id == other.privilege_id &&
+            this.vCPULimit == other.vCPULimit)) return false;
+        return true;
+    }
 }

@@ -26,4 +26,12 @@ public class Privilage {
     public void setRoleName(String roleName) {
         this.roleName = roleName;
     }
+
+    public boolean equals(Object obj) {
+        if(this == obj) return true;
+        if(!(obj instanceof Privilage)) return false;
+        Privilage other = (Privilage) obj;
+        if(!(this.id == other.id && this.roleName.equals(other.roleName))) return false;
+        return true;
+    }
 }

@@ -97,7 +97,7 @@ public class TaskQueue {
 
     public boolean equals(Object obj) {
         if(this == obj) return true;
-        if(obj instanceof TaskQueue) return false;
+        if(!(obj instanceof TaskQueue)) return false;
         TaskQueue other = (TaskQueue) obj;
         if(!(this.username.equals(other.username) && 
             this.solver == other.solver && 

@@ -26,4 +26,12 @@ public class Solver {
     public void setSolverName(String solverName) {
         this.solverName = solverName;
     }
+
+    public boolean equals(Object obj) {
+        if(this == obj) return true;
+        if(!(obj instanceof Solver)) return false;
+        Solver other = (Solver) obj;
+        if(!(this.id == other.id && this.solverName.equals(other.solverName))) return false;
+        return true;
+    }
 }

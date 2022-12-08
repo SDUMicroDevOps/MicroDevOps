@@ -58,4 +58,16 @@ public class Solution {
     public void setIsOptimal(boolean isOptimal) {
         this.isOptimal = isOptimal;
     }
+
+    public boolean equals(Object obj) {
+        if(this == obj) return true;
+        if(!(obj instanceof Solution)) return false;
+        Solution other = (Solution) obj;
+        if(!(this.taskId.equals(other.taskId) &&
+            this.user.equals(other.user) &&
+            this.content.equals(other.content) &&
+            this.date.equals(other.date) &&
+            this.isOptimal == other.isOptimal)) return false;
+        return true;
+    }
 }
