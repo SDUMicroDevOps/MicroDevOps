@@ -20,9 +20,9 @@ jobs:
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
       -
-        name: Build and push HelloOops
+        name: Build and push oops-frontend
         uses: docker/build-push-action@v3
         with:
           context: ./oops-frontend/
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/oopstest:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/frontend:latest
