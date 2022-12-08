@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
         - name: solver-manager
-          image: oops/solver-manager
+          image: oopsaccount/solver-manager:latest
           resources:
             limits:
               memory: "500MI"
