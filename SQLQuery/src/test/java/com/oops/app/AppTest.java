@@ -27,7 +27,6 @@ public class AppTest
         Controller controller = new Controller();
         Controller.initSQL();
         List<Privilage> dbPribilages = controller.allPrivilages();
-        System.out.println(dbPribilages.size());
-        assertTrue(dbPribilages.size() > 0);
+        assertTrue(dbPribilages.size() == 3);
     }
 }
