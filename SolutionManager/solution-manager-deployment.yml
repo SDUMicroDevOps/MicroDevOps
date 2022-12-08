@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: solution-manager-deployment
+spec:
+  selector:
+    matchLabels:
+      app: solution-manager-deployment
+  template:
+    metadata:
+      labels:
+        app: solution-manager-deployment
+    spec:
+      containers:
+        - name: solution-manager
+          image: oops/solution-manager::latest
+          ports:
+            - containerPort: 8081
