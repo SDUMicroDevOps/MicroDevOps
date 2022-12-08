@@ -6,7 +6,7 @@
 
   <groupId>com.oops.solvermanager</groupId>
   <artifactId>SolverManager</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0</version>
 
   <name>SolverManager</name>
   <!-- FIXME change it to the project's website -->
