@@ -16,7 +16,7 @@ jobs:
       DB_USER: ${{secrets.DB_USER}}
       DB_PASS: ${{secrets.DB_PASS}}
       DB_NAME: ${{secrets.DB_NAME}}
-      CONNECTION_NAME: ${{DB_CONNECTION_NAME}}
+      CONNECTION_NAME: ${{secrets.DB_CONNECTION_NAME}}
       
     steps:
     
