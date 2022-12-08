@@ -96,7 +96,6 @@ class SolverInstance:
         self.solution_manager_port = os.getenv("SOLUTION_MANAGER_PORT") if os.getenv("SOLUTION_MANAGER_PORT") else ("5001")
         self.bucket_handler_service = os.getenv("BUCKET_HANDLER_SERVICE") if os.getenv("BUCKET_HANDLER_SERVICE") else ("0.0.0.0")
         self.bucket_handler_port = os.getenv("BUCKET_HANDLER_PORT") if os.getenv("BUCKET_HANDLER_PORT") else ("5165")
-
         
         self.solver_name = args[1]
         self.number_processors = args[2]
