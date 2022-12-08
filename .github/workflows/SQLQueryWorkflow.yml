@@ -1,0 +1,28 @@
+name: SQl query test
+
+on:
+  push:
+    branches: 
+      - feature/se/sql-query
+      
+jobs:
+  tests:
+    permissions:
+      id-token: write
+      contents: read
+      
+    runs-on: ubuntu-latest
+    steps:
+      - id: 'Auth'
+        name: 'auth to sql'
+        uses: 'google-github-action/auth@v0.3.1'
+        with:
+          create_credentials_file: 'true'
+          workload_identity_provider: 'projects/859134286483/locations/global/workloadIdentityPools/oopspool/providers/oopsprovider'
+          service_account: 'principal://iam.googleapis.com/projects/859134286483/locations/global/workloadIdentityPools/oopspool/subject/SDUMicroDevOps/MicroDevOps'
+      - id: 'gcloud'
+        name: 'gcloud'
+        run: |-
+          gcloud auth login --brief --cred-file="${{steps.auth.outputs.credentials_file_path}}
+          gcloud services list
+    
