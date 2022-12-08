@@ -12,6 +12,12 @@ jobs:
       contents: read
       
     runs-on: ubuntu-latest
+    env:
+      DB_USER: ${{secrets.DB_USER}}
+      DB_PASS: ${{secrets.DB_PASS}}
+      DB_NAME: ${{secrets.DB_NAME}}
+      CONNECTION_NAME: ${{DB_CONNECTION_NAME}}
+      
     steps:
     
       - uses: 'actions/checkout@v3'
