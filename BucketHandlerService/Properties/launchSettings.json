@@ -9,22 +9,22 @@
     }
   },
   "profiles": {
-    "BucketHandlerService-Development": {
+    "Development": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
       "launchUrl": "swagger",
-      "applicationUrl": "http://localhost:5165",
+      "applicationUrl": "http://0.0.0.0:5165",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "BucketHandlerService-Production": {
+    "Production": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
       "launchUrl": "swagger",
-      "applicationUrl": "http://localhost:5165",
+      "applicationUrl": "http://0.0.0.0:5165",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Production"
       }

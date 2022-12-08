@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: buckethandlerservice
+  labels:
+    app: buckethandlerservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: buckethandlerservice
+  template:
+    metadata:
+      labels:
+        app: buckethandlerservice
+    spec:
+      containers:
+        - name: buckethandlerservice
+          image: buckethandlerservice:latest
+          ports:
+            - containerPort: 5165
