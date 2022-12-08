@@ -21,4 +21,4 @@ jobs:
         uses: 'google-github-actions/auth@v1'
         with:
           workload_identity_provider: 'projects/859134286483/locations/global/workloadIdentityPools/oopspool/providers/oopsprovider'
-          service_account: 'principal://iam.googleapis.com/projects/859134286483/locations/global/workloadIdentityPools/oopspool/subject/SDUMicroDevOps/MicroDevOps'
+          service_account: 'sqlserviceaccount@optical-empire-364322.iam.gserviceaccount.com'
