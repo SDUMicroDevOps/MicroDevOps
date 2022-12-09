@@ -37,8 +37,13 @@ public class SolverManagerController {
 
     @PostMapping("/new")
     public ResponseEntity<String> createJob(@RequestBody ProblemRequest newProblem) {
-        createSolverJobs(newProblem);
-        return ResponseEntity.status(HttpStatus.OK).body("Solvers Created for problem: " + newProblem.getProblemID());
+        try{
+            createSolverJobs(newProblem);
+            return ResponseEntity.status(HttpStatus.OK).body("Solvers Created for problem: " + newProblem.getProblemID());
+        }catch(Exception e){
+            return ResponseEntity.status(HttpStatus.OK).body(e.getMessage());
+        }
+
     }
 
     @PostMapping("/cancel/task/{problemID}")
