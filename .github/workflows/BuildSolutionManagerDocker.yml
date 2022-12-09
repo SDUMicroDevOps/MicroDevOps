@@ -1,4 +1,4 @@
-name: Build and push images to docker hub
+name: Build and push Solution Manager to docker hub
 on:
   push:
     branches:
