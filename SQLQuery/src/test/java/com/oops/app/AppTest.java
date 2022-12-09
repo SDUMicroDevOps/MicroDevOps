@@ -87,7 +87,10 @@ public class AppTest
         //Get all queue tasks for a user
         Controller controller = new Controller();
         Controller.initSQL();
-        List<TaskQueue> dbTaskQueues = controller.allQueuedTask("testadmin", "").getBody();
-        assertTrue(dbTaskQueues.size() == 2);
+        List<TaskQueue> dbTaskQueues1 = controller.allQueuedTask("testadmin", "").getBody();
+        assertTrue(dbTaskQueues1.size() == 2);
+        //Get all queued tasks for a taskid
+        List<TaskQueue> dbTaskQueues2 = controller.allQueuedTask("", "testadmin_2022-01-01 00:00:00").getBody();
+        assertTrue(dbTaskQueues1.size() == dbTaskQueues2.size());
     }
 }
