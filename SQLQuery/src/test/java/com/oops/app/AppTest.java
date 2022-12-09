@@ -8,6 +8,9 @@ import org.junit.Test;
 
 import com.oops.app.responseType.Privilage;
 import com.oops.app.responseType.Solution;
+import com.oops.app.responseType.Solver;
+import com.oops.app.responseType.TaskQueue;
+import com.oops.app.responseType.User;
 
 /**
  * Unit test for simple App.
@@ -44,5 +47,47 @@ public class AppTest
         Controller.initSQL();
         List<Solution> dbSolutions = controller.allSolutions();
         assertTrue(dbSolutions.size() == 2);
+
+        //Get one solution
+        Solution solution1 = dbSolutions.get(0);
+        Solution solution2 = controller.getSolutionById(solution1.getTaskId()).getBody();
+        assertTrue(solution1.equals(solution2));
+    }
+
+    @Test
+    public void solverTest() {
+        //Get all solvers
+        Controller controller = new Controller();
+        Controller.initSQL();
+        List<Solver> dbSolvers = controller.allSolvers();
+        assertTrue(dbSolvers.size() == 3);
+
+        //Get one solver
+        Solver solver1 = dbSolvers.get(0);
+        Solver solver2 = controller.getSolverById(solver1.getId()).getBody();
+        assertTrue(solver1.equals(solver2));
+    }
+
+    @Test
+    public void userTest() {
+        //Get all users
+        Controller controller = new Controller();
+        Controller.initSQL();
+        List<User> dbUsers = controller.allUsers();
+        assertTrue(dbUsers.size() == 3);
+
+        //Get one user
+        User user1 = dbUsers.get(0);
+        User user2 = controller.getUserByName(user1.getUsername()).getBody();
+        assertTrue(user1.equals(user2));
+    }
+
+    @Test
+    public void taskQueueTest() {
+        //Get all queue tasks for a user
+        Controller controller = new Controller();
+        Controller.initSQL();
+        List<TaskQueue> dbTaskQueues = controller.allQueuedTask("testadmin", "").getBody();
+        assertTrue(dbTaskQueues.size() == 2);
     }
 }
