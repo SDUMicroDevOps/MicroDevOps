@@ -22,9 +22,9 @@ jobs:
         
 
       - name: Build
-        working-directory: ../../SolutionManager
+        working-directory: ./SolutionManager
         run: mvn --batch-mode -DskipTests package
 
       - name: Test
-        working-directory: ../../SolutionManager
+        working-directory: ./SolutionManager
         run: mvn --batch-mode -Dmaven.test.failure.ignore=true test
