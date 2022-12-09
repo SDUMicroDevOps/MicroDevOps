@@ -1,7 +1,6 @@
 package com.oops.app;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -21,7 +20,6 @@ import com.oops.app.requestType.SolverRequest;
 import com.oops.app.requestType.PrivilageRequest;
 import com.oops.app.responseType.Solver;
 import com.oops.app.responseType.TaskQueue;
-import com.oops.app.responseType.Greeting;
 import com.oops.app.responseType.Privilage;
 import com.oops.app.responseType.Solution;
 import com.oops.app.responseType.User;
@@ -36,14 +34,6 @@ public class Controller {
     private static SQLController sqlController = new SQLController();
     public static void main( String[] args ) {
         SpringApplication.run(Controller.class, args);
-    }
-    
-    private static final String template =  "Hello, %s";
-    private final AtomicLong counter = new AtomicLong();
-    
-    @GetMapping("/greeting/{name}")
-    public Greeting  greeting(@PathVariable String name) {
-        return new Greeting(counter.incrementAndGet(), String.format(template, name));
     }
 
     @GetMapping("/users")
