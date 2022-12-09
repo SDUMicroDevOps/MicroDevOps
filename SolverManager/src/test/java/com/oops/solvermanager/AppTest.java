@@ -9,6 +9,7 @@ import org.junit.Test;
  */
 public class AppTest 
 {
+    SolverManagerController toTest = new SolverManagerController();
     /**
      * Rigorous Test :-)
      */
