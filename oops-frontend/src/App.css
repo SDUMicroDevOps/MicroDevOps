@@ -10,7 +10,27 @@ body, html{
   text-align: left;
 }
 
+.login-button{
+  background-color: #396e38;
+  border-radius: 10px;
+  float: left;
+  text-align: center;
+  height: fit-content;
+  width: 150px;
+  padding: 20px;
+}
+
+.signup-button{
+  background-color: #396e38;
+  border-radius: 10px;
+  text-align: center;
+  height: fit-content;
+  width: 150px;
+  padding: 20px;
+}
+
 .main-box{
+  float: inline-end;
   background-color: #181818;
   border-radius: 10px;
   height: fit-content;
@@ -39,10 +59,14 @@ body, html{
 }
 
 .mzn-button {
+  font-size: 1vw;
+  overflow: hidden;
+  text-overflow: ellipsis; 
   grid-column: 1;
   grid-row: 1;
 }
 .dzn-button {
+  font-size: 1vw;
   grid-column: 2;
   grid-row: 1;
 }
@@ -171,4 +195,48 @@ body, html{
 .retrieve-res-view{
   grid-column: 5;
   grid-row: 3;
+}
+
+.login-popup {
+  position: fixed;
+  border-radius: 10px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  padding: 20px;
+  background-color: #181818;
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.5);
+}
+
+.login-popup form label {
+  border-radius: 10px;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.login-popup form input {
+  border-radius: 5px;
+  width: 100%;
+  padding: 8px;
+  font-size: 16px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+}
+
+.login-popup form button {
+  border-radius: 5px;
+  margin-left: 5px;
+  margin-right: 5px;
+  width: 45%;
+  padding: 12px;
+  font-size: 16px;
+  background-color: #333;
+  color: white;
+  cursor: pointer;
+  border: none;
+}
+
+.login-popup form button:hover {
+  background-color: #444;
 }
