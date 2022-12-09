@@ -30,7 +30,6 @@ public class AppTest
     public void privilageTest() {
         //Get all privilages
         Controller controller = new Controller();
-        Controller.initSQL();
         List<Privilage> dbPrivilages = controller.allPrivilages();
         assertTrue(dbPrivilages.size() == 3);
 
@@ -44,7 +43,6 @@ public class AppTest
     public void solutionTest() {
         //Get all solutions
         Controller controller = new Controller();
-        Controller.initSQL();
         List<Solution> dbSolutions = controller.allSolutions();
         assertTrue(dbSolutions.size() == 2);
 
@@ -58,7 +56,6 @@ public class AppTest
     public void solverTest() {
         //Get all solvers
         Controller controller = new Controller();
-        Controller.initSQL();
         List<Solver> dbSolvers = controller.allSolvers();
         assertTrue(dbSolvers.size() == 3);
 
@@ -72,7 +69,6 @@ public class AppTest
     public void userTest() {
         //Get all users
         Controller controller = new Controller();
-        Controller.initSQL();
         List<User> dbUsers = controller.allUsers();
         assertTrue(dbUsers.size() == 3);
 
@@ -86,7 +82,6 @@ public class AppTest
     public void taskQueueTest() {
         //Get all queue tasks for a user
         Controller controller = new Controller();
-        Controller.initSQL();
         List<TaskQueue> dbTaskQueues1 = controller.allQueuedTask("testadmin", "").getBody();
         assertTrue(dbTaskQueues1.size() == 2);
         //Get all queued tasks for a taskid

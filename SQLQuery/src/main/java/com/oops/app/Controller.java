@@ -1,6 +1,5 @@
 package com.oops.app;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -34,23 +33,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 @SpringBootApplication
 @RestController
 public class Controller {
-    private static SQLController sqlController = null;
+    private static SQLController sqlController = new SQLController();
     public static void main( String[] args ) {
-        boolean containsNoSQL = Arrays.stream(args).map(String::toLowerCase).anyMatch("--nosql"::equals);
-        if(!containsNoSQL) {
-            sqlController  = new SQLController();
-        }
         SpringApplication.run(Controller.class, args);
     }
-
-    /*
-     * Should only be used if you know what you are doing or when you
-     * are not using the main function.
-     */
-    public static void initSQL() {
-        sqlController = new SQLController();
-    }
-
+    
     private static final String template =  "Hello, %s";
     private final AtomicLong counter = new AtomicLong();
     
