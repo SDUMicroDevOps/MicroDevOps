@@ -79,6 +79,7 @@ public class SQLController {
             stmt.executeUpdate("delete from user where username='" + username + "'");
         } catch(SQLException e) {
             e.printStackTrace();
+            return 400;
         }
         return 200;
     }
@@ -132,6 +133,7 @@ public class SQLController {
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+            return 400;
         }
         return 200;
     }
@@ -184,6 +186,7 @@ public class SQLController {
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+            return 400;
         }
         return 200;
     }
@@ -226,6 +229,7 @@ public class SQLController {
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+            return 400;
         }
         return 200;
     }
@@ -326,6 +330,7 @@ public class SQLController {
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+            return 400;
         }
         return 200;
     }
@@ -337,6 +342,7 @@ public class SQLController {
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+            return 400;
         }
         return 200;
     }

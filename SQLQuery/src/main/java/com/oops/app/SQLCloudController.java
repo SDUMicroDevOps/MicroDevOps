@@ -15,8 +15,6 @@ public class SQLCloudController {
 
     private static final String CONNECTION_NAME = System.getenv("CONNECTION_NAME");
 
-
-    //Simple test file
     public static DataSource createConnectionPool() {
         HikariConfig config = new HikariConfig();
 
@@ -38,5 +36,4 @@ public class SQLCloudController {
 
         return new HikariDataSource(config);
     }
-    
 }

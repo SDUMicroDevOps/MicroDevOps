@@ -46,7 +46,7 @@ public class Controller {
     public ResponseEntity<User> getUserByName(@PathVariable String username) {
         User user = sqlController.getUser(username);
         if(user == null) {
-            
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<User>(user, HttpStatus.OK);
     }
@@ -87,7 +87,7 @@ public class Controller {
     public ResponseEntity<Privilage> getPrivilageById(@PathVariable int id) {
         Privilage privilage = sqlController.getPrivilage(id);
         if(privilage == null) {
-
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<Privilage>(privilage, HttpStatus.OK);
     }
@@ -97,7 +97,7 @@ public class Controller {
     public ResponseEntity<Privilage> addPrivilage(@RequestBody PrivilageRequest newRoleName) {
         Privilage privilage = sqlController.addPrivilage(newRoleName.getRoleName());
         if(privilage == null){
-
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -123,7 +123,7 @@ public class Controller {
     public ResponseEntity<Solver> getSolverById(@PathVariable int id) {
         Solver solver = sqlController.getSolver(id);
         if(solver == null) {
-
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<Solver>(solver, HttpStatus.OK);
     }
@@ -133,7 +133,7 @@ public class Controller {
     public ResponseEntity<Solver> addSolver(@RequestBody SolverRequest newSolverName) {
         Solver solver = sqlController.addSolver(newSolverName.getSolverName());
         if(solver == null) {
-
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -159,7 +159,7 @@ public class Controller {
     public ResponseEntity<Solution> getSolutionById(@PathVariable String taskId) {
         Solution solution = sqlController.getSolution(taskId);
         if(solution == null) {
-
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<Solution>(solution, HttpStatus.OK);
     }
@@ -169,7 +169,7 @@ public class Controller {
     public ResponseEntity<Solution> addSolution(@RequestBody Solution newsolutionName) {
         Solution solution = sqlController.addSolution(newsolutionName);
         if(solution == null) {
-
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -215,5 +215,4 @@ public class Controller {
             default: return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
         }
     }
-
 }
