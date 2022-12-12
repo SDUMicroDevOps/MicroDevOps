@@ -1,0 +1,174 @@
+.App {
+  text-align: left;
+}
+
+body, html{
+  background-color: #121212;
+  color:white;
+  padding: 40px;
+  font-family: Arial;
+  text-align: left;
+}
+
+.main-box{
+  background-color: #181818;
+  border-radius: 10px;
+  height: fit-content;
+  width: fit-content;
+  padding: 20px;
+  grid-gap: 15px;
+  display: grid;
+  grid-template-columns: 200px 200px 200px 200px 200px;
+  grid-template-areas: 
+    "mzn-button dzn-button cli-view cli-view cli-view"
+    "solvers-view solvers-view cli-view cli-view cli-view"
+    "solvers-view solvers-view vcpu-view go-view retrieve-res-view"
+}
+
+.super-button{
+  color: #fff;
+  border-color:black;
+  border-style: outset;
+  border-width: 1px;
+  border-radius: 5px;
+  font-size: 150%;
+  text-align: center;
+  background-color: #17334e;
+  height: 100px;
+  line-height: 100px;
+}
+
+.mzn-button {
+  grid-column: 1;
+  grid-row: 1;
+}
+.dzn-button {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.solvers-view {
+  grid-column: 1 / span 2;
+  grid-row: 2 / span 2;
+  background-color: #538e6e;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.running-solvers-view {
+  grid-column: 3 / span 3;
+  grid-row: 1;
+  display: grid;
+  grid-gap: 10px;
+  background-color: #538e6e;
+  border-radius: 5px;
+  padding: 5px;
+  height: auto;
+  width: auto;
+  grid-template-columns: 320px 100px 75px 75px;
+  grid-template-areas:
+  "running-solver-view vcpu-s-view running-go-view remove-running-solver-view"
+}
+
+.running-solver-view{
+  background-color:#396e38;
+  border-color:#285126;
+  border-style: outset;
+  border-width: 1px;
+  border-radius: 5px;
+  font-size: 75%;
+  height: 50px;
+  text-align: left;
+  padding-left: 20px;
+  line-height: 50px;
+}
+
+.solver-view{
+  background-color:#396e38;
+  border-color:#285126;
+  border-style: outset;
+  border-width: 1px;
+  border-radius: 5px;
+  font-size: 75%;
+  height: auto;
+  width: auto;
+  text-align: left;
+  padding-left: 20px;
+  line-height: 50px;
+
+}
+
+.go-view{
+  grid-column: 4;
+  grid-row: 3;
+  background-color: #396e38;
+}
+
+.cancel-view{
+  grid-column: 4;
+  grid-row: 3;
+  background-color: #d13241;
+}
+
+.vcpu-view{
+  grid-column: 3;
+  grid-row: 3;
+  background-color: #121212;
+}
+
+.running-go-view{
+  grid-column: 3;
+  font-size: 75%;
+  height: 50px;
+  text-align: center;
+  background-color: #396e38;
+  line-height: 50px;
+  width: 75px;
+}
+
+.running-cancel-view{
+  grid-column: 3;
+  font-size: 75%;
+  height: 50px;
+  width: 75px;
+  text-align: center;
+  background-color: #d13241;
+  line-height: 50px;
+  width: 75px;
+}
+
+.vcpu-s-view{
+  grid-column: 2;
+  font-size: 75%;
+  height: 50px;
+  width: 100px;
+  text-align: center;
+  background-color: #121212;
+  line-height: 50px;
+}
+
+.remove-running-solver-view{
+  grid-column: 4;
+  font-size: 75%;
+  height: 50px;
+  text-align: center;
+  background-color: gray;
+  width: fit-content;
+  padding: 0px 5px 0px 5px;
+  line-height: 50px;
+}
+
+.cli-view{
+  background-color: #121212;
+  grid-column: 3 / span 3;
+  grid-row: 1 / span 2;
+  height: 400px;
+  text-align: left;
+  padding: 10px;
+  width: fit-content;
+}
+
+.retrieve-res-view{
+  grid-column: 5;
+  grid-row: 3;
+}
