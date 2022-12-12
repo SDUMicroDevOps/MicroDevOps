@@ -188,12 +188,36 @@ public class Controller {
     @GetMapping("/tasks")
     @ResponseBody
     public ResponseEntity<List<TaskQueue>> allQueuedTask(@RequestParam(value = "username", defaultValue = "") String username, @RequestParam(value = "task_id", defaultValue = "") String taskId) {
+        // /tasks endpoint was called with both username and task_id difined
+        // which is not allowed.
         if(username.length() != 0 && taskId.length() != 0) return new ResponseEntity<List<TaskQueue>>(HttpStatus.BAD_REQUEST);
+
         List<TaskQueue> tasks;
-        if(username.length() != 0) tasks = sqlController.getQueuedTaskByUser(username);
-        else if(taskId.length() != 0) tasks = sqlController.getQueuedTaskByTaskId(taskId);
-        else tasks = sqlController.getAllQueuedTask();
+        //Username was defined so only get by specific user orderd by timestamo
+        if(username.length() != 0) {
+            tasks = getQueuedTaskByUser(username);
+        } 
+        //task_id was defined so only get by specific task orderd by timestamo
+        else if(taskId.length() != 0) {
+            tasks = getQueuedTaskByTaskId(taskId);
+        } 
+        //Nothing was difined so get all queued tasks orderd by username
+        else {
+            tasks = getAllQueuedTask();
+        }
         return new ResponseEntity<List<TaskQueue>>(tasks, HttpStatus.OK);
+    }
+
+    private List<TaskQueue> getQueuedTaskByUser(String username) {
+        return sqlController.getQueuedTaskByUser(username);
+    }
+
+    private List<TaskQueue> getQueuedTaskByTaskId(String taskId) {
+        return sqlController.getQueuedTaskByTaskId(taskId);
+    }
+
+    private List<TaskQueue> getAllQueuedTask() {
+        return sqlController.getAllQueuedTask();
     }
 
     @PostMapping("/tasks")
