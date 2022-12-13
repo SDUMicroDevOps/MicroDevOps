@@ -72,6 +72,7 @@ public class Controller {
 
         switch (status) {
             case 200: return new ResponseEntity<>(HttpStatus.OK);
+            case 400: return new ResponseEntity<>(HttpStatus.BAD_GATEWAY);
             default: return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
         }
 
@@ -109,6 +110,7 @@ public class Controller {
         
         switch (status) {
             case 200: return new ResponseEntity<>(HttpStatus.OK);
+            case 400: return new ResponseEntity<>(HttpStatus.BAD_GATEWAY);
             default: return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
         }
     }
@@ -145,6 +147,7 @@ public class Controller {
 
         switch (status) {
             case 200: return new ResponseEntity<>(HttpStatus.OK);
+            case 400: return new ResponseEntity<>(HttpStatus.BAD_GATEWAY);
             default: return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
         }
     }
@@ -181,6 +184,7 @@ public class Controller {
 
         switch (status) {
             case 200: return new ResponseEntity<>(HttpStatus.OK);
+            case 400: return new ResponseEntity<>(HttpStatus.BAD_GATEWAY);
             default: return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
         }
     }
@@ -226,6 +230,7 @@ public class Controller {
         int status = sqlController.addTask(taskQueue);
         switch (status) {
             case 200: return new ResponseEntity<>(HttpStatus.OK);
+            case 400: return new ResponseEntity<>(HttpStatus.BAD_GATEWAY);
             default: return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
         }
     }
@@ -236,6 +241,7 @@ public class Controller {
         int status = sqlController.deleteTask(taskId, solver);
         switch (status) {
             case 200: return new ResponseEntity<>(HttpStatus.OK);
+            case 400: return new ResponseEntity<>(HttpStatus.BAD_GATEWAY);
             default: return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
         }
     }
