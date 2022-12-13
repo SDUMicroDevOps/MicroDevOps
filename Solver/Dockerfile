@@ -18,6 +18,6 @@ ENV LD_LIBRARY_PATH=MiniZincIDE-2.6.4-bundle-linux-x86_64/lib:$LD_LIBRARY_PATH
 ENV QT_PLUGIN_PATH=MiniZincIDE-2.6.4-bundle-linux-x86_64/plugins:$QT_PLUGIN_PATH
 
 #Install minizinc python lib
-RUN pip install -r requirements.txt
+RUN pip3 install -r requirements.txt
 
 CMD python3 Solver.py
