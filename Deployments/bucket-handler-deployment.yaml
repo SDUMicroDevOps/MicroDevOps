@@ -16,6 +16,40 @@ spec:
     spec:
       containers:
         - name: buckethandler
-          image: oopsaccount/buckethandler:latest
+          image: maje419/test:buckethandler
+          imagePullPolicy: Always
           ports:
             - containerPort: 5165
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bucket-handler-service
+spec:
+  selector:
+    app: buckethandler
+  ports:
+    - port: 5165
+      targetPort: 5165
+---
+apiVersion: "autoscaling/v2"
+kind: "HorizontalPodAutoscaler"
+metadata:
+  name: "buckethandler-autoscaler"
+  namespace: "default"
+  labels:
+    app: "buckethandler"
+spec:
+  scaleTargetRef:
+    kind: "Deployment"
+    name: "buckethandler"
+    apiVersion: "v1"
+  minReplicas: 2
+  maxReplicas: 3
+  metrics:
+    - type: "Resource"
+      resource:
+        name: "cpu"
+        target:
+          type: "Utilization"
+          averageUtilization: 80

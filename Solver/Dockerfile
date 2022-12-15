@@ -13,7 +13,8 @@ RUN  apt-get update \
 RUN wget https://github.com/MiniZinc/MiniZincIDE/releases/download/2.6.4/MiniZincIDE-2.6.4-bundle-linux-x86_64.tgz
 
 RUN tar xf MiniZincIDE-2.6.4-bundle-linux-x86_64.tgz
-ENV PATH=MiniZincIDE-2.6.4-bundle-linux-x86_64/bin:$PATH
+ENV PATH=$PATH:MiniZincIDE-2.6.4-bundle-linux-x86_64/bin
+ENV PATH=$PATH:/usr/local/bin/python3
 ENV LD_LIBRARY_PATH=MiniZincIDE-2.6.4-bundle-linux-x86_64/lib:$LD_LIBRARY_PATH
 ENV QT_PLUGIN_PATH=MiniZincIDE-2.6.4-bundle-linux-x86_64/plugins:$QT_PLUGIN_PATH
 
