@@ -14,6 +14,7 @@ RUN dotnet publish -c Release -o out
 RUN sed -i "s@http://deb.debian.org@http://mirrors.aliyun.com@g" /etc/apt/sources.list && \
     sed -i "s@http://security.debian.org@http://mirrors.aliyun.com@g" /etc/apt/sources.list && \
     apt-get update
+    
 RUN apt-get install -y --allow-unauthenticated \
     apt-utils libgdiplus nano libc6-dev libx11-dev && \
     ln -s /usr/lib/libgdiplus.so /usr/lib/gdiplus.dll
