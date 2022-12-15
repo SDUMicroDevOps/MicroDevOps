@@ -7,7 +7,7 @@ import GetResultComponent from './GetResultComponent'
 import VcpuComponent from './VcpuComponent'
 import RunningSolversWrapper from './RunningSolversWrapper'
 
-export default function MainComponent() {
+export default function UserInterfaceComponent() {
   //const LOCAL_STORAGE_KEY = 'local.storageKey'
   const testList = [
     {id: 1, name: 'solver 1', available: true, selected: false, running: false},
