@@ -1,5 +1,11 @@
 package com.oops.solvermanager;
 
+import java.net.URI;
+import java.net.URL;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.net.http.HttpResponse.BodyHandlers;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -15,6 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.gson.Gson;
 import com.oops.solvermanager.Requests.CancelSolverRequest;
 import com.oops.solvermanager.Requests.CancelTaskRequest;
 import com.oops.solvermanager.Requests.CancelUserTasksRequest;
@@ -30,8 +37,11 @@ import io.fabric8.kubernetes.client.KubernetesClientBuilder;
 @SpringBootApplication
 @RestController
 public class SolverManagerController {
-    public static void main(String[] args) {
+    private static final String databaseManagerService = System.getenv("DB_MANAGER_SERVICE");
+    private static final String databaseManagerPort = System.getenv("DB_MANAGER_PORT");
 
+    public static void main(String[] args) {
+        
         SpringApplication.run(SolverManagerController.class, args);
     }
 
@@ -107,6 +117,7 @@ public class SolverManagerController {
 
     private void createSolverJobs(ProblemRequest newProblem) {
         KubernetesClient api = makeKubernetesClient();
+        int cpuAvailable = getCpuAvailableForUser(newProblem.getUserID());
         for (SolverBody solver : newProblem.getSolversToUse()) {
             List<String> command = new LinkedList<>();
             command.add("python3");
@@ -146,7 +157,19 @@ public class SolverManagerController {
             api.batch().v1().jobs().inNamespace("default").resource(job).create();
         }
     }
+    private int getCpuAvailableForUser(String userId) throws Exception{
+        HttpClient client = HttpClient.newHttpClient();
+        Gson gson = new Gson();
+        var request = HttpRequest.newBuilder(
+            URI.create(databaseManagerService +  ":" + databaseManagerPort + "/user?=" + userId)
+        ).header("accept", "application/json")
+        .build();
+        HttpResponse<String> response =client.send(request,BodyHandlers.ofString()); 
+        
+        
 
+        
+    }
     private KubernetesClient makeKubernetesClient() {
         return new KubernetesClientBuilder().build();
     }
