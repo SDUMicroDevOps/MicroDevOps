@@ -7,7 +7,7 @@ export default function GoCancelComponent({runAll, cancelAll, running}) {
   }
 
   return (
-    <div onClick={setRunningButton} class={running ? "super-button cancel-view" : "super-button go-view"}>
+    <div onClick={setRunningButton} className={running ? "super-button cancel-view" : "super-button go-view"}>
       {running ? 'Cancel' : 'Go'}
     </div>
   )

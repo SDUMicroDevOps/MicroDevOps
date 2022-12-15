@@ -10,7 +10,7 @@ const DZN = () => {
   }
   
   return (
-    <label class="super-button dzn-button">
+    <label className="super-button dzn-button">
       {selectedFile === null ? '.DZN' : selectedFile.name}
       <input type="file" onChange={(e) => setFile(e)} hidden></input>
     </label>   

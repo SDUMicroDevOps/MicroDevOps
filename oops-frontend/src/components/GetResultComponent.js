@@ -2,7 +2,7 @@ import React from 'react'
 
 const GetResultComponent = () => {
   return (
-    <div class="super-button retrieve-res-view">Get Result</div>
+    <div className="super-button retrieve-res-view">Get Result</div>
   )
 }
 

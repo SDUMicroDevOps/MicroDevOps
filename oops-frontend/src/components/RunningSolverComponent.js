@@ -6,7 +6,7 @@ import RemoveSolver from './RemoveSolver'
 
 export default function RunningSolverComponent({runSolver, cancelSolver, setAvailable, solver}) {
   return (
-    <div class="running-solvers-view">
+    <div className="running-solvers-view">
       <Solver key={solver.id} solver={solver}/>
       <RunningVcpuComponent availableVcpus={solver.id}/>
       <RunningGoCancelComponent runSolver={runSolver} cancelSolver={cancelSolver} solver={solver}/>

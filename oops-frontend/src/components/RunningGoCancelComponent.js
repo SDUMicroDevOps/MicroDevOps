@@ -6,7 +6,7 @@ export default function RunningGoCancelComponent({runSolver, cancelSolver, solve
   }
 
   return (
-    <div onClick={setRunningButton} class={solver.running ? "super-button running-cancel-view" : "super-button running-go-view"}>
+    <div onClick={setRunningButton} className={solver.running ? "super-button running-cancel-view" : "super-button running-go-view"}>
       {solver.running ? 'Cancel' : 'Go'}
     </div>
   )

@@ -7,32 +7,7 @@ import GetResultComponent from './GetResultComponent'
 import VcpuComponent from './VcpuComponent'
 import RunningSolversWrapper from './RunningSolversWrapper'
 
-export default function UserInterfaceComponent() {
-  //const LOCAL_STORAGE_KEY = 'local.storageKey'
-  const testList = [
-    {id: 1, name: 'solver 1', available: true, selected: false, running: false},
-    {id: 2, name: 'solver 2', available: true, selected: false, running: false},
-    {id: 3, name: 'solver 3', available: true, selected: false, running: false},
-    {id: 4, name: 'solver 4', available: true, selected: false, running: false},
-    {id: 5, name: 'solver 5', available: true, selected: false, running: false}
-  ];
-  //eslint-disable-next-line
-  const [solvers, setSolvers] = useState(testList);
-  const [running, setRunning] = useState(false);
-  /*function handleAddToRunning(e){
-    setRunningSolvers(oldRunning => {
-        return [...oldRunning, ]
-    })
-  }*/
-  /*
-  useEffect(() => {
-    const storedSolvers = localStorage.getItem(LOCAL_STORAGE_KEY)
-    if (storedSolvers) setSolvers(storedSolvers)
-  }, [])
-
-  useEffect(() => {
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(solvers))
-  }, [solvers])*/
+export default function UserInterfaceComponent({solvers, setSolvers, running, setRunning}) {
 
   function setAvailable(id){
     const newSolvers = [...solvers];
@@ -102,7 +77,7 @@ export default function UserInterfaceComponent() {
   }
 
   return (
-    <div class='main-box'>
+    <div className='main-box'>
         <MZN/>
         <DZN/>
         <SolversWrapper setUnavailable={setUnavailable} solvers={solvers.filter(solver => solver.available)}/>

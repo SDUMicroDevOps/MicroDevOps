@@ -45,6 +45,16 @@ body, html{
     "solvers-view solvers-view vcpu-view go-view retrieve-res-view"
 }
 
+.admin-box{
+  float: inline-end;
+  background-color: #181818;
+  border-radius: 10px;
+  height: fit-content;
+  width: fit-content;
+  padding: 20px;
+  grid-gap: 15px;
+}
+
 .super-button{
   color: #fff;
   border-color:black;

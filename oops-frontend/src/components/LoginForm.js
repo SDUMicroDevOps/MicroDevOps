@@ -28,8 +28,8 @@ export default function LoginForm({setType}) {
             <label>
               <input placeholder='Password' type="password" name="password" />
             </label>
-            <button type="submit" onClick={handleSubmitUser}>Login as user</button>
-            <button type="submit" onClick={handleSubmitAdmin}>Login as admin</button>
+            <button type="button" onClick={handleSubmitUser}>Login as user</button>
+            <button type="button" onClick={handleSubmitAdmin}>Login as admin</button>
           </form>
         </div>
       )}

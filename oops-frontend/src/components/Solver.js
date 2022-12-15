@@ -5,9 +5,9 @@ export default function Solver({setUnavailable, solver}) {
     setUnavailable(solver.id);
   }
   return (
-    <div onClick={handleOnClick} class="solver-view">
-      {solver.name}
-  </div>
+    <div onClick={handleOnClick} className="solver-view">
+        {solver.name}
+    </div>
   )
 }
 

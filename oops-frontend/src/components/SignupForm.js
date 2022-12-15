@@ -26,8 +26,8 @@ export default function SignupForm() {
             <label>
               <input placeholder='Password' type="password" name="password" />
             </label>
-            <button type="submit" onClick={handleSubmitUser}>Signup as user</button>
-            <button type="submit" onClick={handleSubmitAdmin}>Signup as admin</button>
+            <button type="button" onClick={handleSubmitUser}>Signup as user</button>
+            <button type="button" onClick={handleSubmitAdmin}>Signup as admin</button>
           </form>
         </div>
       )}

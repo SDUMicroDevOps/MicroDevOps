@@ -2,7 +2,7 @@ import React from 'react'
 
 const VcpuComponent = ({availableVcpus}) => {
   return (
-    <div class="super-button vcpu-view">vCPUs: {availableVcpus}</div>
+    <div className="super-button vcpu-view">vCPUs: {availableVcpus}</div>
   )
 }
 
