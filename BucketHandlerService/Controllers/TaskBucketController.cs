@@ -22,11 +22,6 @@ public class TaskBucketController : ControllerBase
 
     public TaskBucketController()
     {
-        InitializeMembers();
-    }
-
-    private void InitializeMembers()
-    {
         client = StorageClient.Create();
         secretManager = SecretManagerServiceClient.Create();
         tasksBucket = "microservices22tasks_bucket";
