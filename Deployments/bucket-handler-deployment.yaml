@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: buckethandler
-          image: maje419/test:buckethandler
+          image: oopsaccount/buckethandler:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 5165
