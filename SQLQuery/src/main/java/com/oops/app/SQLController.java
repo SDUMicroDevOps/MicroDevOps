@@ -346,4 +346,16 @@ public class SQLController {
         }
         return 200;
     }
+
+    public Solver getSolverByName(String name) {
+        Solver solver = null;
+        try (Connection conn = pool.getConnection()) {
+            Statement stmt = conn.createStatement();
+            stmt.executeQuery(String.format("SELECT * FROM `solver` WHERE id='%s", name));
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return solver;
+    }
 }

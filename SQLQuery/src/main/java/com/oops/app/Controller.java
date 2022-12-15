@@ -152,6 +152,16 @@ public class Controller {
         }
     }
 
+    @GetMapping("/solvers")
+    @ResponseBody
+    public ResponseEntity<Solver> getSolverByName(@RequestParam(value = "name") String name) {
+        Solver solver = sqlController.getSolverByName(name);
+        if(solver == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<Solver>(solver, HttpStatus.OK);
+    }
+
     @GetMapping("/solutions")
     public List<Solution> allSolutions() {
         return sqlController.getAllSolutions();
