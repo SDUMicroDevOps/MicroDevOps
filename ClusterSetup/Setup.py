@@ -8,7 +8,6 @@ from google.cloud import container_v1
 from google.cloud import secretmanager
 from config import *
 
-
 def get_client(logger):
     #Secrets manager client to get the secret credentials file:
     logger("Creating secrets manager")
@@ -53,7 +52,7 @@ def create_cluster(client : container_v1.ClusterManagerClient, logger):
     response = client.get_operation(project_id=project_id, zone=cluster_zone, operation_id=str(response.name))
 
     while (response.status in (1,2)):       #Status = 1 means PENDING, 2 means RUNNING, status 3 means DONE
-        logger(f"Waiting for the cluster to start! Progess: {str(response.progress.metrics.name)}")
+        logger(f"Waiting for the cluster to start! Progess: {str(response.progress)}")
         sleep(5)
         response = client.get_operation(project_id=project_id, zone=cluster_zone, operation_id=str(response.name))
 
@@ -65,7 +64,6 @@ def apply_deployments(logger):
         if (filename.endswith(".yaml")):
             logger(f"Deploying {filename}")
             os.system(f"kubectl apply -f Deployments/{filename}")
-    
 
 def setup_solver_manager(logger):
     logger("Setting up the solvermanager")
