@@ -1,0 +1,40 @@
+name: SQl query test
+
+on:
+  push:
+    branches: 
+      - feature/se/sql-query
+      
+jobs:
+  tests:
+    permissions:
+      id-token: write
+      contents: read
+      
+    runs-on: ubuntu-latest
+    env:
+      DB_USER: ${{secrets.DB_USER}}
+      DB_PASS: ${{secrets.DB_PASS}}
+      DB_NAME: ${{secrets.DB_NAME}}
+      CONNECTION_NAME: ${{secrets.DB_CONNECTION_NAME}}
+      
+    steps:
+    
+      - uses: 'actions/checkout@v3'
+    
+      - id: 'Auth'
+        name: 'auth to sql'
+        uses: 'google-github-actions/auth@v1'
+        with:
+          workload_identity_provider: 'projects/859134286483/locations/global/workloadIdentityPools/oopspool/providers/oopsprovider'
+          service_account: 'sqlserviceaccount@optical-empire-364322.iam.gserviceaccount.com'
+      
+      - name: 'Set up jdk 11'
+        uses: 'actions/setup-java@v3'
+        with:
+          java-version: '11'
+          distribution: 'corretto'
+        
+      - name: 'Build with maven'
+        working-directory: ./SQLQuery
+        run: mvn --batch-mode --update-snapshots verify
