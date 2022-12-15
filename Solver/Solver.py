@@ -35,14 +35,20 @@ class SolverInstance:
             })
 
     def notify_intermediate_solution_found(self, result: Result):
-        result_as_json = self.get_result_as_json(result)
-        requests.post(self.solution_manager_url + "/SolutionFound", data=result_as_json)
+        try:
+            result_as_json = self.get_result_as_json(result)
+            requests.post(self.solution_manager_url + "/SolutionFound", data=result_as_json)
+        except:
+            print("Intermediate solution")
 
     def notify_final_solution_found(self, result: Result):
-        result_as_json = self.get_result_as_json(result, True)
-        requests.post(self.solver_manager_url + "/Solution/{taskID}".format(taskID = self.taskID), data=json.dumps({"UserID" : self.userID}))
-        requests.post(self.solution_manager_url + "/SolutionFound", data=result_as_json)
-    
+        try:
+            result_as_json = self.get_result_as_json(result, True)
+            requests.post(self.solver_manager_url + "/Solution/{taskID}".format(taskID = self.taskID), data=json.dumps({"UserID" : self.userID}))
+            requests.post(self.solution_manager_url + "/SolutionFound", data=result_as_json)
+        except:
+            print("Final solution")
+        
     #Downloads and saves the files corresponding to this taskID
     #Returns True if a DZN file was found, otherwise returns false
     async def get_files(self):
@@ -88,21 +94,21 @@ class SolverInstance:
 
     def __init__(self, args):
         
-        self.solver_manager_service = os.getenv("SOLVER_MANAGER_SERVICE") if os.getenv("SOLVER_MANAGER_SERVICE") else ("0.0.0.0")
-        self.solution_manager_service = os.getenv("SOLUTION_MANAGER_SERVICE") if os.getenv("SOLUTION_MANAGER_SERVICE") else ("0.0.0.0")
-        self.solver_manager_port = os.getenv("SOLVER_MANAGER_PORT") if os.getenv("SOLVER_MANAGER_PORT") else ("5000")
-        self.solution_manager_port = os.getenv("SOLUTION_MANAGER_PORT") if os.getenv("SOLUTION_MANAGER_PORT") else ("5001")
-        self.bucket_handler_service = os.getenv("BUCKET_HANDLER_SERVICE") if os.getenv("BUCKET_HANDLER_SERVICE") else ("0.0.0.0")
-        self.bucket_handler_port = os.getenv("BUCKET_HANDLER_PORT") if os.getenv("BUCKET_HANDLER_PORT") else ("5165")
+        self.solver_manager_service = os.getenv("SOLVER_MANAGER_SERVICE", "0.0.0.0")
+        self.solution_manager_service = os.getenv("SOLUTION_MANAGER_SERVICE", "0.0.0.0")
+        self.solver_manager_port = os.getenv("SOLVER_MANAGER_PORT", "5000")
+        self.solution_manager_port = os.getenv("SOLUTION_MANAGER_PORT", "5001")
+        self.bucket_handler_service = os.getenv("BUCKET_HANDLER_SERVICE", "0.0.0.0")
+        self.bucket_handler_port = os.getenv("BUCKET_HANDLER_PORT", "5165")
         
         self.solver_name = args[1]
         self.number_processors = args[2]
         self.userID = args[3]
         self.taskID = args[4]
 
-        self.solver_manager_url = "http://{service}:{port}".format(service=self.solver_manager_service, port=self.solver_manager_port)
-        self.solution_manager_url = "http://{service}:{port}".format(service=self.solution_manager_service, port=self.solution_manager_port)
-        self.bucket_handler_url = "http://{service}:{port}".format(service=self.bucket_handler_service, port=self.bucket_handler_port)
+        self.solver_manager_url = f"http://{self.solver_manager_service}:{self.solver_manager_port}"
+        self.solution_manager_url = f"http://{self.solution_manager_service}:{self.solution_manager_port}"
+        self.bucket_handler_url = f"http://{self.bucket_handler_service}:{self.bucket_handler_port}"
 
 if __name__ == '__main__':
     solver = SolverInstance(sys.argv)
