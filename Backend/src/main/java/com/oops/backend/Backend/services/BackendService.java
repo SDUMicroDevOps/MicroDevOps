@@ -3,7 +3,6 @@ package com.oops.backend.Backend.services;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.Timestamp;
-import java.util.List;
 import java.io.File;
 import java.io.FileOutputStream;
 
@@ -55,7 +54,7 @@ public class BackendService {
 
     public String getAllLegalSolvers() throws JsonProcessingException {
         String url = dbServiceAddress + "/solvers";
-        List<Solver> solvers = restTemplate.getForObject(url, List.class);
+        Solver[] solvers = restTemplate.getForObject(url, Solver[].class);
         String jsonData = objectMapper.writeValueAsString(solvers);
 
         return jsonData;
@@ -64,7 +63,7 @@ public class BackendService {
 
     public String getMznData(String ProblemID) {
         String url = dbServiceAddress + "/tasks";
-        List<TaskQueue> taskQueue = restTemplate.getForObject(url, List.class);
+        TaskQueue[] taskQueue = restTemplate.getForObject(url, TaskQueue[].class);
         if (taskQueue != null) {
             for (TaskQueue task : taskQueue) {
                 if (task.getTaskId().equals(ProblemID)) {
@@ -80,7 +79,8 @@ public class BackendService {
         BucketResponse bucketResponse = restTemplate.getForObject(url, BucketResponse.class);
 
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        String fileName = UserID + timestamp.getTime() + StringUtils.cleanPath(mznFile.getOriginalFilename());
+        String fileExtension = StringUtils.cleanPath(mznFile.getOriginalFilename());
+        String fileName = UserID + timestamp.getTime() + fileExtension;
 
         byte[] fileData = mznFile.getBytes();
         OutputStream out = new FileOutputStream(new File("/tmp/" + fileName));
@@ -95,7 +95,7 @@ public class BackendService {
                     "curl",
                     "-X", "PUT",
                     "-H", "Content-Type: text/plain",
-                    "--upload-file", fileName,
+                    "--upload-file", "/tmp/" + fileName,
                     uploadUrl);
 
             Process p = pb.start();
@@ -105,7 +105,7 @@ public class BackendService {
         File file = new File(fileName);
         file.delete();
 
-        return fileName;
+        return fileName.replace(fileExtension, "");
     }
 
     public String addDznData(String UserID, MultipartFile dznFile) throws IOException, InterruptedException {
@@ -114,7 +114,8 @@ public class BackendService {
 
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
-        String fileName = UserID + timestamp.getTime() + StringUtils.cleanPath(dznFile.getOriginalFilename());
+        String fileExtension = StringUtils.cleanPath(dznFile.getOriginalFilename());
+        String fileName = UserID + timestamp.getTime() + fileExtension;
 
         if (bucketResponse != null) {
             String uploadUrl = bucketResponse.getDataFileUrl();
@@ -123,7 +124,7 @@ public class BackendService {
                     "curl",
                     "-X", "PUT",
                     "-H", "Content-Type: text/plain",
-                    "--upload-file", fileName,
+                    "--upload-file", "/tmp/" + fileName,
                     uploadUrl);
 
             Process p = pb.start();
@@ -132,12 +133,12 @@ public class BackendService {
         File file = new File(fileName);
         file.delete();
 
-        return fileName;
+        return fileName.replace(fileExtension, "");
     }
 
     public String getDznData(String ProblemID) {
         String url = dbServiceAddress + "/tasks";
-        List<TaskQueue> taskQueue = restTemplate.getForObject(url, List.class);
+        TaskQueue[] taskQueue = restTemplate.getForObject(url, TaskQueue[].class);
         if (taskQueue != null) {
             for (TaskQueue task : taskQueue) {
                 if (task.getTaskId().equals(ProblemID)) {
