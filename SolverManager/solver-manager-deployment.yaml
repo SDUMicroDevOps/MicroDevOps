@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: solver-manager
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: solver-manager
+  template:
+    metadata:
+      labels:
+        app: solver-manager
+    spec:
+      containers:
+        - name: solver-manager
+          image: oopsaccount/solver-manager:latest
+          ports:
+            - containerPort: 8080
+      serviceAccountName: solvermanager
