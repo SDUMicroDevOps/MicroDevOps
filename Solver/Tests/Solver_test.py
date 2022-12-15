@@ -26,7 +26,7 @@ class TestSolverMethods(unittest.TestCase):
         json = solver.get_result_as_json(result)
 
         #Assert
-        self.assertEqual(json, '{"TaskID": "testTask", "Solution": "123", "UserID": "testUser", "isOptimal": false}')
+        self.assertEqual(json, '{"TaskID": "tid", "Solution": "123", "UserID": "uid", "isOptimal": false}')
 
     def test_get_result_as_json_isOptimal_is_assigned(self):
         #Arrange
@@ -37,24 +37,22 @@ class TestSolverMethods(unittest.TestCase):
         json = solver.get_result_as_json(result, True)
 
         #Assert
-        self.assertEqual(json, '{"TaskID": "testTask", "Solution": "123", "UserID": "testUser", "isOptimal": true}')
+        self.assertEqual(json, '{"TaskID": "tid", "Solution": "123", "UserID": "uid", "isOptimal": true}')
 
     def test_solver_reads_env_variables(self):
         #Arrange
-        userID = "xX-M4STER_US3R_420_69-Xx"
-        os.environ["USERID"] = userID
+        os.environ["SOLVER_MANAGER_SERVICE"] = "TestService"
 
         #Act
         solver = self.get_new_solver()
 
         #Assert
-        self.assertEqual(solver.userID, userID)
-        self.assertNotEqual(solver.userID, "testUser")
-        self.assertEqual(solver.taskID, "testTask")
+        solver.solver_manager_service = "TestService"
+        
 
 
     def get_new_solver(self) -> SolverInstance:
-        return SolverInstance(["Solver.py", "../TestData/aust.mzn", "chuffed", "1"])
+        return SolverInstance(["Solver.py", "chuffed", "1", "uid", "tid"])
 
 if __name__ == '__main__':
     unittest.main()

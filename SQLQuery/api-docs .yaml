@@ -1,0 +1,445 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- url: http://localhost:8080
+  description: Generated server url
+paths:
+  /users:
+    get:
+      tags:
+      - controller
+      operationId: allUsers
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+    post:
+      tags:
+      - controller
+      operationId: addUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      responses:
+        "400":
+          description: BAD REQUEST
+        "200":
+          description: OK
+  /tasks:
+    get:
+      tags:
+      - controller
+      operationId: allQueuedTask
+      parameters:
+      - name: username
+        in: query
+        required: false
+        schema:
+          type: string
+          default: ""
+      - name: task_id
+        in: query
+        required: false
+        schema:
+          type: string
+          default: ""
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaskQueue'
+    post:
+      tags:
+      - controller
+      operationId: addTask
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskQueue'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/TaskQueue'
+    delete:
+      tags:
+      - controller
+      operationId: deleteTask
+      parameters:
+      - name: task_id
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: solver
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/TaskQueue'
+  /solvers:
+    get:
+      tags:
+      - controller
+      operationId: allSolvers
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Solver'
+    post:
+      tags:
+      - controller
+      operationId: addSolver
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SolverRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Solver'
+  /solutions:
+    get:
+      tags:
+      - controller
+      operationId: allSolutions
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Solution'
+    post:
+      tags:
+      - controller
+      operationId: addSolution
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Solution'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Solution'
+  /privilages:
+    get:
+      tags:
+      - controller
+      operationId: allPrivilages
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Privilage'
+    post:
+      tags:
+      - controller
+      operationId: addPrivilage
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PrivilageRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Privilage'
+  /users/{username}:
+    get:
+      tags:
+      - controller
+      operationId: getUserByName
+      parameters:
+      - name: username
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/User'
+    delete:
+      tags:
+      - controller
+      operationId: deleteUser
+      parameters:
+      - name: username
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/User'
+  /solvers/{id}:
+    get:
+      tags:
+      - controller
+      operationId: getSolverById
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Solver'
+    delete:
+      tags:
+      - controller
+      operationId: deleteSolver
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Solver'
+  /solutions/{taskId}:
+    get:
+      tags:
+      - controller
+      operationId: getSolutionById
+      parameters:
+      - name: taskId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Solution'
+    delete:
+      tags:
+      - controller
+      operationId: deleteSolution
+      parameters:
+      - name: taskId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Solution'
+  /privilages/{id}:
+    get:
+      tags:
+      - controller
+      operationId: getPrivilageById
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Privilage'
+    delete:
+      tags:
+      - controller
+      operationId: deletePrivilage
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Privilage'
+  /greeting/{name}:
+    get:
+      tags:
+      - controller
+      operationId: greeting
+      parameters:
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Greeting'
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        username:
+          type: string
+        pwd:
+          type: string
+        privilege_id:
+          type: integer
+          format: int32
+        vcpulimit:
+          type: integer
+          format: int32
+    TaskQueue:
+      type: object
+      properties:
+        username:
+          type: string
+        solver:
+          type: integer
+          format: int32
+        taskId:
+          type: string
+        solverTimestamp:
+          type: string
+          format: date-time
+        maxMemory:
+          type: integer
+          format: int32
+        mzn:
+          type: string
+        dzn:
+          type: string
+        vcpu:
+          type: integer
+          format: int32
+    SolverRequest:
+      type: object
+      properties:
+        solverName:
+          type: string
+    Solver:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        solverName:
+          type: string
+    Solution:
+      type: object
+      properties:
+        taskId:
+          type: string
+        user:
+          type: string
+        content:
+          type: string
+        date:
+          type: string
+          format: date-time
+        isOptimal:
+          type: boolean
+    PrivilageRequest:
+      type: object
+      properties:
+        roleName:
+          type: string
+    Privilage:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        roleName:
+          type: string
+    Greeting:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        content:
+          type: string

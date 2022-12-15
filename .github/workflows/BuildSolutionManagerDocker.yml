@@ -1,5 +1,5 @@
-name: Build and push solver to docker hub
-on: 
+name: Build and push Solution Manager to docker hub
+on:
   push:
     branches:
       - main
@@ -20,9 +20,9 @@ jobs:
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
       -
-        name: Build and push Solver image
+        name: Build and push Solution Manager image
         uses: docker/build-push-action@v3
         with:
-          context: ./Solver
+          context: ./SolutionManager
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/solver:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/solution-manager:latest

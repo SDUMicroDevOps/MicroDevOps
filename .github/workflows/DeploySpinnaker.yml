@@ -1,0 +1,21 @@
+name: Deploy spinnaker to the cloud
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      #- name: Checkout
+      #  uses: actions/checkout@v3
+      - name: download halyard
+        run: curl -O https://raw.githubusercontent.com/spinnaker/halyard/master/install/debian/InstallHalyard.sh
+      - name: install halyard
+        run: sudo bash InstallHalyard.sh
+      - name: check halyard
+        run: hal -v
+      #- id: 'auth'
