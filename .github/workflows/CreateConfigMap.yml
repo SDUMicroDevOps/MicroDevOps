@@ -11,4 +11,4 @@ jobs:
     steps:
       - name: Execute kubectl command
         working-directory: Deployments
-        run: kubectl create configmap green-peace --from-file=Environment
+        run: kubectl create configmap green-peace --from-file=environment
