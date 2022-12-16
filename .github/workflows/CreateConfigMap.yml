@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Execute kubectl command
-      - uses: actions-hub/kubectl@master
+        uses: actions-hub/kubectl@master
         with:
           context: ./Deployments
           args: create configmap green-peace --from-file=Environment
