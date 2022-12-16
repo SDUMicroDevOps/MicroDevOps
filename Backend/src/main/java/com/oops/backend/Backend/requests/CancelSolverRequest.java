@@ -4,9 +4,9 @@ public class CancelSolverRequest {
     private String problemID;
     private String userID;
 
-    public CancelSolverRequest(String problemID, String userID) {
-        this.problemID = problemID;
-        this.userID = userID;
+    public CancelSolverRequest(String ProblemID, String UserID) {
+        this.problemID = ProblemID;
+        this.userID = UserID;
     }
 
     public String getProblemID() {

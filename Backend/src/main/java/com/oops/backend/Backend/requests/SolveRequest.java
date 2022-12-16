@@ -1,47 +1,47 @@
 package com.oops.backend.Backend.requests;
 
 public class SolveRequest {
-    private String problemID;
-    private String dataID;
-    private SolversToUseBody[] solversToUse;
-    private String userID;
+    private String ProblemID;
+    private String DataID;
+    private SolversToUseBody[] SolversToUse;
+    private String UserID;
 
-    public SolveRequest(String problemID, String dataID, SolversToUseBody[] solversToUse, String userID) {
-        this.problemID = problemID;
-        this.dataID = dataID;
-        this.solversToUse = solversToUse;
-        this.userID = userID;
+    public SolveRequest(String ProblemID, String DataID, SolversToUseBody[] SolversToUse, String UserID) {
+        this.ProblemID = ProblemID;
+        this.DataID = DataID;
+        this.SolversToUse = SolversToUse;
+        this.UserID = UserID;
     }
 
     public String getProblemID() {
-        return problemID;
+        return ProblemID;
     }
 
-    public void setProblemID(String problemID) {
-        this.problemID = problemID;
+    public void setProblemID(String ProblemID) {
+        this.ProblemID = ProblemID;
     }
 
     public String getDataID() {
-        return dataID;
+        return DataID;
     }
 
-    public void setDataID(String dataID) {
-        this.dataID = dataID;
+    public void setDataID(String DataID) {
+        this.DataID = DataID;
     }
 
     public SolversToUseBody[] getSolversToUse() {
-        return solversToUse;
+        return SolversToUse;
     }
 
-    public void setSolversToUse(SolversToUseBody[] solversToUse) {
-        this.solversToUse = solversToUse;
+    public void setSolversToUse(SolversToUseBody[] SolversToUse) {
+        this.SolversToUse = SolversToUse;
     }
 
     public String getUserID() {
-        return userID;
+        return UserID;
     }
 
-    public void setUserID(String userID) {
-        this.userID = userID;
+    public void setUserID(String UserID) {
+        this.UserID = UserID;
     }
 }

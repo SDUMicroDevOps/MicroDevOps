@@ -6,7 +6,6 @@ import java.sql.Timestamp;
 import java.io.File;
 import java.io.FileOutputStream;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
@@ -37,9 +36,9 @@ public class BackendService {
     private String solverManagerAddress = System.getenv("SOLVER_MANAGER_ADDRESS");
     private String dbServiceAddress = System.getenv("DB_SERVICE_ADDRESS");
     private String bucketHandlerAddress = System.getenv("BUCKER_HANDLER_ADDRESS");
+    private String localHostAddress = "http://127.0.0.1:8080/";
 
-    @Autowired
-    private RestTemplate restTemplate;
+    private RestTemplate restTemplate = new RestTemplate();
 
     ObjectMapper objectMapper = new ObjectMapper();
 
@@ -182,18 +181,18 @@ public class BackendService {
 
     }
 
-    public void cancelTask(String TaskID, CancelTaskRequest cancelTaskRequest) {
-        String url = solverManagerAddress + "/cancel/user";
-        CancelTaskRequest request = new CancelTaskRequest(TaskID);
-        restTemplate.postForEntity(url, request,
+    public String cancelTask(String TaskID, CancelTaskRequest cancelTaskRequest) {
+        String url = solverManagerAddress + "/cancel/task/" + TaskID;
+        restTemplate.postForEntity(url, cancelTaskRequest,
                 CancelTaskRequest.class);
-
+        return TaskID;
     }
 
-    public void cancelSolver(Solver solver, CancelSolverRequest cancelSolverRequest) {
+    public String cancelSolver(String solverName, CancelSolverRequest cancelSolverRequest) {
         String url = solverManagerAddress + "/cancel/user";
         restTemplate.postForEntity(url, cancelSolverRequest,
                 CancelTaskRequest.class);
+        return solverName;
 
     }
 
