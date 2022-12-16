@@ -1,21 +1,33 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect, useContext } from 'react';
+//import axios from '../api/axios';
+import AuthContext from "../context/AuthProvider";
+//const LOGIN_URL = '/auth';
 
-export default function LoginForm({setType}) {
+
+export default function LoginForm({userExists, users}) {
   const [showLogin, setShowLogin] = useState(false);
+  const { auth, setAuth } = useContext(AuthContext);
+  const [username, setUsername] = useState('');
+  const [pwd, setPwd] = useState('');
 
   const handleClick = () => {
     setShowLogin(true);
   };
 
-  const handleSubmitUser = () => {
-    setShowLogin(false);
-    setType('user');
-  };
+  const validLogin = () => {
+    return(username !== '' && pwd !== '' && userExists(username));
+  }
 
-  const handleSubmitAdmin = () => {
-    setShowLogin(false);
-    setType('admin');
-  };
+  const handleSubmit = (e) => {
+      e.preventDefault();
+      if(validLogin()){
+        setAuth(users.find(user => user.username === username));
+        setUsername('');
+        setPwd('');
+        setShowLogin(false);
+        console.log(auth);
+      }
+  }
 
   return (
     <div>
@@ -23,13 +35,23 @@ export default function LoginForm({setType}) {
         <div className="login-popup">
           <form>
             <label>
-              <input placeholder='Username' type="text" name="username" />
+              <input  placeholder='Username'
+                      type="text"
+                      name="username" 
+                      autoComplete="off"
+                      onChange={(e) => setUsername(e.target.value)}
+                      value={username}
+                      required />
             </label>
             <label>
-              <input placeholder='Password' type="password" name="password" />
+              <input  placeholder='Password'
+                      type="password" 
+                      name="password" 
+                      onChange={(e) => setPwd(e.target.value)}
+                      value={pwd}
+                      required />
             </label>
-            <button type="button" onClick={handleSubmitUser}>Login as user</button>
-            <button type="button" onClick={handleSubmitAdmin}>Login as admin</button>
+            <button type="submit" onClick={handleSubmit}>Login</button>
           </form>
         </div>
       )}
