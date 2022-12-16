@@ -13,4 +13,5 @@ jobs:
       - name: Execute kubectl command
         working-directory: Deployments
         run: |
-          kubectl create configmap green-peace --from-file=environment
+          kubectl create configmap green-peace --from-file=environment --dry-run=client -o=yaml > green-peace.yaml
+
