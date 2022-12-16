@@ -4,11 +4,13 @@ on:
   push:
     branches:
       - main
-      
 
-- uses: actions-hub/kubectl@master
-  env:
-    KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
-  with:
-    context: ./Deployments
-    args: create configmap green-peace --from-file=Environment
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Execute kubectl command
+      - uses: actions-hub/kubectl@master
+        with:
+          context: ./Deployments
+          args: create configmap green-peace --from-file=Environment
