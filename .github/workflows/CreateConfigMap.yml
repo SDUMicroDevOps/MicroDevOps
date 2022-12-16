@@ -5,10 +5,14 @@ on:
     branches:
       - main
 
+
 jobs:
-  build:
+  RunCommand:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: Deployments
     steps:
       - name: Execute kubectl command
-        working-directory: Deployments
-        run: kubectl create configmap green-peace --from-file=environment
+        run: ls && kubectl create configmap green-peace --from-file=environment
