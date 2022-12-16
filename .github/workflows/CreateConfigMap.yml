@@ -1,5 +1,5 @@
 
-name: Build and push BucketHandler to docker hub
+name: Create Config Map file (green-peace)
 on:
   push:
     branches:
@@ -10,5 +10,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Execute kubectl command
-        working-directory: ./Deployments
+        working-directory: Deployments
         run: kubectl create configmap green-peace --from-file=Environment
