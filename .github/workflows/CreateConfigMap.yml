@@ -1,0 +1,14 @@
+
+name: Build and push BucketHandler to docker hub
+on:
+  push:
+    branches:
+      - main
+      
+
+- uses: actions-hub/kubectl@master
+  env:
+    KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
+  with:
+    context: ./Deployments
+    args: create configmap green-peace --from-file=Environment
