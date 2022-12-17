@@ -17,22 +17,35 @@ router.put('/login', async (req, res) => {
     var user = await fetch(baseURL+'/users/'+username).then((response) => {return response.json()})
 
     if(pwdhash == user.pwd) { 
-        var token = jwt.sign({
-            Username:username,
-            Password:pwdhash
-        }, secret, {expiresIn: 60 * 60 * 24})
+        var token = jwt.sign(user, secret, {expiresIn: 60 * 60 * 24})
         res.json({Token:token})
     }
     res.json({error:"Failed to authenticat"})
 })
 
-router.get('/verify', (req, res) => {
+router.get('/verify', async (req, res) => {
     var token = req.get('oopstoken')
     try {
         var decoded = jwt.verify(token, secret)
+        var user = await fetch(baseURL+'/users/'+decoded.username).then((response) => {return response.json()})
+        if(user.pwd == decoded.pwd && user.privilege_id == decoded.privilege_id) {
+            res.sendStatus(401)
+        }
         res.sendStatus(200)
     } catch(err) {
-
+        switch (err.name) {
+            case JsonWebTokenError:
+                res.json({erorr:"Failed to authenticate"}).status(401)
+                break;
+            
+            case TokenExpiredError:
+                res.json({error:"Token expired"}).status(401)
+                break;
+            
+            default:
+                res.json({erorr:"Failed to authenticate"}).status(401)
+                break;
+        }
     }
 })
 
