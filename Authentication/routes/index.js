@@ -14,7 +14,7 @@ router.put('/login', async (req, res) => {
     var pwdhash = crypto.createHash("sha256").update(req.body.Password).digest("hex")
 
     //check if user exist and has correct pwd
-    var user = fetch(baseURL+'/users/'+username).then((response) => {return response.json()})
+    var user = await fetch(baseURL+'/users/'+username).then((response) => {return response.json()})
 
     if(pwdhash == user.pwd) { 
         var token = jwt.sign({
