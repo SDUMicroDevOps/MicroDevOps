@@ -29,6 +29,7 @@ import com.oops.solvermanager.Requests.CancelSolverRequest;
 import com.oops.solvermanager.Requests.CancelTaskRequest;
 import com.oops.solvermanager.Requests.CancelUserTasksRequest;
 import com.oops.solvermanager.Requests.ProblemRequest;
+import com.oops.solvermanager.Requests.SolutionFound;
 import com.oops.solvermanager.Requests.SolverBody;
 import com.oops.solvermanager.Responses.User;
 import com.oops.solvermanager.models.Solver;
@@ -54,13 +55,26 @@ public class SolverManagerController {
     @PostMapping("/new")
     public ResponseEntity<String> createJob(@RequestBody ProblemRequest newProblem) {
         try {
-            createSolverJobs(newProblem);
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body("Solvers Created for problem: " + newProblem.getProblemID());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.OK).body(e.getMessage());
-        }
+            int requestedCpus = getCpuForRequest(newProblem);
+            int cpusAvailableForUser = getCpuAvailableForUser(newProblem.getUserID());
+            if (requestedCpus <= cpusAvailableForUser) {
+                if (requestedCpus <= cpusAvailableForUser - getCpuUsedByUser(newProblem.getUserID())) {
+                    createSolverJobs(newProblem);
+                    return ResponseEntity.status(HttpStatus.OK)
+                            .body("Solvers Created for problem: " + newProblem.getProblemID());
+                } else {
+                    queueProblemRequest(newProblem);
+                    return ResponseEntity.status(HttpStatus.OK)
+                            .body("Solvers queued for problem: " + newProblem.getProblemID());
+                }
 
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Not enough VCPU's to handle request");
+            }
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
 
     @PostMapping("/cancel/task/{problemID}")
@@ -108,6 +122,12 @@ public class SolverManagerController {
         return ResponseEntity.status(HttpStatus.OK).body(solvers);
     }
 
+    @PostMapping("/solution/{taskID}") // TODO actually implement this
+    public ResponseEntity<String> solutionFound(@PathVariable String taskID, @RequestBody SolutionFound req) {
+
+        return ResponseEntity.status(HttpStatus.OK).body("Removing other solvers working on task: " + taskID);
+    }
+
     private SolverBody[] constructSolversFromJobs(List<Job> jobs) {
         SolverBody[] solvers = new SolverBody[jobs.size()];
         for (int i = 0; i < jobs.size(); i++) {
@@ -123,14 +143,14 @@ public class SolverManagerController {
     }
 
     private void createSolverJobs(ProblemRequest newProblem) throws Exception {
-        int cpuAvailable = getCpuAvailableForUser(newProblem.getUserID());
         for (SolverBody solver : newProblem.getSolversToUse()) {
-            if (solver.getNumberVCPU() <= cpuAvailable) {
-                createSolverJob(solver, newProblem);
-                cpuAvailable -= solver.getNumberVCPU();
-            } else {
-                addJobToQueue(solver, newProblem);
-            }
+            createSolverJob(solver, newProblem);
+        }
+    }
+
+    private void queueProblemRequest(ProblemRequest newProblem) throws Exception {
+        for (SolverBody solver : newProblem.getSolversToUse()) {
+            addJobToQueue(solver, newProblem);
         }
     }
 
@@ -144,8 +164,7 @@ public class SolverManagerController {
                 .build();
         HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
         User user = gson.fromJson(response.body(), User.class);
-        int cpuAvailable = user.getVcpulimit() - getCpuUsedByUser(userId);
-        return cpuAvailable;
+        return user.getVcpulimit();
     }
 
     private int getCpuUsedByUser(String userId) {
@@ -231,6 +250,14 @@ public class SolverManagerController {
         HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
         Solver solver = gson.fromJson(response.body(), Solver.class);
         return solver.getId();
+    }
+
+    private int getCpuForRequest(ProblemRequest req) {
+        int sum = 0;
+        for (SolverBody solver : req.getSolversToUse()) {
+            sum += solver.getNumberVCPU();
+        }
+        return sum;
     }
 
     public boolean simpleWiremockTest() throws Exception {
