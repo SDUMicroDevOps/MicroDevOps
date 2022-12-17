@@ -1,4 +1,4 @@
-express = require('express')
+const express = require('express')
 /*const https = require('https')
 const fs = require('fs')
 
@@ -15,6 +15,7 @@ const indexRouter = require('./routes/index')
 
 const app = express()
 
+app.use(express.json())
 app.use('/', indexRouter)
 
 //var server = https.createServer(options, app)
