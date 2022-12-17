@@ -58,4 +58,27 @@ router.get('/login', async (req, res) => {
     res.json(response)
 })
 
+router.get('/create', async (req, res) => {
+
+    var newUser = {
+        username:req.body.Username,
+        pwd:crypto.createHash("sha256").update(req.body.Password).digest("hex"),
+        privilege_id:1,
+        vcpulimit:6
+    }
+
+    var response = await fetch(baseURL+'/users', {
+        method: 'post',
+        body: JSON.stringify(newUser),
+        headers: {'Content-Type': 'application/json'}
+    }).then((res) => {
+        return res.status
+    })
+
+    if(response != 200) {
+        res.json({error:"Failed to create new user"}).status(400)
+    }
+    res.sendStatus(200)
+})
+
 module.exports = router
