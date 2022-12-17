@@ -1,34 +1,34 @@
 package com.oops.solvermanager.Requests;
 
 public class SolverBody {
-    private String solverName;
-    private int numberVCPU;
-    private int maxMemory; // Max Memory in MB
-    private int timeout; // Seconds to timeout
+    private String SolverName;
+    private int NumberVCPU;
+    private int MaxMemory; // Max Memory in MB
+    private int TimeOut; // Seconds to timeout
 
     public SolverBody() {
     }
 
-    public SolverBody(int maxMemory, int numberVCPU, int timeout, String solverName) {
-        this.maxMemory = maxMemory;
-        this.numberVCPU = numberVCPU;
-        this.timeout = timeout;
-        this.solverName = solverName;
+    public SolverBody(int maxMemory, int numberVCPU, int timeout, String SolverName) {
+        this.MaxMemory = maxMemory;
+        this.NumberVCPU = numberVCPU;
+        this.TimeOut = timeout;
+        this.SolverName = SolverName;
     }
 
     public int getMaxMemory() {
-        return maxMemory;
+        return MaxMemory;
     }
 
     public int getNumberVCPU() {
-        return numberVCPU;
+        return NumberVCPU;
     }
 
     public String getSolverName() {
-        return solverName;
+        return SolverName;
     }
 
     public int getTimeout() {
-        return timeout;
+        return TimeOut;
     }
 }

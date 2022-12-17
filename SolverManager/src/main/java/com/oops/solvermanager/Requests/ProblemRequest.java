@@ -1,26 +1,27 @@
 package com.oops.solvermanager.Requests;
 
 public class ProblemRequest {
-    private String problemID;
-    private String dataID;
-    private SolverBody[] solversToUse;
-    private String userID;
+    private String ProblemID;
+    private String DataID;
+    private SolverBody[] SolversToUse;
+    private String UserID;
 
     ProblemRequest() {
     }
 
     public String getProblemID() {
-        return problemID;
+        return ProblemID;
     }
 
     public String getDataID() {
-        return dataID;
+        return DataID;
     }
 
     public SolverBody[] getSolversToUse() {
-        return solversToUse;
+        return SolversToUse;
     }
+
     public String getUserID() {
-        return userID;
+        return UserID;
     }
 }

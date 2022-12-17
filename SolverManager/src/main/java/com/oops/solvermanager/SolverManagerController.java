@@ -41,16 +41,17 @@ public class SolverManagerController {
     private static final String databaseManagerPort = System.getenv("DB_MANAGER_PORT");
 
     public static void main(String[] args) {
-        
+
         SpringApplication.run(SolverManagerController.class, args);
     }
 
     @PostMapping("/new")
     public ResponseEntity<String> createJob(@RequestBody ProblemRequest newProblem) {
-        try{
+        try {
             createSolverJobs(newProblem);
-            return ResponseEntity.status(HttpStatus.OK).body("Solvers Created for problem: " + newProblem.getProblemID());
-        }catch(Exception e){
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body("Solvers Created for problem: " + newProblem.getProblemID());
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.OK).body(e.getMessage());
         }
 
@@ -157,19 +158,18 @@ public class SolverManagerController {
             api.batch().v1().jobs().inNamespace("default").resource(job).create();
         }
     }
-    private int getCpuAvailableForUser(String userId) throws Exception{
+
+    private int getCpuAvailableForUser(String userId) throws Exception {
         HttpClient client = HttpClient.newHttpClient();
         Gson gson = new Gson();
         var request = HttpRequest.newBuilder(
-            URI.create(databaseManagerService +  ":" + databaseManagerPort + "/user?=" + userId)
-        ).header("accept", "application/json")
-        .build();
-        HttpResponse<String> response =client.send(request,BodyHandlers.ofString()); 
-        
-        
+                URI.create(databaseManagerService + ":" + databaseManagerPort + "/user/" + userId))
+                .header("accept", "application/json")
+                .build();
+        HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
 
-        
     }
+
     private KubernetesClient makeKubernetesClient() {
         return new KubernetesClientBuilder().build();
     }
