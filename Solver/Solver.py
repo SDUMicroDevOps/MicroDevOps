@@ -35,7 +35,7 @@ class SolverInstance:
             })
 
     def notify_intermediate_solution_found(self, result: Result):
-        try:
+        try:    
             result_as_json = self.get_result_as_json(result)
             requests.post(self.solution_manager_url + "/SolutionFound", data=result_as_json)
         except:
@@ -44,7 +44,7 @@ class SolverInstance:
     def notify_final_solution_found(self, result: Result):
         try:
             result_as_json = self.get_result_as_json(result, True)
-            requests.post(self.solver_manager_url + "/Solution/{taskID}".format(taskID = self.taskID), data=json.dumps({"UserID" : self.userID}))
+            requests.post(self.solver_manager_url + f"/Solution/{self.taskID}", data=json.dumps({"UserID" : self.userID}))
             requests.post(self.solution_manager_url + "/SolutionFound", data=result_as_json)
         except:
             print("Final solution")
@@ -65,8 +65,30 @@ class SolverInstance:
         except:
             return False
 
+    async def download_solver(self):
+        try:
+            print("1")
+            resp = requests.get(self.bucket_handler_url + f"/SolverBucket/{self.solver_name}")
+            print(resp)
+            urls = resp.json()
+            print("3")
+            solver = requests.get(urls["SolverURL"])
+            config = requests.get(urls["ConfigURL"])
+            print("4")
+            with open(f"Downloads/{self.solver_name}", "wb") as f:
+                f.write(solver.content)
+            with open(f"/app/MiniZincIDE-2.6.4-bundle-linux-x86_64/share/minizinc/solvers/{self.solver_name}.msc", "wb") as f:
+                f.write(config)
+        except:
+            print("No such solver found. Now Imploding.")
+
     async def solve(self):
-        solver = Solver.lookup(self.solver_name)
+        try:
+            solver = Solver.lookup(self.solver_name)
+        except:
+            await self.download_solver()
+            solver = Solver.lookup(self.solver_name)
+
         minizinc_model = Model()
 
         has_dzn_file = await self.get_files()
