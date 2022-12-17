@@ -5,6 +5,7 @@ import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -188,9 +189,10 @@ public class SolverManagerController {
     private void addJobToQueue(SolverBody solver, ProblemRequest problem) {
         HttpClient client = HttpClient.newHttpClient();
         Gson gson = new Gson();
+
         var request = HttpRequest.newBuilder(
                 URI.create(databaseManagerService + ":" + databaseManagerPort + "/tasks"))
-                .POST()
+                .POST(BodyPublishers.ofString(""))
                 .header("accept", "application/json")
                 .build();
     }
