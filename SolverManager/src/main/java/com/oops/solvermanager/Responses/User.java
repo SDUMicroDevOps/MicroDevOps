@@ -1,9 +1,27 @@
 package com.oops.solvermanager.Responses;
 
 public class User {
-    public String username;
-    public String password;
-    public int privilege_id;
-    public int vcpulimit;
-    public User(){}
+    private String username;
+    private String password;
+    private int privilege_id;
+    private int vcpulimit;
+
+    public User() {
+    }
+
+    public int getVcpulimit() {
+        return vcpulimit;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public int getPrivilege_id() {
+        return privilege_id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
 }

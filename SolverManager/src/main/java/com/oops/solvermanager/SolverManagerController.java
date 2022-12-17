@@ -27,6 +27,7 @@ import com.oops.solvermanager.Requests.CancelTaskRequest;
 import com.oops.solvermanager.Requests.CancelUserTasksRequest;
 import com.oops.solvermanager.Requests.ProblemRequest;
 import com.oops.solvermanager.Requests.SolverBody;
+import com.oops.solvermanager.Responses.User;
 
 import io.fabric8.kubernetes.api.model.batch.v1.Job;
 import io.fabric8.kubernetes.api.model.batch.v1.JobBuilder;
@@ -116,46 +117,14 @@ public class SolverManagerController {
         return solvers;
     }
 
-    private void createSolverJobs(ProblemRequest newProblem) {
-        KubernetesClient api = makeKubernetesClient();
+    private void createSolverJobs(ProblemRequest newProblem) throws Exception {
         int cpuAvailable = getCpuAvailableForUser(newProblem.getUserID());
         for (SolverBody solver : newProblem.getSolversToUse()) {
-            List<String> command = new LinkedList<>();
-            command.add("python3");
-            command.add("Solver.py");
-            command.add(solver.getSolverName());
-            command.add(String.valueOf(solver.getNumberVCPU()));
-            command.add(newProblem.getProblemID());
-            command.add(newProblem.getDataID());
-            Map<String, String> labels = new HashMap<>();
-            labels.put("user", newProblem.getUserID());
-            labels.put("solver", solver.getSolverName());
-            labels.put("problem", newProblem.getProblemID());
-            labels.put("numberVCPU", Integer.toString(solver.getNumberVCPU()));
-            labels.put("timeout", Integer.toString(solver.getTimeout()));
-            labels.put("maxMemory", Integer.toString(solver.getMaxMemory()));
-            Job job = new JobBuilder()
-                    .withApiVersion("v1")
-                    .withNewMetadata()
-                    .withName(newProblem.getProblemID().toLowerCase() + solver.getSolverName().toLowerCase())
-                    .withLabels(labels)
-                    .endMetadata()
-                    .withNewSpec()
-                    .withTtlSecondsAfterFinished(30)
-                    .withNewTemplate()
-                    .withNewSpec()
-                    .addNewContainer()
-                    .withName("solver")
-                    .withImage("oopsaccount/solver:latest")
-                    .withCommand(command)
-                    .endContainer()
-                    .withRestartPolicy("Never")
-                    .endSpec()
-                    .endTemplate()
-                    .withBackoffLimit(4)
-                    .endSpec()
-                    .build();
-            api.batch().v1().jobs().inNamespace("default").resource(job).create();
+            if (solver.getNumberVCPU() < cpuAvailable) {
+                createSolverJob(solver, newProblem);
+            } else {
+                addJobToQueue(solver, newProblem);
+            }
         }
     }
 
@@ -164,13 +133,65 @@ public class SolverManagerController {
         Gson gson = new Gson();
         var request = HttpRequest.newBuilder(
                 URI.create(databaseManagerService + ":" + databaseManagerPort + "/user/" + userId))
+                .GET()
                 .header("accept", "application/json")
                 .build();
         HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
-
+        User user = gson.fromJson(response.body(), User.class);
+        return user.getVcpulimit();
     }
 
     private KubernetesClient makeKubernetesClient() {
         return new KubernetesClientBuilder().build();
+    }
+
+    private void createSolverJob(SolverBody solver, ProblemRequest problem) {
+        KubernetesClient api = makeKubernetesClient();
+        List<String> command = new LinkedList<>();
+        command.add("python3");
+        command.add("Solver.py");
+        command.add(solver.getSolverName());
+        command.add(String.valueOf(solver.getNumberVCPU()));
+        command.add(problem.getProblemID());
+        command.add(problem.getDataID());
+        Map<String, String> labels = new HashMap<>();
+        labels.put("user", problem.getUserID());
+        labels.put("solver", solver.getSolverName());
+        labels.put("problem", problem.getProblemID());
+        labels.put("numberVCPU", Integer.toString(solver.getNumberVCPU()));
+        labels.put("timeout", Integer.toString(solver.getTimeout()));
+        labels.put("maxMemory", Integer.toString(solver.getMaxMemory()));
+        Job job = new JobBuilder()
+                .withApiVersion("v1")
+                .withNewMetadata()
+                .withName(problem.getProblemID().toLowerCase() + solver.getSolverName().toLowerCase())
+                .withLabels(labels)
+                .endMetadata()
+                .withNewSpec()
+                .withTtlSecondsAfterFinished(30)
+                .withNewTemplate()
+                .withNewSpec()
+                .addNewContainer()
+                .withName("solver")
+                .withImage("oopsaccount/solver:latest")
+                .withCommand(command)
+                .endContainer()
+                .withRestartPolicy("Never")
+                .endSpec()
+                .endTemplate()
+                .withBackoffLimit(4)
+                .endSpec()
+                .build();
+        api.batch().v1().jobs().inNamespace("default").resource(job).create();
+    }
+
+    private void addJobToQueue(SolverBody solver, ProblemRequest problem) {
+        HttpClient client = HttpClient.newHttpClient();
+        Gson gson = new Gson();
+        var request = HttpRequest.newBuilder(
+                URI.create(databaseManagerService + ":" + databaseManagerPort + "/tasks"))
+                .POST()
+                .header("accept", "application/json")
+                .build();
     }
 }
