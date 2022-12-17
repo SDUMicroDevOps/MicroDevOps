@@ -1,6 +1,6 @@
 package com.oops.solvermanager.models;
 
-import java.sql.Date;
+import java.util.Date;
 
 public class Task {
     private String username;
@@ -13,6 +13,18 @@ public class Task {
     private int vcpu;
 
     public Task() {
+    }
+
+    public Task(String username, int solver, String taskId, Date solverTimeStamp, int maxMemory, String mzn, String dzn,
+            int vcpu) {
+        this.username = username;
+        this.solver = solver;
+        this.taskId = taskId;
+        this.solverTimeStamp = solverTimeStamp;
+        this.maxMemory = maxMemory;
+        this.mzn = mzn;
+        this.dzn = dzn;
+        this.vcpu = vcpu;
     }
 
     public String getUsername() {

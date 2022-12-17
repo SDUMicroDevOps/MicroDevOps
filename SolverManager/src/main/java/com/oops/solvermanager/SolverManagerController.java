@@ -1,5 +1,6 @@
 package com.oops.solvermanager;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.net.http.HttpClient;
@@ -7,6 +8,8 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse.BodyHandlers;
+import java.util.Date;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,6 +32,8 @@ import com.oops.solvermanager.Requests.CancelUserTasksRequest;
 import com.oops.solvermanager.Requests.ProblemRequest;
 import com.oops.solvermanager.Requests.SolverBody;
 import com.oops.solvermanager.Responses.User;
+import com.oops.solvermanager.models.Solver;
+import com.oops.solvermanager.models.Task;
 
 import io.fabric8.kubernetes.api.model.batch.v1.Job;
 import io.fabric8.kubernetes.api.model.batch.v1.JobBuilder;
@@ -39,8 +44,9 @@ import io.fabric8.kubernetes.client.KubernetesClientBuilder;
 @SpringBootApplication
 @RestController
 public class SolverManagerController {
-    private static final String databaseManagerService = System.getenv("DB_MANAGER_SERVICE");
-    private static final String databaseManagerPort = System.getenv("DB_MANAGER_PORT");
+    private static final String databaseManagerService = System.getenv().getOrDefault("DB_MANAGER_SERVICE",
+            "http://127.0.0.1");
+    private static final String databaseManagerPort = System.getenv().getOrDefault("DB_MANAGER_PORT", "8081");
 
     public static void main(String[] args) {
 
@@ -123,6 +129,7 @@ public class SolverManagerController {
         for (SolverBody solver : newProblem.getSolversToUse()) {
             if (solver.getNumberVCPU() < cpuAvailable) {
                 createSolverJob(solver, newProblem);
+                cpuAvailable -= solver.getNumberVCPU();
             } else {
                 addJobToQueue(solver, newProblem);
             }
@@ -186,14 +193,33 @@ public class SolverManagerController {
         api.batch().v1().jobs().inNamespace("default").resource(job).create();
     }
 
-    private void addJobToQueue(SolverBody solver, ProblemRequest problem) {
+    private void addJobToQueue(SolverBody solver, ProblemRequest problem) throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
         Gson gson = new Gson();
-
+        int solverId = getIdForSolver(solver.getSolverName());
+        Date currentDate = Date.from(Instant.now());
+        Task task = new Task(problem.getUserID(), solverId, problem.getProblemID(), currentDate,
+                solver.getMaxMemory(), "", "", solver.getNumberVCPU());
+        String jsonTask = gson.toJson(task);
         var request = HttpRequest.newBuilder(
                 URI.create(databaseManagerService + ":" + databaseManagerPort + "/tasks"))
-                .POST(BodyPublishers.ofString(""))
+                .POST(BodyPublishers.ofString(jsonTask))
                 .header("accept", "application/json")
                 .build();
+        HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
+    }
+
+    // TODO make this actually contact the endpoint
+    private int getIdForSolver(String solverName) throws IOException, InterruptedException {
+        HttpClient client = HttpClient.newHttpClient();
+        Gson gson = new Gson();
+        var request = HttpRequest.newBuilder(
+                URI.create(databaseManagerService + ":" + databaseManagerPort + "/solver/?name=" + solverName))
+                .GET()
+                .header("accept", "application/json")
+                .build();
+        HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
+        Solver solver = gson.fromJson(response.body(), Solver.class);
+        return solver.getId();
     }
 }
