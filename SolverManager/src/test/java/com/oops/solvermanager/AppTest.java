@@ -7,10 +7,16 @@ import org.junit.Rule;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
 import org.junit.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
+import com.google.gson.Gson;
+import com.oops.solvermanager.Requests.CancelTaskRequest;
 import com.oops.solvermanager.Requests.ProblemRequest;
+import com.oops.solvermanager.Requests.SolverBody;
+import com.oops.solvermanager.Responses.User;
 
 /**
  * Unit test for the SolverManager using wiremock
@@ -28,12 +34,30 @@ public class AppTest {
      */
     @Test
     public void shouldAnswerWithTrue() {
-        stubFor(get("/tasks")
-                .willReturn(ok()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(
-                                "[{\"username\": \"string\",\"solver\": 0,\"taskId\": \"string\",\"solverTimestamp\": \"2022-12-15T12:25:37.706Z\",\"maxMemory\": 0,\"mzn\": \"string\",\"dzn\": \"string\",\"vcpu\": 0}]")));
         assertTrue(true);
+    }
+
+    @Test
+    public void newTaskTest() {
+        Gson gson = new Gson();
+        User testUser = new User("bread", "soup", 0, 4);
+        stubFor(get("/users/bread")
+                .willReturn(ok().withHeader("Content-Type", "application/json").withBody(gson.toJson(testUser))));
+        SolverBody[] toUse = new SolverBody[1];
+        toUse[0] = new SolverBody(100, 4, 100, "chuffed");
+        ProblemRequest request = new ProblemRequest("testID", "testData", toUse, testUser.getUsername());
+        ResponseEntity<String> response = toTest.createJob(request);
+        assertTrue(response.getStatusCode() == HttpStatus.OK);
+        ResponseEntity<SolverBody[]> solverResponse = toTest.getJobsForUser("bread");
+        assertTrue(solverResponse.getStatusCode() == HttpStatus.OK);
+        SolverBody[] solvers = solverResponse.getBody();
+        assertTrue(solvers.length == 1);
+        CancelTaskRequest cancelReq = new CancelTaskRequest("bread");
+        response = toTest.cancelTask(request.getProblemID(), cancelReq);
+        assertTrue(response.getStatusCode() == HttpStatus.OK);
+        solverResponse = toTest.getJobsForUser("bread");
+        solvers = solverResponse.getBody();
+        assertTrue(solvers.length == 0);
     }
 
     @Test

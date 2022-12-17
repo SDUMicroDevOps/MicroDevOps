@@ -125,7 +125,7 @@ public class SolverManagerController {
     private void createSolverJobs(ProblemRequest newProblem) throws Exception {
         int cpuAvailable = getCpuAvailableForUser(newProblem.getUserID());
         for (SolverBody solver : newProblem.getSolversToUse()) {
-            if (solver.getNumberVCPU() < cpuAvailable) {
+            if (solver.getNumberVCPU() <= cpuAvailable) {
                 createSolverJob(solver, newProblem);
                 cpuAvailable -= solver.getNumberVCPU();
             } else {
@@ -138,13 +138,26 @@ public class SolverManagerController {
         HttpClient client = HttpClient.newHttpClient();
         Gson gson = new Gson();
         var request = HttpRequest.newBuilder(
-                URI.create(databaseManagerService + ":" + databaseManagerPort + "/user/" + userId))
+                URI.create(databaseManagerService + ":" + databaseManagerPort + "/users/" + userId))
                 .GET()
                 .header("accept", "application/json")
                 .build();
         HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
         User user = gson.fromJson(response.body(), User.class);
-        return user.getVcpulimit();
+        int cpuAvailable = user.getVcpulimit() - getCpuUsedByUser(userId);
+        return cpuAvailable;
+    }
+
+    private int getCpuUsedByUser(String userId) {
+        KubernetesClient api = makeKubernetesClient();
+        List<Job> running_solvers = api.batch().v1().jobs().inNamespace("default").withLabel("user", userId)
+                .list().getItems();
+        SolverBody[] solvers = constructSolversFromJobs(running_solvers);
+        int sumCpu = 0;
+        for (SolverBody solver : solvers) {
+            sumCpu += solver.getNumberVCPU();
+        }
+        return sumCpu;
     }
 
     private KubernetesClient makeKubernetesClient() {
@@ -154,12 +167,12 @@ public class SolverManagerController {
     private void createSolverJob(SolverBody solver, ProblemRequest problem) {
         KubernetesClient api = makeKubernetesClient();
         List<String> command = new LinkedList<>();
-        command.add("python3");
+        command.add("/usr/local/bin/python3");
         command.add("Solver.py");
         command.add(solver.getSolverName());
         command.add(String.valueOf(solver.getNumberVCPU()));
+        command.add(problem.getUserID());
         command.add(problem.getProblemID());
-        command.add(problem.getDataID());
         Map<String, String> labels = new HashMap<>();
         labels.put("user", problem.getUserID());
         labels.put("solver", solver.getSolverName());

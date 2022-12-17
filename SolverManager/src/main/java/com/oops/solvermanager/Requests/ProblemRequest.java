@@ -6,7 +6,15 @@ public class ProblemRequest {
     private SolverBody[] SolversToUse;
     private String UserID;
 
-    ProblemRequest() {
+    public ProblemRequest() {
+    }
+
+    public ProblemRequest(String ProblemID, String DataID, SolverBody[] SolversToUse, String UserID) {
+        this.ProblemID = ProblemID;
+        this.DataID = DataID;
+        this.SolversToUse = SolversToUse;
+        this.UserID = UserID;
+
     }
 
     public String getProblemID() {
