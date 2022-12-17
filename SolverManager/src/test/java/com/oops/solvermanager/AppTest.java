@@ -38,7 +38,7 @@ public class AppTest {
     }
 
     @Test
-    public void newTaskTest() {
+    public void newTaskDeleteTest() {
         Gson gson = new Gson();
         User testUser = new User("bread", "soup", 0, 4);
         stubFor(get("/users/bread")
