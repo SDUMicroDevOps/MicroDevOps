@@ -53,7 +53,7 @@ public class TaskBucketController : ControllerBase
         return Ok(jsonData);
     }
 
-    [HttpGet("uploadurl/{taskID}")]
+    [HttpGet("UploadUrl/{taskID}")]
     public ActionResult PostMzn(string taskID)
     {
         var responseData = new TaskBucketResponse() { TaskID = taskID, MethodAllowed = "PUT" };

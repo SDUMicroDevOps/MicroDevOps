@@ -130,6 +130,7 @@ class SolverInstance:
         self.solver_manager_url = f"http://{self.solver_manager_service}:{self.solver_manager_port}"
         self.solution_manager_url = f"http://{self.solution_manager_service}:{self.solution_manager_port}"
         self.bucket_handler_url = f"http://{self.bucket_handler_service}:{self.bucket_handler_port}"
-
-solver = SolverInstance(sys.argv)
-asyncio.run(solver.solve())
+        
+if __name__ == "__main__":
+    solver = SolverInstance(sys.argv)
+    asyncio.run(solver.solve())
