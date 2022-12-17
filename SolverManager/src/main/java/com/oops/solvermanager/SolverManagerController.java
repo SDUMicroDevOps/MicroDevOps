@@ -2,7 +2,6 @@ package com.oops.solvermanager;
 
 import java.io.IOException;
 import java.net.URI;
-import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -37,7 +36,6 @@ import com.oops.solvermanager.models.Task;
 
 import io.fabric8.kubernetes.api.model.batch.v1.Job;
 import io.fabric8.kubernetes.api.model.batch.v1.JobBuilder;
-import io.fabric8.kubernetes.api.model.batch.v1.JobList;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClientBuilder;
 
@@ -45,8 +43,8 @@ import io.fabric8.kubernetes.client.KubernetesClientBuilder;
 @RestController
 public class SolverManagerController {
     private static final String databaseManagerService = System.getenv().getOrDefault("DB_MANAGER_SERVICE",
-            "http://127.0.0.1");
-    private static final String databaseManagerPort = System.getenv().getOrDefault("DB_MANAGER_PORT", "8081");
+            "http://localhost");
+    private static final String databaseManagerPort = System.getenv().getOrDefault("DB_MANAGER_PORT", "8082");
 
     public static void main(String[] args) {
 
@@ -206,10 +204,9 @@ public class SolverManagerController {
                 .POST(BodyPublishers.ofString(jsonTask))
                 .header("accept", "application/json")
                 .build();
-        HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
+        client.send(request, BodyHandlers.ofString()); // TODO, maybe make some sort of error handling here
     }
 
-    // TODO make this actually contact the endpoint
     private int getIdForSolver(String solverName) throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
         Gson gson = new Gson();
@@ -221,5 +218,18 @@ public class SolverManagerController {
         HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
         Solver solver = gson.fromJson(response.body(), Solver.class);
         return solver.getId();
+    }
+
+    public boolean simpleWiremockTest() throws Exception {
+        HttpClient client = HttpClient.newHttpClient();
+        Gson gson = new Gson();
+        var request = HttpRequest.newBuilder(
+                URI.create(databaseManagerService + ":" + databaseManagerPort + "/test"))
+                .GET()
+                .header("accept", "application/json")
+                .build();
+        HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
+        return true;
+
     }
 }
