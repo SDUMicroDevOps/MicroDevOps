@@ -351,7 +351,7 @@ public class SQLController {
         Solver solver = null;
         try (Connection conn = pool.getConnection()) {
             Statement stmt = conn.createStatement();
-            stmt.executeQuery(String.format("SELECT * FROM `solver` WHERE id='%s", name));
+            stmt.executeQuery(String.format("SELECT * FROM `solver` WHERE id='%s'", name));
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
