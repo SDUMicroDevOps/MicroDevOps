@@ -1,8 +1,9 @@
 const express = require('express')
-const router = express.Router()
 const crypto = require('crypto')
-const secret = "TopSecret"
 const jwt = require("jsonwebtoken")
+
+const router = express.Router()
+const secret = "TopSecret"
 const baseURL = 'http://' + process.env.DATABASE_SERVICE + ':' + process.env.DATABASE_PORT
 
 router.get('/', (req, res) => {
