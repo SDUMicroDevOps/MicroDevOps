@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import com.google.gson.Gson;
+import com.oops.solvermanager.Requests.CancelSolverRequest;
 import com.oops.solvermanager.Requests.CancelTaskRequest;
 import com.oops.solvermanager.Requests.CancelUserTasksRequest;
 import com.oops.solvermanager.Requests.ProblemRequest;
@@ -83,6 +84,31 @@ public class AppTest {
         solverResponse = toTest.getJobsForUser(testUser.getUsername());
         solvers = solverResponse.getBody();
         assertTrue(solvers.length == 0);
+    }
+
+    @Test
+    public void deleteSolverForTask() {
+        Gson gson = new Gson();
+        User testUser = new User("bread3", "soup", 0, 4);
+        stubFor(get("/users/bread3")
+                .willReturn(ok().withHeader("Content-Type", "application/json").withBody(gson.toJson(testUser))));
+        SolverBody[] toUse = new SolverBody[2];
+        toUse[0] = new SolverBody(100, 1, 100, "chuffed");
+        toUse[1] = new SolverBody(100, 1, 100, "notcuffed");
+        ProblemRequest request = new ProblemRequest("testID", "testData", toUse, testUser.getUsername());
+        ResponseEntity<String> response = toTest.createJob(request);
+        assertTrue(response.getStatusCode() == HttpStatus.OK);
+        ResponseEntity<SolverBody[]> solverResponse = toTest.getJobsForUser(testUser.getUsername());
+        SolverBody[] solvers = solverResponse.getBody();
+        assert (solvers.length == 2);
+        CancelSolverRequest cancelReq = new CancelSolverRequest(request.getProblemID(), testUser.getUsername());
+        response = toTest.cancelSolver("chuffed", cancelReq);
+        solverResponse = toTest.getJobsForUser(testUser.getUsername());
+        solvers = solverResponse.getBody();
+        assertTrue(solvers.length == 1);
+        for (SolverBody solver : solvers) {
+            assertTrue(!solver.equals("chuffed"));
+        }
     }
 
     @Test
