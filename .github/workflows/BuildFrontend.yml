@@ -23,6 +23,6 @@ jobs:
         name: Build and push oops-frontend
         uses: docker/build-push-action@v3
         with:
-          context: ./oops-frontend/
+          context: ./Frontend/
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/frontend:latest
