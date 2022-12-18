@@ -1,9 +1,9 @@
 import React from 'react'
 
-const VcpuComponent = ({availableVcpus}) => {
+const RunningVcpuComponent = ({availableVcpus}) => {
   return (
     <div className="super-button vcpu-s-view">vCPUs: {availableVcpus}</div>
   )
 }
 
-export default VcpuComponent
+export default RunningVcpuComponent

@@ -1,18 +1,20 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import EndUserManager from '../classes/EndUserManager';
 import AdminManager from '../classes/AdminManager';
 
-export default function SignupForm({userExists, users, setUsers}) {
+export default function SignupForm({users, setUsers}) {
   const [showSignup, setShowSignup] = useState(false);
   const [username, setUsername] = useState('');
   const [pwd, setPwd] = useState('');
 
   function createUser(username, role){
     const newUser = role === 'admin' ? new AdminManager(username) : new EndUserManager(username);
-    if(!userExists()){
+    if(!users.map(user => user.username).includes(username)){
       setUsers([...users, newUser]);
+      console.log('user created: ' + newUser.username);
       return true;
-    }else{
+    } else {
+      setShowSignup(false);
       return false;
     }
   }

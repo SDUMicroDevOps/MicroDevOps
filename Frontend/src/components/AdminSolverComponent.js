@@ -1,11 +1,11 @@
 import React from 'react'
-import AdminSolver from './AdminSolver'
+import Solver from './Solver'
 import AdminRemoveSolver from './AdminRemoveSolver'
 
-export default function RunningSolverComponent({solver, removeSolver}) {
+export default function AdminSolverComponent({solver, removeSolver}) {
   return (
-    <div className="running-solvers-view">
-      <AdminSolver key={solver.id} solver={solver}/>
+    <div className="admin-running-solvers-view">
+      <Solver key={solver.id} solver={solver}/>
       <AdminRemoveSolver solver={solver} removeSolver={removeSolver}/>
     </div>
   )

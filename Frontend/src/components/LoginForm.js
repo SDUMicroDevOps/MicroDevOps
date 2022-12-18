@@ -4,7 +4,7 @@ import AuthContext from "../context/AuthProvider";
 //const LOGIN_URL = '/auth';
 
 
-export default function LoginForm({userExists, users}) {
+export default function LoginForm({ users}) {
   const [showLogin, setShowLogin] = useState(false);
   const { auth, setAuth } = useContext(AuthContext);
   const [username, setUsername] = useState('');
@@ -13,6 +13,10 @@ export default function LoginForm({userExists, users}) {
   const handleClick = () => {
     setShowLogin(true);
   };
+
+  function userExists(username){
+    return users.map(user => user.username).includes(username);
+  }
 
   const validLogin = () => {
     return(username !== '' && pwd !== '' && userExists(username));

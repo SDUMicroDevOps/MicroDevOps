@@ -53,6 +53,12 @@ body, html{
   width: fit-content;
   padding: 20px;
   grid-gap: 15px;
+  display: grid;
+  grid-template-columns: 300px 500px;
+  grid-template-areas: 
+    "super-button active-users-view"
+    "admin-solvers-view active-users-view"
+    "admin-solvers-view active-users-view"
 }
 
 .super-button{
@@ -89,6 +95,29 @@ body, html{
   padding: 10px;
 }
 
+.admin-solvers-view {
+  grid-column: 1 ;
+  grid-row: 2 / span 2;
+  background-color: #538e6e;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.admin-running-solvers-view {
+  grid-column: 3 / span 3;
+  grid-row: 1;
+  display: grid;
+  grid-gap: 10px;
+  background-color: #538e6e;
+  border-radius: 5px;
+  padding: 5px;
+  height: auto;
+  width: auto;
+  grid-template-columns: 200px;
+  grid-template-areas:
+  "running-solver-view admin-remove-running-solver-view"
+}
+
 .running-solvers-view {
   grid-column: 3 / span 3;
   grid-row: 1;
@@ -104,7 +133,30 @@ body, html{
   "running-solver-view vcpu-s-view running-go-view remove-running-solver-view"
 }
 
+.active-users-view {
+  grid-column: 2;
+  grid-row: 1 / span 3;
+  background-color: #538e6e;
+  border-radius: 5px;
+  padding: 5px;
+  height: auto;
+  width: auto;
+}
+
 .running-solver-view{
+  background-color:#396e38;
+  border-color:#285126;
+  border-style: outset;
+  border-width: 1px;
+  border-radius: 5px;
+  font-size: 75%;
+  height: 50px;
+  text-align: left;
+  padding-left: 20px;
+  line-height: 50px;
+}
+
+.active-user-view{
   background-color:#396e38;
   border-color:#285126;
   border-style: outset;
@@ -171,6 +223,15 @@ body, html{
   width: 75px;
 }
 
+.user-vcpu-view{
+  font-size: 75%;
+  height: 50px;
+  width: 100px;
+  text-align: center;
+  background-color: #121212;
+  line-height: 50px;
+}
+
 .vcpu-s-view{
   grid-column: 2;
   font-size: 75%;
@@ -183,6 +244,17 @@ body, html{
 
 .remove-running-solver-view{
   grid-column: 4;
+  font-size: 75%;
+  height: 50px;
+  text-align: center;
+  background-color: gray;
+  width: fit-content;
+  padding: 0px 5px 0px 5px;
+  line-height: 50px;
+}
+
+.remove-running-solver-view{
+  grid-column: 2;
   font-size: 75%;
   height: 50px;
   text-align: center;
@@ -205,6 +277,16 @@ body, html{
 .retrieve-res-view{
   grid-column: 5;
   grid-row: 3;
+}
+
+.vcpu-s-view form input {
+  border-radius: 5px;
+  width: 100%;
+  padding: 8px;
+  font-size: 16px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+
 }
 
 .login-popup {

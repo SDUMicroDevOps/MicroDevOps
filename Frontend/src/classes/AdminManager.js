@@ -1,8 +1,8 @@
 import BasicUserManager from './BasicUserManager'
+
 class AdminManager extends BasicUserManager{
-    constructor(username, users){
+    constructor(username){
         super(username);
-        this.users = users;
     }
 }
 
