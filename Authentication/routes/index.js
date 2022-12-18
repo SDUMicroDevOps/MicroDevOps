@@ -25,12 +25,22 @@ router.put('/login', async (req, res) => {
 })
 
 router.get('/verify', async (req, res) => {
-    var token = req.get('oopstoken')
+
+    var isAuth = req.headers.authorization
+    var token = ''
+    if(isAuth) {
+        token = isAuth.split(' ')[1]
+    } else{
+        res.json({erorr:"Failed to authenticate"}).status(401)
+        return
+    }
+
     try {
         var decoded = jwt.verify(token, secret)
         var user = await fetch(baseURL+'/users/'+decoded.username).then((response) => {return response.json()})
         if(user.pwd == decoded.pwd && user.privilege_id == decoded.privilege_id) {
             res.sendStatus(401)
+            return
         }
         res.sendStatus(200)
     } catch(err) {
@@ -63,7 +73,7 @@ router.get('/create', async (req, res) => {
     var newUser = {
         username:req.body.Username,
         pwd:crypto.createHash("sha256").update(req.body.Password).digest("hex"),
-        privilege_id:1,
+        privilege_id:res.body.Type,
         vcpulimit:6
     }
 
