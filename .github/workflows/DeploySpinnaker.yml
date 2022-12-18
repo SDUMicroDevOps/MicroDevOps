@@ -12,6 +12,8 @@ jobs:
     steps:
       #- name: Checkout
       #  uses: actions/checkout@v3
+      - name: update
+        run: apt-get update
       - name: download halyard
         run: curl -O https://raw.githubusercontent.com/spinnaker/halyard/master/install/debian/InstallHalyard.sh
       - name: install halyard
