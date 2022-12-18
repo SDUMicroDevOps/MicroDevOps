@@ -26,17 +26,21 @@ import com.oops.backend.Backend.requests.SolveRequest;
 /*
  * Environment variables needed
  * 
- * SOLVER_MANAGER_ADDRESS   - Local network address of Solver manager
- * DB_SERVICE_ADDRESS       - Address of db service 
- * BUCKER_HANDLER_ADDRESS   - Address of bucket handler
+ * SOLVER_MANAGER_SERVICE   - Local network address of Solver manager
+ * SOVER_MANAGER_PORT
+ * DB_SERVICE       - Address of db service 
+ * DB_SERVICE_PORT
+ * BUCKER_HANDLER_SERVICE   - Address of bucket handler
+ * BUCKET_HANDLER_PORT
  */
 
 @Service
 public class BackendService {
-    private String solverManagerAddress = System.getenv("SOLVER_MANAGER_ADDRESS");
-    private String dbServiceAddress = System.getenv("DB_SERVICE_ADDRESS");
-    private String bucketHandlerAddress = System.getenv("BUCKER_HANDLER_ADDRESS");
-    private String localHostAddress = "http://127.0.0.1:8080/";
+    private String solverManagerAddress = "http://" + System.getenv("SOLVER_MANAGER_SERVICE") + ":"
+            + System.getenv("SOLVER_MANAGER_PORT");
+    private String dbServiceAddress = "http://" + System.getenv("DB_SERVICE") + ":" + System.getenv("DB_SERVICE_PORT");
+    private String bucketHandlerAddress = "http://" + System.getenv("BUCKET_HANDLER_SERVICE") + ":"
+            + System.getenv("BUCKET_HANDLER_PORT");
 
     private RestTemplate restTemplate = new RestTemplate();
 
@@ -48,7 +52,6 @@ public class BackendService {
     public void postSolversToSolverManager(SolveRequest request) {
         String url = solverManagerAddress + "/New";
         restTemplate.postForEntity(url, request, SolveRequest.class);
-
     }
 
     public String getAllLegalSolvers() throws JsonProcessingException {
@@ -57,7 +60,6 @@ public class BackendService {
         String jsonData = objectMapper.writeValueAsString(solvers);
 
         return jsonData;
-
     }
 
     public String getMznData(String ProblemID) {
@@ -65,7 +67,7 @@ public class BackendService {
         TaskQueue[] taskQueue = restTemplate.getForObject(url, TaskQueue[].class);
         if (taskQueue != null) {
             for (TaskQueue task : taskQueue) {
-                if (task.getTaskId().equals(ProblemID)) {
+                if (task.getTaskID().equals(ProblemID)) {
                     return task.getMzn();
                 }
             }
@@ -140,7 +142,7 @@ public class BackendService {
         TaskQueue[] taskQueue = restTemplate.getForObject(url, TaskQueue[].class);
         if (taskQueue != null) {
             for (TaskQueue task : taskQueue) {
-                if (task.getTaskId().equals(ProblemID)) {
+                if (task.getTaskID().equals(ProblemID)) {
                     return task.getDzn();
                 }
             }
@@ -193,7 +195,6 @@ public class BackendService {
         restTemplate.postForEntity(url, cancelSolverRequest,
                 CancelTaskRequest.class);
         return solverName;
-
     }
 
 }

@@ -73,21 +73,37 @@ public class BackendController {
     }
 
     @GetMapping("/Solver")
-    public ResponseEntity<String> getSolvers() throws JsonProcessingException {
-        String solvers = backendService.getAllLegalSolvers();
-        return new ResponseEntity<String>(solvers, HttpStatus.OK);
+    public ResponseEntity<String> getSolvers() {
+        String solvers;
+        try {
+            solvers = backendService.getAllLegalSolvers();
+            return new ResponseEntity<String>(solvers, HttpStatus.OK);
+        } catch (JsonProcessingException e) {
+            return new ResponseEntity<String>("Something went wrong!", HttpStatus.I_AM_A_TEAPOT);
+        }
     }
 
     @GetMapping("/Solvers/{UserID}")
-    public ResponseEntity<String> getSolversForUser(@PathVariable String UserID) throws JsonProcessingException {
-        String solvers = backendService.getAllUserSolvers(UserID);
-        return new ResponseEntity<String>(solvers, HttpStatus.OK);
+    public ResponseEntity<String> getSolversForUser(@PathVariable String UserID) {
+        String solvers;
+        try {
+            solvers = backendService.getAllUserSolvers(UserID);
+            return new ResponseEntity<String>(solvers, HttpStatus.OK);
+        } catch (JsonProcessingException e) {
+            return new ResponseEntity<String>("Something went wrong!", HttpStatus.I_AM_A_TEAPOT);
+        }
+
     }
 
     @GetMapping("/Solvers/{TaskID}")
-    public ResponseEntity<String> getSolversForTask(@PathVariable String ProblemID) throws JsonProcessingException {
-        String solvers = backendService.getAllSoversForProlem(ProblemID);
-        return new ResponseEntity<String>(solvers, HttpStatus.OK);
+    public ResponseEntity<String> getSolversForTask(@PathVariable String ProblemID) {
+        String solvers;
+        try {
+            solvers = backendService.getAllSoversForProlem(ProblemID);
+            return new ResponseEntity<String>(solvers, HttpStatus.OK);
+        } catch (JsonProcessingException e) {
+            return new ResponseEntity<String>("Something went wrong!", HttpStatus.I_AM_A_TEAPOT);
+        }
     }
 
     @GetMapping("/Result/{ProblemID}")

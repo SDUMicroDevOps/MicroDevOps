@@ -6,11 +6,11 @@ public class BucketResponse {
     private String DataFileUrl;
     private String MethodAllowed;
 
-    public BucketResponse(String taskID, String problemFileUrl, String dataFileUrl, String methodAllowed) {
-        TaskID = taskID;
-        ProblemFileUrl = problemFileUrl;
-        DataFileUrl = dataFileUrl;
-        MethodAllowed = methodAllowed;
+    public BucketResponse(String TaskID, String ProblemFileUrl, String DataFileUrl, String MethodAllowed) {
+        this.TaskID = TaskID;
+        this.ProblemFileUrl = ProblemFileUrl;
+        this.DataFileUrl = DataFileUrl;
+        this.MethodAllowed = MethodAllowed;
     }
 
     public String getTaskID() {

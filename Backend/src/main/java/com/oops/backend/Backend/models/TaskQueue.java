@@ -3,98 +3,87 @@ package com.oops.backend.Backend.models;
 import java.sql.Timestamp;
 
 public class TaskQueue {
-    private String username;
-    private int solver;
-    private String taskId;
-    private Timestamp solverTimestamp;
+    private String UserName;
+    private int Solver;
+    private String TaskID;
+    private Timestamp SolverTimestamp;
     private int vCPU;
-    private int maxMemory;
-    private String mzn;
-    private String dzn;
+    private String Mzn;
+    private String Dzn;
 
     TaskQueue() {
     }
 
-    public TaskQueue(String username,
-            int solver,
-            String taskId,
-            Timestamp solverTimestamp,
+    public TaskQueue(String UserName,
+            int Solver,
+            String TaskID,
+            Timestamp SolverTimestamp,
             int vCPU,
-            int maxMemory,
-            String mzn,
-            String dzn) {
-        this.username = username;
-        this.solver = solver;
-        this.taskId = taskId;
-        this.solverTimestamp = solverTimestamp;
+            String Mzn,
+            String Dzn) {
+        this.UserName = UserName;
+        this.Solver = Solver;
+        this.TaskID = TaskID;
+        this.SolverTimestamp = SolverTimestamp;
         this.vCPU = vCPU;
-        this.maxMemory = maxMemory;
-        this.mzn = mzn;
-        this.dzn = dzn;
+        this.Mzn = Mzn;
+        this.Dzn = Dzn;
     }
 
-    public String getUsername() {
-        return username;
+    public String getUserName() {
+        return UserName;
     }
 
     public int getSolver() {
-        return solver;
+        return Solver;
     }
 
-    public String getTaskId() {
-        return taskId;
+    public String getTaskID() {
+        return TaskID;
     }
 
     public Timestamp getSolverTimestamp() {
-        return solverTimestamp;
+        return SolverTimestamp;
     }
 
     public int getVCPU() {
         return vCPU;
     }
 
-    public int getMaxMemory() {
-        return maxMemory;
-    }
-
     public String getMzn() {
-        return mzn;
+        return Mzn;
     }
 
     public String getDzn() {
-        return dzn;
+        return Dzn;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUserName(String UserName) {
+        this.UserName = UserName;
     }
 
-    public void setSolver(int solver) {
-        this.solver = solver;
+    public void setSolver(int Solver) {
+        this.Solver = Solver;
     }
 
-    public void setTaskId(String taskId) {
-        this.taskId = taskId;
+    public void setTaskID(String TaskID) {
+        this.TaskID = TaskID;
     }
 
-    public void setSolverTimestamp(Timestamp solverTimestamp) {
-        this.solverTimestamp = solverTimestamp;
+    public void setSolverTimestamp(Timestamp SolverTimestamp) {
+        this.SolverTimestamp = SolverTimestamp;
     }
 
     public void setVCPU(int vCPU) {
         this.vCPU = vCPU;
     }
 
-    public void setMaxMemory(int maxMemory) {
-        this.maxMemory = maxMemory;
+    public void setMzn(String Mzn) {
+        this.Mzn = Mzn;
     }
 
-    public void setMzn(String mzn) {
-        this.mzn = mzn;
-    }
-
-    public void setDzn(String dzn) {
-        this.dzn = dzn;
+    public void setDzn(String Dzn) {
+        this.Dzn = Dzn;
     }
 
     public boolean equals(Object obj) {
@@ -103,14 +92,14 @@ public class TaskQueue {
         if (!(obj instanceof TaskQueue))
             return false;
         TaskQueue other = (TaskQueue) obj;
-        if (!(this.username.equals(other.username) &&
-                this.solver == other.solver &&
-                this.taskId.equals(other.taskId) &&
-                this.solverTimestamp.equals(other.solverTimestamp) &&
+        if (!(this.UserName.equals(other.UserName) &&
+                this.Solver == other.Solver &&
+                this.TaskID.equals(other.TaskID) &&
+                this.SolverTimestamp.equals(other.SolverTimestamp) &&
                 this.vCPU == other.vCPU &&
-                this.maxMemory == other.maxMemory &&
-                this.mzn.equals(other.mzn) &&
-                this.dzn.equals(other.dzn)))
+                this.TaskID == other.TaskID &&
+                this.Mzn.equals(other.Mzn) &&
+                this.Dzn.equals(other.Dzn)))
             return false;
         return true;
     }

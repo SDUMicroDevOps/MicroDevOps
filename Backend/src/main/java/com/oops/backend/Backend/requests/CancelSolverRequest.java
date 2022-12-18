@@ -1,19 +1,19 @@
 package com.oops.backend.Backend.requests;
 
 public class CancelSolverRequest {
-    private String problemID;
-    private String userID;
+    private String ProblemID;
+    private String UserID;
 
     public CancelSolverRequest(String ProblemID, String UserID) {
-        this.problemID = ProblemID;
-        this.userID = UserID;
+        this.ProblemID = ProblemID;
+        this.UserID = UserID;
     }
 
     public String getProblemID() {
-        return problemID;
+        return ProblemID;
     }
 
     public String getUserID() {
-        return userID;
+        return UserID;
     }
 }
