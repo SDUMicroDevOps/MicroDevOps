@@ -6,6 +6,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpRequest.BodyPublishers;
+import java.net.http.HttpResponse.BodyHandler;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.util.Date;
 import java.time.Instant;
@@ -124,8 +125,11 @@ public class SolverManagerController {
     }
 
     @PostMapping("/solution/{taskID}") // TODO actually implement this
-    public ResponseEntity<String> solutionFound(@PathVariable String taskID, @RequestBody SolutionFound req) {
-
+    public ResponseEntity<String> solutionFound(@PathVariable String taskID, @RequestBody SolutionFound req)
+            throws Exception {
+        CancelTaskRequest cancelReq = new CancelTaskRequest(req.getUserID());
+        cancelTask(taskID, cancelReq);
+        fetchJobFromQueue(req.getUserID());
         return ResponseEntity.status(HttpStatus.OK).body("Removing other solvers working on task: " + taskID);
     }
 
@@ -141,6 +145,49 @@ public class SolverManagerController {
             solvers[i] = toInsert;
         }
         return solvers;
+    }
+
+    private void fetchJobFromQueue(String userID) throws Exception {
+        HttpClient client = HttpClient.newHttpClient();
+        Gson gson = new Gson();
+        var request = HttpRequest.newBuilder(
+                URI.create(databaseManagerService + ":" + databaseManagerPort + "/tasks/?username=" + userID))
+                .GET()
+                .header("accept", "application/json")
+                .build();
+        HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
+        Task[] tasks = gson.fromJson(response.body(), Task[].class);
+        Map<String, Integer> vcpuMap = new HashMap<>();
+        Map<String, List<SolverBody>> solverMap = new HashMap<>();
+        for (Task task : tasks) {
+            String solverName = getSolverNameFromId(task.getSolver());
+            if (vcpuMap.containsKey(task.getTaskId())) {
+                vcpuMap.put(task.getTaskId(), task.getVcpu() + vcpuMap.get(task.getTaskId()));
+                solverMap.get(task.getTaskId())
+                        .add(new SolverBody(task.getMaxMemory(), task.getVcpu(), 1000, solverName)); // TODO Get
+                                                                                                     // Steven
+                                                                                                     // to add
+                                                                                                     // timeout
+                                                                                                     // to the
+                                                                                                     // database
+
+            } else {
+                vcpuMap.put(task.getTaskId(), task.getVcpu());
+                solverMap.put(task.getTaskId(), new LinkedList<SolverBody>());
+                solverMap.get(task.getTaskId())
+                        .add(new SolverBody(task.getMaxMemory(), task.getVcpu(), 1000, solverName));
+            }
+        }
+        int cpuAvailable = getCpuAvailableForUser(userID) - getCpuUsedByUser(userID);
+
+        for (String taskid : vcpuMap.keySet()) {
+            if (vcpuMap.get(taskid) <= cpuAvailable) {
+                SolverBody[] toUse = (SolverBody[]) solverMap.get(taskid).toArray();
+                ProblemRequest problemRequest = new ProblemRequest(taskid, taskid, toUse, userID);
+                createJob(problemRequest);
+                cpuAvailable -= vcpuMap.get(taskid);// TODO delete this from database
+            }
+        }
     }
 
     private void createSolverJobs(ProblemRequest newProblem) throws Exception {
@@ -178,6 +225,20 @@ public class SolverManagerController {
             sumCpu += solver.getNumberVCPU();
         }
         return sumCpu;
+    }
+
+    private String getSolverNameFromId(int solverID) throws Exception {
+        HttpClient client = HttpClient.newHttpClient();
+        Gson gson = new Gson();
+        var request = HttpRequest.newBuilder(
+                URI.create(
+                        databaseManagerService + ":" + databaseManagerPort + "/solvers/" + Integer.toString(solverID)))
+                .GET()
+                .header("accept", "application/json")
+                .build();
+        HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
+        Solver solver = gson.fromJson(response.body(), Solver.class);
+        return solver.getSolverName();
     }
 
     private KubernetesClient makeKubernetesClient() {
@@ -252,7 +313,7 @@ public class SolverManagerController {
         HttpClient client = HttpClient.newHttpClient();
         Gson gson = new Gson();
         var request = HttpRequest.newBuilder(
-                URI.create(databaseManagerService + ":" + databaseManagerPort + "/solver/?name=" + solverName))
+                URI.create(databaseManagerService + ":" + databaseManagerPort + "/solvers/?name=" + solverName))
                 .GET()
                 .header("accept", "application/json")
                 .build();
