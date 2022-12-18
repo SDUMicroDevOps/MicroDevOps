@@ -14,6 +14,7 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import com.google.gson.Gson;
 import com.oops.solvermanager.Requests.CancelTaskRequest;
+import com.oops.solvermanager.Requests.CancelUserTasksRequest;
 import com.oops.solvermanager.Requests.ProblemRequest;
 import com.oops.solvermanager.Requests.SolverBody;
 import com.oops.solvermanager.Responses.User;
@@ -57,6 +58,49 @@ public class AppTest {
         assertTrue(response.getStatusCode() == HttpStatus.OK);
         solverResponse = toTest.getJobsForUser("bread");
         solvers = solverResponse.getBody();
+        assertTrue(solvers.length == 0);
+    }
+
+    @Test
+    public void deleteTasksForUser() {
+        Gson gson = new Gson();
+        User testUser = new User("bread1", "soup", 0, 4);
+        stubFor(get("/users/bread1")
+                .willReturn(ok().withHeader("Content-Type", "application/json").withBody(gson.toJson(testUser))));
+        SolverBody[] toUse = new SolverBody[1];
+        toUse[0] = new SolverBody(100, 1, 100, "chuffed");
+        ProblemRequest request = new ProblemRequest("testID", "testData", toUse, testUser.getUsername());
+        ResponseEntity<String> response = toTest.createJob(request);
+        assertTrue(response.getStatusCode() == HttpStatus.OK);
+        request = new ProblemRequest("testID1", "testData", toUse, testUser.getUsername());
+        response = toTest.createJob(request);
+        assertTrue(response.getStatusCode() == HttpStatus.OK);
+        ResponseEntity<SolverBody[]> solverResponse = toTest.getJobsForUser(testUser.getUsername());
+        SolverBody[] solvers = solverResponse.getBody();
+        assert (solvers.length == 2);
+        CancelUserTasksRequest cancelReq = new CancelUserTasksRequest(testUser.getUsername());
+        response = toTest.cancelUserTasks(cancelReq);
+        solverResponse = toTest.getJobsForUser(testUser.getUsername());
+        solvers = solverResponse.getBody();
+        assertTrue(solvers.length == 0);
+    }
+
+    @Test
+    public void requestTooLarge() {
+        Gson gson = new Gson();
+        User testUser = new User("bread2", "soup", 0, 4);
+        stubFor(get("/users/bread2")
+                .willReturn(ok().withHeader("Content-Type", "application/json").withBody(gson.toJson(testUser))));
+        SolverBody[] toUse = new SolverBody[3];
+        toUse[0] = new SolverBody(100, 2, 100, "chuffed");
+        toUse[1] = new SolverBody(100, 1, 100, "notchuffed");
+        toUse[2] = new SolverBody(100, 3, 100, "brilliantSolver");
+        ProblemRequest request = new ProblemRequest("testID", "testData", toUse, testUser.getUsername());
+        ResponseEntity<String> response = toTest.createJob(request);
+        assertTrue(response.getStatusCode() == HttpStatus.BAD_REQUEST);
+        ResponseEntity<SolverBody[]> solverResponse = toTest.getJobsForUser(testUser.getUsername());
+        assertTrue(solverResponse.getStatusCode() == HttpStatus.OK);
+        SolverBody[] solvers = solverResponse.getBody();
         assertTrue(solvers.length == 0);
     }
 
