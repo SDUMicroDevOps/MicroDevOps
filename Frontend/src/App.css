@@ -1,0 +1,334 @@
+.App {
+  text-align: left;
+}
+
+body, html{
+  background-color: #121212;
+  color:white;
+  padding: 40px;
+  font-family: Arial;
+  text-align: left;
+}
+
+.login-button{
+  background-color: #396e38;
+  border-radius: 10px;
+  float: left;
+  text-align: center;
+  height: fit-content;
+  width: 150px;
+  padding: 20px;
+}
+
+.signup-button{
+  background-color: #396e38;
+  border-radius: 10px;
+  text-align: center;
+  height: fit-content;
+  width: 150px;
+  padding: 20px;
+}
+
+.main-box{
+  float: inline-end;
+  background-color: #181818;
+  border-radius: 10px;
+  height: fit-content;
+  width: fit-content;
+  padding: 20px;
+  grid-gap: 15px;
+  display: grid;
+  grid-template-columns: 200px 200px 200px 200px 200px;
+  grid-template-areas: 
+    "mzn-button dzn-button cli-view cli-view cli-view"
+    "solvers-view solvers-view cli-view cli-view cli-view"
+    "solvers-view solvers-view vcpu-view go-view retrieve-res-view"
+}
+
+.admin-box{
+  float: inline-end;
+  background-color: #181818;
+  border-radius: 10px;
+  height: fit-content;
+  width: fit-content;
+  padding: 20px;
+  grid-gap: 15px;
+  display: grid;
+  grid-template-columns: 300px 500px;
+  grid-template-areas: 
+    "super-button active-users-view"
+    "admin-solvers-view active-users-view"
+    "admin-solvers-view active-users-view"
+}
+
+.super-button{
+  color: #fff;
+  border-color:black;
+  border-style: outset;
+  border-width: 1px;
+  border-radius: 5px;
+  font-size: 150%;
+  text-align: center;
+  background-color: #17334e;
+  height: 100px;
+  line-height: 100px;
+}
+
+.mzn-button {
+  font-size: 1vw;
+  overflow: hidden;
+  text-overflow: ellipsis; 
+  grid-column: 1;
+  grid-row: 1;
+}
+.dzn-button {
+  font-size: 1vw;
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.solvers-view {
+  grid-column: 1 / span 2;
+  grid-row: 2 / span 2;
+  background-color: #538e6e;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.admin-solvers-view {
+  grid-column: 1 ;
+  grid-row: 2 / span 2;
+  background-color: #538e6e;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.admin-running-solvers-view {
+  grid-column: 3 / span 3;
+  grid-row: 1;
+  display: grid;
+  grid-gap: 10px;
+  background-color: #538e6e;
+  border-radius: 5px;
+  padding: 5px;
+  height: auto;
+  width: auto;
+  grid-template-columns: 200px;
+  grid-template-areas:
+  "running-solver-view admin-remove-running-solver-view"
+}
+
+.running-solvers-view {
+  grid-column: 3 / span 3;
+  grid-row: 1;
+  display: grid;
+  grid-gap: 10px;
+  background-color: #538e6e;
+  border-radius: 5px;
+  padding: 5px;
+  height: auto;
+  width: auto;
+  grid-template-columns: 320px 100px 75px 75px;
+  grid-template-areas:
+  "running-solver-view vcpu-s-view running-go-view remove-running-solver-view"
+}
+
+.active-users-view {
+  grid-column: 2;
+  grid-row: 1 / span 3;
+  background-color: #538e6e;
+  border-radius: 5px;
+  padding: 5px;
+  height: auto;
+  width: auto;
+}
+
+.running-solver-view{
+  background-color:#396e38;
+  border-color:#285126;
+  border-style: outset;
+  border-width: 1px;
+  border-radius: 5px;
+  font-size: 75%;
+  height: 50px;
+  text-align: left;
+  padding-left: 20px;
+  line-height: 50px;
+}
+
+.active-user-view{
+  background-color:#396e38;
+  border-color:#285126;
+  border-style: outset;
+  border-width: 1px;
+  border-radius: 5px;
+  font-size: 75%;
+  height: 50px;
+  text-align: left;
+  padding-left: 20px;
+  line-height: 50px;
+}
+
+.solver-view{
+  background-color:#396e38;
+  border-color:#285126;
+  border-style: outset;
+  border-width: 1px;
+  border-radius: 5px;
+  font-size: 75%;
+  height: auto;
+  width: auto;
+  text-align: left;
+  padding-left: 20px;
+  line-height: 50px;
+
+}
+
+.go-view{
+  grid-column: 4;
+  grid-row: 3;
+  background-color: #396e38;
+}
+
+.cancel-view{
+  grid-column: 4;
+  grid-row: 3;
+  background-color: #d13241;
+}
+
+.vcpu-view{
+  grid-column: 3;
+  grid-row: 3;
+  background-color: #121212;
+}
+
+.running-go-view{
+  grid-column: 3;
+  font-size: 75%;
+  height: 50px;
+  text-align: center;
+  background-color: #396e38;
+  line-height: 50px;
+  width: 75px;
+}
+
+.running-cancel-view{
+  grid-column: 3;
+  font-size: 75%;
+  height: 50px;
+  width: 75px;
+  text-align: center;
+  background-color: #d13241;
+  line-height: 50px;
+  width: 75px;
+}
+
+.user-vcpu-view{
+  font-size: 75%;
+  height: 50px;
+  width: 100px;
+  text-align: center;
+  background-color: #121212;
+  line-height: 50px;
+}
+
+.vcpu-s-view{
+  grid-column: 2;
+  font-size: 75%;
+  height: 50px;
+  width: 100px;
+  text-align: center;
+  background-color: #121212;
+  line-height: 50px;
+}
+
+.remove-running-solver-view{
+  grid-column: 4;
+  font-size: 75%;
+  height: 50px;
+  text-align: center;
+  background-color: gray;
+  width: fit-content;
+  padding: 0px 5px 0px 5px;
+  line-height: 50px;
+}
+
+.remove-running-solver-view{
+  grid-column: 2;
+  font-size: 75%;
+  height: 50px;
+  text-align: center;
+  background-color: gray;
+  width: fit-content;
+  padding: 0px 5px 0px 5px;
+  line-height: 50px;
+}
+
+.cli-view{
+  background-color: #121212;
+  grid-column: 3 / span 3;
+  grid-row: 1 / span 2;
+  height: 400px;
+  text-align: left;
+  padding: 10px;
+  width: fit-content;
+}
+
+.retrieve-res-view{
+  grid-column: 5;
+  grid-row: 3;
+}
+
+.vcpu-s-view form input {
+  border-radius: 5px;
+  width: 100%;
+  padding: 8px;
+  font-size: 16px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+
+}
+
+.login-popup {
+  position: fixed;
+  border-radius: 10px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  padding: 20px;
+  background-color: #181818;
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.5);
+}
+
+.login-popup form label {
+  border-radius: 10px;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.login-popup form input {
+  border-radius: 5px;
+  width: 100%;
+  padding: 8px;
+  font-size: 16px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+}
+
+.login-popup form button {
+  border-radius: 5px;
+  margin-left: 5px;
+  margin-right: 5px;
+  width: 45%;
+  padding: 12px;
+  font-size: 16px;
+  background-color: #333;
+  color: white;
+  cursor: pointer;
+  border: none;
+}
+
+.login-popup form button:hover {
+  background-color: #444;
+}
