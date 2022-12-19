@@ -6,6 +6,9 @@ public class BucketResponse {
     private String DataFileUrl;
     private String MethodAllowed;
 
+    BucketResponse() {
+    }
+
     public BucketResponse(String TaskID, String ProblemFileUrl, String DataFileUrl, String MethodAllowed) {
         this.TaskID = TaskID;
         this.ProblemFileUrl = ProblemFileUrl;
