@@ -35,19 +35,20 @@ class SolverInstance:
             })
 
     def notify_intermediate_solution_found(self, result: Result):
-        try:
+        try:    
             result_as_json = self.get_result_as_json(result)
+            print("solution: " + str(result_as_json))
             requests.post(self.solution_manager_url + "/SolutionFound", data=result_as_json)
         except:
-            print("Intermediate solution")
+            print("Intermediate solution failed")
 
     def notify_final_solution_found(self, result: Result):
         try:
             result_as_json = self.get_result_as_json(result, True)
-            requests.post(self.solver_manager_url + "/Solution/{taskID}".format(taskID = self.taskID), data=json.dumps({"UserID" : self.userID}))
+            requests.post(self.solver_manager_url + f"/Solution/{self.taskID}", data=json.dumps({"UserID" : self.userID}))
             requests.post(self.solution_manager_url + "/SolutionFound", data=result_as_json)
         except:
-            print("Final solution")
+            print("Final solution failed")
         
     #Downloads and saves the files corresponding to this taskID
     #Returns True if a DZN file was found, otherwise returns false
@@ -65,8 +66,28 @@ class SolverInstance:
         except:
             return False
 
+    async def download_solver(self):
+        resp = requests.get(self.bucket_handler_url + f"/SolverBucket/{self.solver_name}")
+        urls = json.loads(resp.content)
+        solver = requests.get(urls["SolverURL"])
+        config = requests.get(urls["ConfigURL"])
+        
+        if not os.path.exists(r"/Downloads"):
+            os.makedirs(r"/Downloads")
+        with open(f"/Downloads/{self.solver_name}", "wb") as f:
+            f.write(solver.content)
+        with open(f"/app/MiniZincIDE-2.6.4-bundle-linux-x86_64/share/minizinc/solvers/{self.solver_name}.msc", "wb") as f:
+            f.write(config.content)
+
+        return
+
+
     async def solve(self):
-        solver = Solver.lookup(self.solver_name)
+        try:
+            solver = Solver.lookup(self.solver_name)
+        except:
+            await self.download_solver()
+            solver = Solver.lookup(self.solver_name, refresh=True)
         minizinc_model = Model()
 
         has_dzn_file = await self.get_files()
@@ -88,12 +109,12 @@ class SolverInstance:
                 self.notify_intermediate_solution_found(i)
                 next_update_interval += 20                        #Wait 20 seconds to send next message
             timer += 1
-            bestResult = i
+            if (i.solution != None):
+                bestResult = i
 
         self.notify_final_solution_found(bestResult)
 
     def __init__(self, args):
-        
         self.solver_manager_service = os.getenv("SOLVER_MANAGER_SERVICE", "0.0.0.0")
         self.solution_manager_service = os.getenv("SOLUTION_MANAGER_SERVICE", "0.0.0.0")
         self.solver_manager_port = os.getenv("SOLVER_MANAGER_PORT", "5000")
@@ -109,7 +130,7 @@ class SolverInstance:
         self.solver_manager_url = f"http://{self.solver_manager_service}:{self.solver_manager_port}"
         self.solution_manager_url = f"http://{self.solution_manager_service}:{self.solution_manager_port}"
         self.bucket_handler_url = f"http://{self.bucket_handler_service}:{self.bucket_handler_port}"
-
-if __name__ == '__main__':
+        
+if __name__ == "__main__":
     solver = SolverInstance(sys.argv)
     asyncio.run(solver.solve())
