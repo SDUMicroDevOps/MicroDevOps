@@ -6,4 +6,3 @@ TestResults/
 feature/se/sql-query
 SQLQuery/target
 __pycache__
-main
