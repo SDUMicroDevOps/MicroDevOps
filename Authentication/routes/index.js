@@ -15,13 +15,16 @@ router.put('/login', async (req, res) => {
     var pwdhash = crypto.createHash("sha256").update(req.body.Password).digest("hex")
 
     //check if user exist and has correct pwd
-    var user = await fetch(baseURL+'/users/'+username).then((response) => {return response.json()})
+    var user = await fetch(baseURL+'/users/'+username).then((response) => {
+        return response.json()
+    })
 
-    if(pwdhash == user.pwd) { 
+    if(user != {} && pwdhash == user.pwd) { 
         var token = jwt.sign(user, secret, {expiresIn: 60 * 60 * 24})
-        res.json({Token:token})
+        res.json({Token:token}).status(200)
+        return
     }
-    res.json({error:"Failed to authenticat"})
+    res.json({error:"Failed to authenticat"}).status(401)
 })
 
 router.get('/verify', async (req, res) => {
@@ -38,7 +41,7 @@ router.get('/verify', async (req, res) => {
     try {
         var decoded = jwt.verify(token, secret)
         var user = await fetch(baseURL+'/users/'+decoded.username).then((response) => {return response.json()})
-        if(user.pwd == decoded.pwd && user.privilege_id == decoded.privilege_id) {
+        if(user != {} && user.pwd == decoded.pwd && user.privilege_id == decoded.privilege_id && req.body.Username == user.username) {
             res.sendStatus(401)
             return
         }
@@ -68,7 +71,7 @@ router.get('/login', async (req, res) => {
     res.json(response)
 })
 
-router.get('/create', async (req, res) => {
+router.post('/create', async (req, res) => {
 
     var newUser = {
         username:req.body.Username,
