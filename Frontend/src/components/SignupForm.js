@@ -16,12 +16,8 @@ export default function SignupForm() {
     })
     .then(function (response) {
       console.log(response);
-      if(response.status === 200){
-        console.log('user created: ' + username);
-        setShowSignup(false);
-      } else if (response.status === 400){
-        console.log('Error 400: user exists')
-      }
+      console.log('user created: ' + username);
+      setShowSignup(false);
       return true;
     })
     .catch(function (error) {
