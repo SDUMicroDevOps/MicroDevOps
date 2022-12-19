@@ -1,12 +1,16 @@
 package com.oops.solvermanager.Requests;
 
 public class CancelUserTasksRequest {
-    private String userID;
+    private String UserToCancel;
 
-    CancelUserTasksRequest() {
-    };
+    public CancelUserTasksRequest() {
+    }
+
+    public CancelUserTasksRequest(String UserToCancel) {
+        this.UserToCancel = UserToCancel;
+    }
 
     public String getUserID() {
-        return userID;
+        return UserToCancel;
     }
 }
