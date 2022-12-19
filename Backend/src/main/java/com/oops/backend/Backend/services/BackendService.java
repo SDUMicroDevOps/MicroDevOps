@@ -38,7 +38,7 @@ import com.oops.backend.Backend.requests.SolveRequest;
 public class BackendService {
     private String solverManagerAddress = "http://" + System.getenv("SOLVER_MANAGER_SERVICE") + ":"
             + System.getenv("SOLVER_MANAGER_PORT");
-    private String dbServiceAddress = "http://" + System.getenv("DB_SERVICE") + ":" + System.getenv("DB_SERVICE_PORT");
+    private String dbServiceAddress = "http://" + System.getenv("DATABASE_SERVICE") + ":" + System.getenv("DATABASE_PORT");
     private String bucketHandlerAddress = "http://" + System.getenv("BUCKET_HANDLER_SERVICE") + ":"
             + System.getenv("BUCKET_HANDLER_PORT");
 
