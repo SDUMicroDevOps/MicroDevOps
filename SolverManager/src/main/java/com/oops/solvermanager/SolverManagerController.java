@@ -45,9 +45,9 @@ import io.fabric8.kubernetes.client.KubernetesClientBuilder;
 @SpringBootApplication
 @RestController
 public class SolverManagerController {
-    private static final String databaseManagerService ="http://" + System.getenv().getOrDefault("DB_MANAGER_SERVICE",
+    private static final String databaseManagerService ="http://" + System.getenv().getOrDefault("DATABASE_SERVICE",
             "localhost");
-    private static final String databaseManagerPort = System.getenv().getOrDefault("DB_MANAGER_PORT", "8082");
+    private static final String databaseManagerPort = System.getenv().getOrDefault("DATABASE_PORT", "8082");
 
     public static void main(String[] args) {
 
