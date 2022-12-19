@@ -22,12 +22,12 @@ env:
   
 jobs:
   deploy-buckethandler:
-    name: Apply all deployments
+    name: Apply Buckethandler Deployment
     runs-on: ubuntu-latest
     environment: production
     
     steps:
-    - name: Wait for tests to succeed
+    - name: Wait for buckethandler image to build
       uses: lewagon/wait-on-check-action@v1.2.0
       with:
         ref: ${{ github.ref }}
