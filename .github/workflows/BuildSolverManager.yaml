@@ -25,4 +25,4 @@ jobs:
         with:
           context: ./SolverManager
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/solvermanager:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/solver-manager:latest
