@@ -3,7 +3,7 @@ package com.oops.backend.Backend.models;
 import java.sql.Timestamp;
 
 public class TaskQueue {
-    private String UserName;
+    private String username;
     private int Solver;
     private String TaskID;
     private Timestamp SolverTimestamp;
@@ -14,14 +14,14 @@ public class TaskQueue {
     TaskQueue() {
     }
 
-    public TaskQueue(String UserName,
+    public TaskQueue(String username,
             int Solver,
             String TaskID,
             Timestamp SolverTimestamp,
             int vCPU,
             String Mzn,
             String Dzn) {
-        this.UserName = UserName;
+        this.username = username;
         this.Solver = Solver;
         this.TaskID = TaskID;
         this.SolverTimestamp = SolverTimestamp;
@@ -30,8 +30,8 @@ public class TaskQueue {
         this.Dzn = Dzn;
     }
 
-    public String getUserName() {
-        return UserName;
+    public String getusername() {
+        return username;
     }
 
     public int getSolver() {
@@ -58,8 +58,8 @@ public class TaskQueue {
         return Dzn;
     }
 
-    public void setUserName(String UserName) {
-        this.UserName = UserName;
+    public void setusername(String username) {
+        this.username = username;
     }
 
     public void setSolver(int Solver) {
@@ -92,7 +92,7 @@ public class TaskQueue {
         if (!(obj instanceof TaskQueue))
             return false;
         TaskQueue other = (TaskQueue) obj;
-        if (!(this.UserName.equals(other.UserName) &&
+        if (!(this.username.equals(other.username) &&
                 this.Solver == other.Solver &&
                 this.TaskID.equals(other.TaskID) &&
                 this.SolverTimestamp.equals(other.SolverTimestamp) &&

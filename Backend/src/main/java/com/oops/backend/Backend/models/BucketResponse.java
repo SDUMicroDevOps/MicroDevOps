@@ -9,13 +9,6 @@ public class BucketResponse {
     BucketResponse() {
     }
 
-    public BucketResponse(String TaskID, String ProblemFileUrl, String DataFileUrl, String MethodAllowed) {
-        this.TaskID = TaskID;
-        this.ProblemFileUrl = ProblemFileUrl;
-        this.DataFileUrl = DataFileUrl;
-        this.MethodAllowed = MethodAllowed;
-    }
-
     public String getTaskID() {
         return TaskID;
     }
