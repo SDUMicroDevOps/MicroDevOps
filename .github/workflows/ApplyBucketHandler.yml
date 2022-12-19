@@ -7,25 +7,34 @@
 # To get a newer version, you will need to update the SHA.
 # You can also reference a tag or branch, but the action may change without warning.
 
-name: Build and Deploy to GKE
+name: Deploy BucketHandler To GKE
 
 on:
   push:
     branches:
       - main
-
+    paths:
+      - BucketHandlerService/**
 env:
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
   GKE_CLUSTER: public-cluster
   GKE_ZONE: europe-north1-a    # Add your cluster zone here.
   
 jobs:
-  setup-build-publish-deploy:
+  deploy-buckethandler:
     name: Apply all deployments
     runs-on: ubuntu-latest
     environment: production
     
     steps:
+    - name: Wait for tests to succeed
+      uses: lewagon/wait-on-check-action@v1.2.0
+      with:
+        ref: ${{ github.ref }}
+        check-name: 'Build BucketHandler'
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        wait-interval: 10
+        
     - name: Checkout
       uses: actions/checkout@v3
 
@@ -49,10 +58,5 @@ jobs:
         
     # Deploy the Docker image to the GKE cluster
     - name: Deploy
-      run: |-
-        kubectl patch deployment buckethandler -p \ "{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"date\":\"`date +'%s'`\"}}}}}"
-        kubectl patch deployment auth -p \ "{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"date\":\"`date +'%s'`\"}}}}}"
-        kubectl patch deployment backend -p \ "{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"date\":\"`date +'%s'`\"}}}}}"
-        kubectl patch deployment frontend -p \ "{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"date\":\"`date +'%s'`\"}}}}}"
-        kubectl patch deployment solver-manager -p \ "{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"date\":\"`date +'%s'`\"}}}}}"
-        kubectl patch deployment sqlquery -p \ "{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"date\":\"`date +'%s'`\"}}}}}"
+      run: kubectl patch deployment buckethandler -p \ "{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"date\":\"`date +'%s'`\"}}}}}"
+
