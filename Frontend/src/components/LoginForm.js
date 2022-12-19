@@ -1,13 +1,17 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 import AuthContext from "../context/AuthProvider";
 const LOGIN_URL = 'https://' + process.env.AUTH_SERVICE + ':' + process.env.AUTH_PORT + '/login';
 
-export default function LoginForm({ users}) {
+export default function LoginForm() {
   const [showLogin, setShowLogin] = useState(false);
   const { auth, setAuth } = useContext(AuthContext);
   const [username, setUsername] = useState('');
   const [pwd, setPwd] = useState('');
+
+  useEffect(() => {
+    console.log('auth changed: ' + auth.name + ', ' + auth.type + ', ' + auth.authToken);
+  }, [auth]);
 
   const handleClick = () => {
     setShowLogin(true);
@@ -27,7 +31,7 @@ export default function LoginForm({ users}) {
       const userType = response.data.Type;
       const authToken = response.data.Token;
       setAuth({name: username, type: userType, authToken: authToken});
-      console.log('logged in successfully: ' + auth.name + ', ' + auth.type + ', ' + auth.authToken);
+      console.log('logged in successfully.');
       resetForm();
       setShowLogin(false);
       })
