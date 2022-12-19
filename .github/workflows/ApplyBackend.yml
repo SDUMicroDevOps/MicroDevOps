@@ -58,4 +58,5 @@ jobs:
         
     # Deploy the Docker image to the GKE cluster
     - name: Deploy
-      run: kubectl patch deployment buckethandler -p \ "{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"date\":\"`date +'%s'`\"}}}}}"
+      run: kubectl patch deployment backend -p \ "{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"date\":\"`date +'%s'`\"}}}}}"
+
