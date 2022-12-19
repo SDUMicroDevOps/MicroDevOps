@@ -1,18 +1,13 @@
 apiVersion: v1
 data:
-  environment: |
-    BUCKET_HANDLER_SERVICE=bucket-handler-service
-    BUCKET_HANDLER_PORT=5165
-    DATABASE_SERVICE=database-service
-    DATABASE_PORT=8080
-    DB_USER=dbmanager
-    DB_PASS=Yc67i?\&7U"_yqO@
-    DB_NAME=oopsdb
-    CONNECTION_NAME=optical-empire-364322:europe-west1:oopssql
-    AUTH_SERVICE=auth-service
-    AUTH_PORT=3000
-    BACKEND_SERVICE=backend-service
-    BACKEND_PORT=3200
+  BUCKET_HANDLER_SERVICE: bucket-handler-service
+  BUCKET_HANDLER_PORT: "5165"
+  DATABASE_SERVICE: database-service
+  DATABASE_PORT: "8080"
+  DB_USER: dbmanager
+  DB_PASS: Yc67i?\&7U"_yqO@
+  DB_NAME: oopsdb
+  CONNECTION_NAME: soptical-empire-364322:europe-west1:oopssql
 kind: ConfigMap
 metadata:
   creationTimestamp: null
