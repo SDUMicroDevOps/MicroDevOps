@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-const SIGNUP_URL = 'https://' + process.env.AUTH_SERVICE + ':' + process.env.AUTH_PORT + '/create';
+const SIGNUP_URL = 'http://' + process.env.AUTH_SERVICE + ':' + process.env.AUTH_PORT + '/create';
 
 export default function SignupForm() {
   const [showSignup, setShowSignup] = useState(false);
@@ -8,6 +8,7 @@ export default function SignupForm() {
   const [pwd, setPwd] = useState('');
 
   function createUser(username, type){
+    console.log('SIGNUP URL: ' + SIGNUP_URL)
     //types: 1: endUser, 2: admin
     axios.post(SIGNUP_URL, {
       Username: username,
