@@ -19,8 +19,13 @@ env:
   GKE_CLUSTER: public-cluster
   GKE_ZONE: europe-north1-a    # Add your cluster zone here.
   
-  jobs:
-  steps:
+jobs:
+  setup-build-publish-deploy:
+    name: Apply all deployments
+    runs-on: ubuntu-latest
+    environment: production
+    
+    steps:
     - name: Checkout
       uses: actions/checkout@v3
 
