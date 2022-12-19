@@ -60,4 +60,7 @@ public class Task {
     public int getVcpu() {
         return vcpu;
     }
+    public int getTimeout() {
+        return timeout;
+    }
 }

@@ -175,7 +175,7 @@ public class SolverManagerController {
                 vcpuMap.put(task.getTaskId(), task.getVcpu());
                 solverMap.put(task.getTaskId(), new LinkedList<SolverBody>());
                 solverMap.get(task.getTaskId())
-                        .add(new SolverBody(task.getMaxMemory(), task.getVcpu(), 1000, solverName));
+                        .add(new SolverBody(task.getMaxMemory(), task.getVcpu(), task.getTimeout(), solverName));
             }
         }
         int cpuAvailable = getCpuAvailableForUser(userID) - getCpuUsedByUser(userID);
