@@ -60,6 +60,7 @@ def create_cluster(client : container_v1.ClusterManagerClient, logger):
 
 
 def apply_deployments(logger):
+    os.system("kubectl apply -f Deployments/green-peace.yaml")  #Deploy environemnt first
     for filename in os.listdir("Deployments"):
         if (filename.endswith(".yaml")):
             logger(f"Deploying {filename}")
