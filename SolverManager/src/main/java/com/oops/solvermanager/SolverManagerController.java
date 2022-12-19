@@ -299,7 +299,7 @@ public class SolverManagerController {
         int solverId = getIdForSolver(solver.getSolverName());
         Date currentDate = Date.from(Instant.now());
         Task task = new Task(problem.getUserID(), solverId, problem.getProblemID(), currentDate,
-                solver.getMaxMemory(), "", "", solver.getNumberVCPU());
+                solver.getMaxMemory(), "", "", solver.getNumberVCPU(),solver.getTimeout());
         String jsonTask = gson.toJson(task);
         var request = HttpRequest.newBuilder(
                 URI.create(databaseManagerService + ":" + databaseManagerPort + "/tasks"))

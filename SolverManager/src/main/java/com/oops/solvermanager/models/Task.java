@@ -11,12 +11,13 @@ public class Task {
     private String mzn;
     private String dzn;
     private int vcpu;
+    private int timeout;
 
     public Task() {
     }
 
     public Task(String username, int solver, String taskId, Date solverTimeStamp, int maxMemory, String mzn, String dzn,
-            int vcpu) {
+            int vcpu, int timeout) {
         this.username = username;
         this.solver = solver;
         this.taskId = taskId;
@@ -25,6 +26,7 @@ public class Task {
         this.mzn = mzn;
         this.dzn = dzn;
         this.vcpu = vcpu;
+        this.timeout = timeout;
     }
 
     public String getUsername() {
