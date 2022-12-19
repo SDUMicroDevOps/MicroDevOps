@@ -5,6 +5,7 @@ on:
       - main
 jobs:
   build:
+    name: Build SolverManager
     runs-on: ubuntu-latest
     steps:
       -
