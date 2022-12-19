@@ -24,8 +24,6 @@ jobs:
     name: Apply all deployments
     runs-on: ubuntu-latest
     environment: production
-    env:
-      Update_Annotation: \"{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"date\":\"`date +'\%s'`\"}}}}}"
     
     steps:
     - name: Checkout
@@ -52,7 +50,7 @@ jobs:
     # Deploy the Docker image to the GKE cluster
     - name: Deploy
       run: |-
-        kubectl patch deployment buckethandler -p \"{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"date\":\"`date +'%s'`\"}}}}}"
+        kubectl patch deployment buckethandler -p \"{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"date\":\"`date +'%s'`\"}}}}}\"
         kubectl patch deployment auth -p \"{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"date\":\"`date +'%s'`\"}}}}}"
         kubectl patch deployment backend -p \"{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"date\":\"`date +'%s'`\"}}}}}"
         kubectl patch deployment frontend -p \"{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"date\":\"`date +'%s'`\"}}}}}"
