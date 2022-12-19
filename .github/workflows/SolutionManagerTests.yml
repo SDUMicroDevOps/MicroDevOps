@@ -1,13 +1,12 @@
-name: Solution Manager tests
+name: Backend tests
 
 on:
   push:
-    branches: 
-      - feature/ln/solution-manager
+    branches:
+      - feature/ln/backend
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -17,14 +16,13 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v2
         with:
-          java-version: '17'
-          distribution: 'adopt'
-        
+          java-version: "17"
+          distribution: "adopt"
 
       - name: Build
-        working-directory: ./SolutionManager
+        working-directory: ./Backend
         run: mvn --batch-mode -DskipTests package
 
       - name: Test
-        working-directory: ./SolutionManager
+        working-directory: ./Backend
         run: mvn --batch-mode -Dmaven.test.failure.ignore=true test
