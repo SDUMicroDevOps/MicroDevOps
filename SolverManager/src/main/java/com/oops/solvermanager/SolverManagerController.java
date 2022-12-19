@@ -36,7 +36,12 @@ import com.oops.solvermanager.Responses.User;
 import com.oops.solvermanager.models.Solver;
 import com.oops.solvermanager.models.Task;
 
+import io.fabric8.kubernetes.api.model.ConfigMapBuilder;
+import io.fabric8.kubernetes.api.model.ConfigMapEnvSource;
+import io.fabric8.kubernetes.api.model.EnvFromSource;
+import io.fabric8.kubernetes.api.model.EnvFromSourceBuilder;
 import io.fabric8.kubernetes.api.model.Quantity;
+import io.fabric8.kubernetes.api.model.EnvFromSourceFluent.ConfigMapRefNested;
 import io.fabric8.kubernetes.api.model.batch.v1.Job;
 import io.fabric8.kubernetes.api.model.batch.v1.JobBuilder;
 import io.fabric8.kubernetes.client.KubernetesClient;
@@ -268,7 +273,10 @@ public class SolverManagerController {
         Map<String, Quantity> requestedResources = new HashMap<>();
         requestedResources.put("cpu", Quantity.parse(Integer.toString(solver.getNumberVCPU())));
         requestedResources.put("memory", Quantity.parse(Integer.toString(solver.getMaxMemory())));
-
+        ConfigMapEnvSource conf = new ConfigMapEnvSource();
+        conf.setName("green-peace");
+        EnvFromSource envConf = new EnvFromSource();
+        envConf.setConfigMapRef(conf);
         Job job = new JobBuilder()
                 .withApiVersion("v1")
                 .withNewMetadata()
@@ -287,6 +295,7 @@ public class SolverManagerController {
                 .withNewResources()
                 .withRequests(requestedResources)
                 .endResources()
+                .withEnvFrom(envConf)
                 .endContainer()
                 .withRestartPolicy("Never")
                 .endSpec()
