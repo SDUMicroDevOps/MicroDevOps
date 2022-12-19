@@ -11,6 +11,7 @@ import java.sql.Timestamp;
 import java.io.File;
 import java.io.FileOutputStream;
 
+import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
@@ -118,6 +119,12 @@ public class BackendService {
         return problemID;
     }
 
+    private String removeQuotesAndUnescape(String uncleanJson) {
+        String noQuotes = uncleanJson.replaceAll("^\"|\"$", "");
+
+        return StringEscapeUtils.unescapeJava(noQuotes);
+    }
+
     public String addDznData(String UserID, MultipartFile dznFile) throws IOException, InterruptedException {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
@@ -137,7 +144,8 @@ public class BackendService {
                 .build();
         HttpResponse<String> response = client.send(request,
                 BodyHandlers.ofString());
-        BucketResponse bucketResponse = gson.fromJson(response.body(), BucketResponse.class);
+        BucketResponse bucketResponse = gson.fromJson(this.removeQuotesAndUnescape(response.body()),
+                BucketResponse.class);
         // return solver.getSolverName();
 
         // BucketResponse bucketResponse = restTemplate.getForObject(url,
