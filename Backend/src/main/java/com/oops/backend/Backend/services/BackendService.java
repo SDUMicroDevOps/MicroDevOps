@@ -87,7 +87,7 @@ public class BackendService {
         BucketResponse bucketResponse = restTemplate.getForObject(url, BucketResponse.class);
 
         byte[] fileData = mznFile.getBytes();
-        OutputStream out = new FileOutputStream(new File("/tmp/" + fileName));
+        OutputStream out = new FileOutputStream(new File(fileName));
         out.write(fileData);
         out.close();
 
@@ -99,7 +99,7 @@ public class BackendService {
                     "curl",
                     "-X", "PUT",
                     "-H", "Content-Type: text/plain",
-                    "--upload-file", "/tmp/" + fileName,
+                    "--upload-file", fileName,
                     uploadUrl);
 
             Process p = pb.start();
@@ -119,8 +119,13 @@ public class BackendService {
         String fileName = UserID + timestamp.getTime() + fileExtension;
 
         String problemID = fileName.replace(fileExtension, "");
-        String url = bucketHandlerAddress + "/TaskBucket/uploadurl/{taskID}";
+        String url = bucketHandlerAddress + "/TaskBucket/uploadurl/" + problemID;
         BucketResponse bucketResponse = restTemplate.getForObject(url, BucketResponse.class);
+
+        byte[] fileData = dznFile.getBytes();
+        OutputStream out = new FileOutputStream(new File(fileName));
+        out.write(fileData);
+        out.close();
 
         if (bucketResponse != null) {
             String uploadUrl = bucketResponse.getDataFileUrl();
@@ -129,7 +134,7 @@ public class BackendService {
                     "curl",
                     "-X", "PUT",
                     "-H", "Content-Type: text/plain",
-                    "--upload-file", "/tmp/" + fileName,
+                    "--upload-file", fileName,
                     uploadUrl);
 
             Process p = pb.start();
