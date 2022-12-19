@@ -37,7 +37,7 @@ class SolverInstance:
                 "taskId": self.taskID,
                 "user" : self.userID,
                 "content": str(result.solution),
-                "data" : f"{date.today().year}-{date.today().month}-{date.today().day}",
+                "date" : f"{date.today().year}-{date.today().month}-{date.today().day}",
                 "isOptimal" : isOptimal
             })
 
