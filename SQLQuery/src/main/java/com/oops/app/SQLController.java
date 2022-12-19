@@ -225,7 +225,7 @@ public class SQLController {
     public int deleteSolution(String taskId) {
         try (Connection conn = pool.getConnection()) {
             Statement stmt = conn.createStatement();
-            stmt.executeUpdate(String.format("DELETE FROM `solution` WHERE task_id='%s'", taskId));
+            stmt.executeUpdate(String.format("DELETE FROM `solution` WHERE task_id='%s' AND is_optimal != 1", taskId));
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
