@@ -1,4 +1,5 @@
 import asyncio
+from datetime import date
 import requests
 import json
 import time
@@ -33,16 +34,17 @@ class SolverInstance:
     def get_result_as_json(self, result: Result, isOptimal = False):
         return json.dumps(
             {
-                "TaskID": self.taskID,
-                "Solution": str(result.solution),
-                "UserID" : self.userID,
+                "taskId": self.taskID,
+                "user" : self.userID,
+                "content": str(result.solution),
+                "data" : f"{date.today().year}-{date.today().month}-{date.today().day}",
                 "isOptimal" : isOptimal
             })
 
     def notify_intermediate_solution_found(self, result: Result):
-        try:    
+        try:
             result_as_json = self.get_result_as_json(result)
-            requests.post(self.solution_manager_url + "/SolutionFound", data=result_as_json)
+            requests.post(self.solution_manager_url + "/solutions", data=result_as_json)
             logging.info(f"An intermediate solution has been found. Sending it to {self.solution_manager_url}")
         except:
             logging.error("Connection to the solution manager was not possible")
@@ -50,8 +52,8 @@ class SolverInstance:
     def notify_optimal_solution(self, result: Result):
         try:
             result_as_json = self.get_result_as_json(result, True)
-            requests.post(self.solver_manager_url + f"/Solution/{self.taskID}", data=json.dumps({"UserID" : self.userID}))
-            requests.post(self.solution_manager_url + "/SolutionFound", data=result_as_json)
+            requests.post(self.solver_manager_url + f"/solution/{self.taskID}", data=json.dumps({"UserID" : self.userID}))
+            requests.post(self.solution_manager_url + "/solutions", data=result_as_json)
             logging.info(f"An optimal solution has been found. Sending it to {self.solution_manager_url}")
         except:
             logging.error("Connection to the solver manager was not possible")
@@ -129,9 +131,9 @@ class SolverInstance:
     def __init__(self, args):
 
         self.solver_manager_service = os.getenv("SOLVER_MANAGER_SERVICE", "0.0.0.0")
-        self.solution_manager_service = os.getenv("SOLUTION_MANAGER_SERVICE", "0.0.0.0")
+        self.solution_manager_service = os.getenv("DATABASE_SERVICE", "0.0.0.0")
         self.solver_manager_port = os.getenv("SOLVER_MANAGER_PORT", "5000")
-        self.solution_manager_port = os.getenv("SOLUTION_MANAGER_PORT", "5001")
+        self.solution_manager_port = os.getenv("DATABASE_PORT", "5001")
         self.bucket_handler_service = os.getenv("BUCKET_HANDLER_SERVICE", "0.0.0.0")
         self.bucket_handler_port = os.getenv("BUCKET_HANDLER_PORT", "5165")
         

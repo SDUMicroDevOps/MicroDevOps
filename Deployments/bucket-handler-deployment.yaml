@@ -5,7 +5,6 @@ metadata:
   labels:
     app: buckethandler
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: buckethandler
@@ -44,7 +43,7 @@ spec:
     kind: "Deployment"
     name: "buckethandler"
     apiVersion: "v1"
-  minReplicas: 2
+  minReplicas: 1
   maxReplicas: 3
   metrics:
     - type: "Resource"
