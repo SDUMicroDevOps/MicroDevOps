@@ -19,7 +19,10 @@ spec:
           image: oopsaccount/backend:latest
           imagePullPolicy: Always
           ports:
-            - containerPort: 3200
+            - containerPort: 3200 
+          envFrom:
+            - configMapRef:
+                name: green-peace
 ---
 apiVersion: v1
 kind: Service
