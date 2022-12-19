@@ -50,7 +50,7 @@ import io.fabric8.kubernetes.client.KubernetesClientBuilder;
 @SpringBootApplication
 @RestController
 public class SolverManagerController {
-    private static final String databaseManagerService ="http://" + System.getenv().getOrDefault("DATABASE_SERVICE",
+    private static final String databaseManagerService = "http://" + System.getenv().getOrDefault("DATABASE_SERVICE",
             "localhost");
     private static final String databaseManagerPort = System.getenv().getOrDefault("DATABASE_PORT", "8082");
 
@@ -189,7 +189,8 @@ public class SolverManagerController {
             }
         }
     }
-    private void deleteTaskFromDatabase(String taskid)throws Exception{
+
+    private void deleteTaskFromDatabase(String taskid) throws Exception {
         HttpClient client = HttpClient.newHttpClient();
         Gson gson = new Gson();
         var request = HttpRequest.newBuilder(
@@ -199,6 +200,7 @@ public class SolverManagerController {
                 .build();
         HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
     }
+
     private void createSolverJobs(ProblemRequest newProblem) throws Exception {
         for (SolverBody solver : newProblem.getSolversToUse()) {
             createSolverJob(solver, newProblem);
@@ -256,13 +258,6 @@ public class SolverManagerController {
 
     private void createSolverJob(SolverBody solver, ProblemRequest problem) {
         KubernetesClient api = makeKubernetesClient();
-        List<String> command = new LinkedList<>();
-        command.add("/usr/local/bin/python3");
-        command.add("Solver.py");
-        command.add(solver.getSolverName());
-        command.add(String.valueOf(solver.getNumberVCPU()));
-        command.add(problem.getUserID());
-        command.add(problem.getProblemID());
         Map<String, String> labels = new HashMap<>();
         labels.put("user", problem.getUserID());
         labels.put("solver", solver.getSolverName());
@@ -291,7 +286,10 @@ public class SolverManagerController {
                 .addNewContainer()
                 .withName("solver")
                 .withImage("oopsaccount/solver:latest")
-                .withCommand(command)
+                .withCommand("/usr/local/bin/python3")
+                .withArgs("Solver.py", solver.getSolverName(), Integer.toString(solver.getNumberVCPU()),
+                        problem.getUserID(),
+                        problem.getProblemID())
                 .withNewResources()
                 .withRequests(requestedResources)
                 .endResources()
@@ -312,7 +310,7 @@ public class SolverManagerController {
         int solverId = getIdForSolver(solver.getSolverName());
         Date currentDate = Date.from(Instant.now());
         Task task = new Task(problem.getUserID(), solverId, problem.getProblemID(), currentDate,
-                solver.getMaxMemory(), "", "", solver.getNumberVCPU(),solver.getTimeout());
+                solver.getMaxMemory(), "", "", solver.getNumberVCPU(), solver.getTimeout());
         String jsonTask = gson.toJson(task);
         var request = HttpRequest.newBuilder(
                 URI.create(databaseManagerService + ":" + databaseManagerPort + "/tasks"))
