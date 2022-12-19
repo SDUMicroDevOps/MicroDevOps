@@ -6,6 +6,7 @@ export default function SignupForm() {
   const [showSignup, setShowSignup] = useState(false);
   const [username, setUsername] = useState('');
   const [pwd, setPwd] = useState('');
+  console.log('SIGNUP URL: ' + SIGNUP_URL)
 
   function createUser(username, type){
     //types: 1: endUser, 2: admin
