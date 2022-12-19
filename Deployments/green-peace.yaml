@@ -11,6 +11,8 @@ data:
     CONNECTION_NAME=optical-empire-364322:europe-west1:oopssql
     AUTH_SERVICE=auth-service
     AUTH_PORT=3000
+    BACKEND_SERVICE=backend-service
+    BACKEND_PORT=3200
 kind: ConfigMap
 metadata:
   creationTimestamp: null
