@@ -17,6 +17,9 @@ spec:
           image: oopsaccount/solver-manager:latest
           ports:
             - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: green-peace
       serviceAccountName: solvermanager
 ---
 apiVersion: v1

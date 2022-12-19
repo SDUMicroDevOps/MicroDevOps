@@ -1,17 +1,22 @@
 package com.oops.solvermanager.Requests;
 
 public class CancelSolverRequest {
-    private String problemID;
-    private String userID;
+    private String ProblemID;
+    private String UserID;
 
-    CancelSolverRequest() {
+    public CancelSolverRequest() {
+    }
+
+    public CancelSolverRequest(String ProblemID, String UserID) {
+        this.ProblemID = ProblemID;
+        this.UserID = UserID;
     }
 
     public String getProblemID() {
-        return problemID;
+        return ProblemID;
     }
 
     public String getUserID() {
-        return userID;
+        return UserID;
     }
 }

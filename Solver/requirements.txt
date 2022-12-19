@@ -2,3 +2,4 @@
 minizinc >= 0.7.0       #The version of minizinc that the image was first created with
 requests >= 2.22.0      #Requests library used for sending HTTP 
 flake8                  #Linter library to check for errors
+google-cloud-logging    #Add logging support

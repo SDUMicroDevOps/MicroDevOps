@@ -9,83 +9,89 @@ namespace BucketHandlerService.Controllers;
 
 /*
 *   Environment variables relied upon:
-*       GOOGLE_APPLICATION_CREDENTIALS:     The path to a application_default_credentials.json file with access to the project. Hopefully set in gke
+*       GOOGLE_APPLICATION_CREDENTIALS:     The path to a application_default_credentials.json file with access to the project. Is set in GKE
 */
 
 [ApiController]
 [Route("[controller]")]
 public class TaskBucketController : ControllerBase
 {
-    public StorageClient client;
-    public string tasksBucket;
-    public SecretManagerServiceClient secretManager;
+    public StorageClient client { get; set; }
+    public string tasksBucket { get; set; }
+    public SecretManagerServiceClient secretManager { get; set; }
+
+    public UrlSigner urlSigner { get; set; }
 
     public TaskBucketController()
     {
         client = StorageClient.Create();
         secretManager = SecretManagerServiceClient.Create();
         tasksBucket = "microservices22tasks_bucket";
+        urlSigner = InitializeUrlSigner();
     }
 
     [HttpGet("{taskID}")]
-    public string GetMznAndDzn(string taskID)
+    public ActionResult GetMznAndDzn(string taskID)
     {
-        using (var stream = GetSecretCredentials())
+
+        var responseData = new TaskBucketResponse() { TaskID = taskID, MethodAllowed = "GET" };
+        if (!client.ListObjects(tasksBucket).Any(x => x.Name.StartsWith($"{taskID}")))
         {
-            var urlSigner = UrlSigner.FromServiceAccountData(stream);                   //TODO: Use K8 secret for this
-            var responseData = new BucketResponse() { TaskID = taskID, MethodAllowed = "GET" };
-            if (!client.ListObjects(tasksBucket).Any(x => x.Name.StartsWith($"{taskID}")))
-            {
-                throw new ArgumentException("No or too many files matched taskID");
-            }
-
-            var hasDznFile = client.ListObjects(tasksBucket).Any(x => x.Name == $"{taskID}.dzn");
-
-            //The following lines will mean that problems can no longer be downloaded using the same url after 1 day
-            //This means that this endpoint needs to be called before downloading the data everytime
-            responseData.ProblemFileUrl = urlSigner.Sign(tasksBucket, $"{taskID}.mzn", TimeSpan.FromDays(1), HttpMethod.Get);
-            if (hasDznFile)
-            {
-                responseData.DataFileUrl = urlSigner.Sign(tasksBucket, $"{taskID}.dzn", TimeSpan.FromDays(1), HttpMethod.Get);
-            }
-            var jsonData = JsonSerializer.Serialize(responseData);
-            return jsonData;
+            Conflict("No or too many files matched taskID");
         }
+
+        var hasDznFile = client.ListObjects(tasksBucket).Any(x => x.Name == $"{taskID}.dzn");
+
+        //The following lines will mean that problems can no longer be downloaded using the same url after 1 day
+        //This means that this endpoint needs to be called before downloading the data everytime
+        responseData.ProblemFileUrl = urlSigner.Sign(tasksBucket, $"{taskID}.mzn", TimeSpan.FromDays(1), HttpMethod.Get);
+        if (hasDznFile)
+        {
+            responseData.DataFileUrl = urlSigner.Sign(tasksBucket, $"{taskID}.dzn", TimeSpan.FromDays(1), HttpMethod.Get);
+        }
+        var jsonData = JsonSerializer.Serialize(responseData);
+        return Ok(jsonData);
     }
 
-    [HttpGet("uploadurl/{taskID}")]
-    public string PostMzn(string taskID)
+    [HttpGet("UploadUrl/{taskID}")]
+    public ActionResult PostMzn(string taskID)
     {
-        using (var stream = GetSecretCredentials())
-        {
-            var urlSigner = UrlSigner.FromServiceAccountData(stream);   //TODO: Use K8 secret for this
-            var responseData = new BucketResponse() { TaskID = taskID, MethodAllowed = "PUT" };
+        var responseData = new TaskBucketResponse() { TaskID = taskID, MethodAllowed = "PUT" };
 
-            var contentHeaders = new Dictionary<string, IEnumerable<string>>
+        var contentHeaders = new Dictionary<string, IEnumerable<string>>
             {
-                { "Content-Type", new[] { "text/plain" } }
+                { "Content-Type", new[] { "application/json" } }
             };
 
-            UrlSigner.Options options = UrlSigner.Options.FromDuration(TimeSpan.FromDays(1));
+        UrlSigner.Options options = UrlSigner.Options.FromDuration(TimeSpan.FromDays(1));
 
-            UrlSigner.RequestTemplate mznTemplate = UrlSigner.RequestTemplate
-                .FromBucket(tasksBucket)
-                .WithObjectName($"{taskID}.mzn")
-                .WithHttpMethod(HttpMethod.Put)
-                .WithContentHeaders(contentHeaders);
+        UrlSigner.RequestTemplate mznTemplate = UrlSigner.RequestTemplate
+            .FromBucket(tasksBucket)
+            .WithObjectName($"{taskID}.mzn")
+            .WithHttpMethod(HttpMethod.Put)
+            .WithContentHeaders(contentHeaders);
 
-            UrlSigner.RequestTemplate dznTemplate = UrlSigner.RequestTemplate
-                .FromBucket(tasksBucket)
-                .WithObjectName($"{taskID}.mzn")
-                .WithHttpMethod(HttpMethod.Post)
-                .WithContentHeaders(contentHeaders);
+        UrlSigner.RequestTemplate dznTemplate = UrlSigner.RequestTemplate
+            .FromBucket(tasksBucket)
+            .WithObjectName($"{taskID}.dzn")
+            .WithHttpMethod(HttpMethod.Put)
+            .WithContentHeaders(contentHeaders);
 
-            responseData.ProblemFileUrl = urlSigner.Sign(mznTemplate, options);
-            responseData.DataFileUrl = urlSigner.Sign(dznTemplate, options);
+        responseData.ProblemFileUrl = urlSigner.Sign(mznTemplate, options);
+        responseData.DataFileUrl = urlSigner.Sign(dznTemplate, options);
 
-            var jsonData = JsonSerializer.Serialize(responseData);
-            return jsonData;
+        var jsonData = JsonSerializer.Serialize(responseData).Replace("\\u0026", "&");
+        return Ok(jsonData);
+    }
+
+    private UrlSigner InitializeUrlSigner()
+    {
+        UrlSigner signer;
+        using (var stream = GetSecretCredentials())
+        {
+            signer = UrlSigner.FromServiceAccountData(stream);
         }
+        return signer;
     }
 
     private Stream GetSecretCredentials()

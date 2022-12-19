@@ -225,7 +225,7 @@ public class SQLController {
     public int deleteSolution(String taskId) {
         try (Connection conn = pool.getConnection()) {
             Statement stmt = conn.createStatement();
-            stmt.executeUpdate(String.format("DELETE FROM `solution` WHERE task_id='%s'", taskId));
+            stmt.executeUpdate(String.format("DELETE FROM `solution` WHERE task_id='%s' AND is_optimal != 1", taskId));
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -257,10 +257,11 @@ public class SQLController {
                     rs.getInt(2), 
                     rs.getString(3), 
                     rs.getTimestamp(4), 
-                    rs.getInt(5), 
+                    rs.getInt(5),
                     rs.getInt(6), 
-                    rs.getString(7), 
-                    rs.getString(8)));
+                    rs.getInt(7), 
+                    rs.getString(8), 
+                    rs.getString(9)));
             }
         } catch (SQLException e) {
             // TODO Auto-generated catch block
@@ -279,11 +280,12 @@ public class SQLController {
                     rs.getString(1), 
                     rs.getInt(2), 
                     rs.getString(3), 
-                    rs.getTimestamp(4), 
-                    rs.getInt(5), 
+                    rs.getTimestamp(4),
+                    rs.getInt(5),
                     rs.getInt(6), 
-                    rs.getString(7), 
-                    rs.getString(8)));
+                    rs.getInt(7), 
+                    rs.getString(8), 
+                    rs.getString(9)));
             }
         } catch (SQLException e) {
             // TODO Auto-generated catch block
@@ -305,8 +307,9 @@ public class SQLController {
                     rs.getTimestamp(4), 
                     rs.getInt(5), 
                     rs.getInt(6), 
-                    rs.getString(7), 
-                    rs.getString(8)));
+                    rs.getInt(7), 
+                    rs.getString(8), 
+                    rs.getString(9)));
             }
         } catch (SQLException e) {
             // TODO Auto-generated catch block
@@ -318,11 +321,12 @@ public class SQLController {
     public int addTask(TaskQueue taskQueue) {
         try (Connection conn = pool.getConnection()) {
             Statement stmt = conn.createStatement();
-            stmt.executeUpdate(String.format("INSERT INTO `task_queue`(`user`, `solver`, `task_id`, `solver_timestamp`, `vCPU`, `max_memory`, `mzn`, `dzn`) VALUES ('%s','%d','%s','%s','%d','%d','%s','%s')", 
+            stmt.executeUpdate(String.format("INSERT INTO `task_queue`(`user`, `solver`, `task_id`, `solver_timestamp`, `timeout`, `vCPU`, `max_memory`, `mzn`, `dzn`) VALUES ('%s','%d','%s','%s','%d','%d','%d','%s','%s')", 
                 taskQueue.getUsername(), 
                 taskQueue.getSolver(), 
                 taskQueue.getTaskId(), 
-                taskQueue.getSolverTimestamp(), 
+                taskQueue.getSolverTimestamp(),
+                taskQueue.getTimeout(),
                 taskQueue.getVCPU(), 
                 taskQueue.getMaxMemory(), 
                 taskQueue.getMzn(), 
@@ -335,10 +339,10 @@ public class SQLController {
         return 200;
     }
 
-    public int deleteTask(String taskId, int solver) {
+    public int deleteTask(String taskId) {
         try (Connection conn = pool.getConnection()) {
             Statement stmt = conn.createStatement();
-            stmt.executeUpdate(String.format("DELETE FROM `task_queue` WHERE task_id='%s' AND solver='%d'", taskId, solver));
+            stmt.executeUpdate(String.format("DELETE FROM `task_queue` WHERE task_id='%s'", taskId));
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

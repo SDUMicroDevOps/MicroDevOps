@@ -1,0 +1,49 @@
+---
+apiVersion: "apps/v1"
+kind: "Deployment"
+metadata:
+  name: "solver-1"
+  namespace: "default"
+  labels:
+    app: "solver-1"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: "solver-1"
+  template:
+    metadata:
+      labels:
+        app: "solver-1"
+    spec:
+      containers:
+        - name: "test-1"
+          image: "maje419/test:solver"
+          imagePullPolicy: Always
+          command: ["/usr/local/bin/python3"]
+          args: ["Solver.py", "chuffed", "1", "testUser", "testTask"]
+          envFrom:
+            - configMapRef:
+                name: green-peace
+---
+apiVersion: "autoscaling/v2"
+kind: "HorizontalPodAutoscaler"
+metadata:
+  name: "solver-1-hpa-jwjo"
+  namespace: "default"
+  labels:
+    app: "solver-1"
+spec:
+  scaleTargetRef:
+    kind: "Deployment"
+    name: "solver-1"
+    apiVersion: "apps/v1"
+  minReplicas: 1
+  maxReplicas: 1
+  metrics:
+    - type: "Resource"
+      resource:
+        name: "cpu"
+        target:
+          type: "Utilization"
+          averageUtilization: 80
