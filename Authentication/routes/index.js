@@ -21,7 +21,10 @@ router.put('/login', async (req, res) => {
 
     if(user != {} && pwdhash == user.pwd) { 
         var token = jwt.sign(user, secret, {expiresIn: 60 * 60 * 24})
-        res.json({Token:token}).status(200)
+        res.json({
+            Type:user.privilege_id,
+            Token:token
+        }).status(200)
         return
     }
     res.json({error:"Failed to authenticat"}).status(401)
