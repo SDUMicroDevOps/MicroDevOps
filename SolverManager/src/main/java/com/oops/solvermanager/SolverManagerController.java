@@ -164,13 +164,7 @@ public class SolverManagerController {
             if (vcpuMap.containsKey(task.getTaskId())) {
                 vcpuMap.put(task.getTaskId(), task.getVcpu() + vcpuMap.get(task.getTaskId()));
                 solverMap.get(task.getTaskId())
-                        .add(new SolverBody(task.getMaxMemory(), task.getVcpu(), 1000, solverName)); // TODO Get
-                                                                                                     // Steven
-                                                                                                     // to add
-                                                                                                     // timeout
-                                                                                                     // to the
-                                                                                                     // database
-
+                        .add(new SolverBody(task.getMaxMemory(), task.getVcpu(), task.getTimeout(), solverName));
             } else {
                 vcpuMap.put(task.getTaskId(), task.getVcpu());
                 solverMap.put(task.getTaskId(), new LinkedList<SolverBody>());
@@ -185,11 +179,21 @@ public class SolverManagerController {
                 SolverBody[] toUse = (SolverBody[]) solverMap.get(taskid).toArray();
                 ProblemRequest problemRequest = new ProblemRequest(taskid, taskid, toUse, userID);
                 createJob(problemRequest);
+                deleteTaskFromDatabase(taskid);
                 cpuAvailable -= vcpuMap.get(taskid);// TODO delete this from database
             }
         }
     }
-
+    private void deleteTaskFromDatabase(String taskid)throws Exception{
+        HttpClient client = HttpClient.newHttpClient();
+        Gson gson = new Gson();
+        var request = HttpRequest.newBuilder(
+                URI.create(databaseManagerService + ":" + databaseManagerPort + "/tasks/?taskid=" + taskid))
+                .DELETE()
+                .header("accept", "application/json")
+                .build();
+        HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
+    }
     private void createSolverJobs(ProblemRequest newProblem) throws Exception {
         for (SolverBody solver : newProblem.getSolversToUse()) {
             createSolverJob(solver, newProblem);
