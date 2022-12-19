@@ -7,6 +7,7 @@ public class TaskQueue {
     private int solver;
     private String taskId;
     private Timestamp solverTimestamp;
+    private int timeout;
     private int vCPU;
     private int maxMemory;
     private String mzn;
@@ -17,6 +18,7 @@ public class TaskQueue {
     int solver,
     String taskId,
     Timestamp solverTimestamp,
+    int timeout,
     int vCPU,
     int maxMemory,
     String mzn,
@@ -25,6 +27,7 @@ public class TaskQueue {
         this.solver = solver;
         this.taskId = taskId;
         this.solverTimestamp = solverTimestamp;
+        this.timeout = timeout;
         this.vCPU = vCPU;
         this.maxMemory = maxMemory;
         this.mzn = mzn;
@@ -45,6 +48,10 @@ public class TaskQueue {
 
     public Timestamp getSolverTimestamp() {
         return solverTimestamp;
+    }
+
+    public int getTimeout() {
+        return timeout;
     }
 
     public int getVCPU() {
@@ -77,6 +84,10 @@ public class TaskQueue {
 
     public void setSolverTimestamp(Timestamp solverTimestamp) {
         this.solverTimestamp = solverTimestamp;
+    }
+
+    public void setTimeout(int timeout) {
+        this.timeout = timeout;
     }
 
     public void setVCPU(int vCPU) {
