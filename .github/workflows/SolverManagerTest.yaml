@@ -2,7 +2,7 @@ name: Solver Manager Tests
 on:
   push:
       branches:
-        -feature/**
+        - feature/**
         
 jobs:
   build:
