@@ -1,30 +1,37 @@
 import React, { useState } from 'react';
-import EndUserManager from '../classes/EndUserManager';
-import AdminManager from '../classes/AdminManager';
+import axios from 'axios';
+const SIGNUP_URL = 'https://' + process.env.AUTH_SERVICE + ':' + process.env.AUTH_PORT + '/create';
 
-export default function SignupForm({users, setUsers}) {
+export default function SignupForm() {
   const [showSignup, setShowSignup] = useState(false);
   const [username, setUsername] = useState('');
   const [pwd, setPwd] = useState('');
 
-  function createUser(username, role){
-    const newUser = role === 'admin' ? new AdminManager(username) : new EndUserManager(username);
-    if(!users.map(user => user.username).includes(username)){
-      setUsers([...users, newUser]);
-      console.log('user created: ' + newUser.username);
-      return true;
-    } else {
+  function createUser(username, type){
+    //types: 1: endUser, 2: admin
+    axios.post(SIGNUP_URL, {
+      Username: username,
+      Password: pwd,
+      Type: type
+    })
+    .then(function (response) {
+      console.log(response);
+      console.log('user created: ' + username);
       setShowSignup(false);
+      return true;
+    })
+    .catch(function (error) {
+      console.log(error);
+      console.log('user not created: ' + username);
       return false;
-    }
+    });
   }
-
   const handleClick = () => {
     setShowSignup(true);
   };
 
   const handleSubmitEndUser = (e) => {
-    if(createUser(username, 'endUser')){
+    if(createUser(username, 1)){
       setUsername('');
       setPwd('');
       setShowSignup(false)
@@ -32,7 +39,7 @@ export default function SignupForm({users, setUsers}) {
   };
 
   const handleSubmitAdmin = (e) => {
-    if(createUser(username, 'admin')){
+    if(createUser(username, 2)){
       setUsername('');
       setPwd('');
       setShowSignup(false);

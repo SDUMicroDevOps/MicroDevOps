@@ -1,8 +1,7 @@
-import React, { useState, useRef, useEffect, useContext } from 'react';
-//import axios from '../api/axios';
+import React, { useState, useContext } from 'react';
+import axios from 'axios';
 import AuthContext from "../context/AuthProvider";
-//const LOGIN_URL = '/auth';
-
+const LOGIN_URL = 'https://' + process.env.AUTH_SERVICE + ':' + process.env.AUTH_PORT + '/login';
 
 export default function LoginForm({ users}) {
   const [showLogin, setShowLogin] = useState(false);
@@ -14,23 +13,28 @@ export default function LoginForm({ users}) {
     setShowLogin(true);
   };
 
-  function userExists(username){
-    return users.map(user => user.username).includes(username);
-  }
-
-  const validLogin = () => {
-    return(username !== '' && pwd !== '' && userExists(username));
+  const resetForm = () => {
+    setUsername('');
+    setPwd('');
   }
 
   const handleSubmit = (e) => {
-      e.preventDefault();
-      if(validLogin()){
-        setAuth(users.find(user => user.username === username));
-        setUsername('');
-        setPwd('');
-        setShowLogin(false);
-        console.log(auth);
-      }
+    e.preventDefault();
+    const requestBody = {Username: username, Password: pwd}
+    axios.put(LOGIN_URL, requestBody)
+    .then(function (response) {
+      console.log(response);
+      const userType = response.data.Type;
+      const authToken = response.data.Token;
+      setAuth({name: username, type: userType, authToken: authToken});
+      console.log('logged in successfully: ' + auth.name + ', ' + auth.type + ', ' + auth.authToken);
+      resetForm();
+      setShowLogin(false);
+      })
+    .catch(function (error) {
+      console.log(error);
+      console.log('login failed');
+    }); 
   }
 
   return (

@@ -1,13 +1,20 @@
 import React from 'react'
-import EndUserManager from '../classes/EndUserManager'
+import axios from 'axios'
 import ActiveUserComponent from './ActiveUserComponent'
+const ALL_USERS_URL = 'https://' + process.env.DATABASE_SERVICE + ':' + process.env.DATBASE_PORT + '/users';
 
-export default function ActiveUsers({users, setUsers}) {
-    return (
-        users.map( user => {
-            if(user instanceof EndUserManager){
-                return <ActiveUserComponent key={user.username} user={user} users={users} setUsers={setUsers}/>
-            }
+export default function ActiveUsers() {
+    const users = axios.get(ALL_USERS_URL)
+        .then(response => {
+            console.log(response);
+            return response.data;
         })
+        .catch(error => {
+            console.log(error);
+            return [];
+        });
+    return (
+        users.map( user => { return <ActiveUserComponent key={user.username} user={user}/>}
+        )
     )
 }

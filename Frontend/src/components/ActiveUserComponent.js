@@ -1,18 +1,16 @@
-import React, {useState} from 'react'
+import React from 'react'
 import UserComponent from './UserComponent'
 import SetAllocatedVcpuComponent from './SetAllocatedVcpuComponent'
 import RunningVcpuComponent from './RunningVcpuComponent';
 
-export default function ActiveUserComponent({user, users, setUsers}) {
-  //const [active, setActive] = useState(false);
+export default function ActiveUserComponent({user}) {
   function setAllocatedVcpus(newNum){
-    user.maxvcpus = newNum; 
-    //setActive(false);
+    user.vCPULimit = newNum; 
   }
   return (
     <div className="running-solvers-view">
         <UserComponent user={user}/>
-        <RunningVcpuComponent availableVcpus={user.maxvcpus}/>
+        <RunningVcpuComponent availableVcpus={user.vCPULimit}/>
         <SetAllocatedVcpuComponent setAllocatedVcpus={setAllocatedVcpus}/>
     </div>
   )
