@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 import AuthContext from "../context/AuthProvider";
-const LOGIN_URL = 'https://' + process.env.AUTH_SERVICE + ':' + process.env.AUTH_PORT + '/login';
+const LOGIN_URL = 'http://' + process.env.AUTH_SERVICE + ':' + process.env.AUTH_PORT + '/login';
 
 export default function LoginForm() {
   const [showLogin, setShowLogin] = useState(false);
