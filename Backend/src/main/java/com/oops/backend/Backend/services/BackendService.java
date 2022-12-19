@@ -38,7 +38,8 @@ import com.oops.backend.Backend.requests.SolveRequest;
 public class BackendService {
     private String solverManagerAddress = "http://" + System.getenv("SOLVER_MANAGER_SERVICE") + ":"
             + System.getenv("SOLVER_MANAGER_PORT");
-    private String dbServiceAddress = "http://" + System.getenv("DATABASE_SERVICE") + ":" + System.getenv("DATABASE_PORT");
+    private String dbServiceAddress = "http://" + System.getenv("DATABASE_SERVICE") + ":"
+            + System.getenv("DATABASE_PORT");
     private String bucketHandlerAddress = "http://" + System.getenv("BUCKET_HANDLER_SERVICE") + ":"
             + System.getenv("BUCKET_HANDLER_PORT");
 
@@ -76,12 +77,14 @@ public class BackendService {
     }
 
     public String addMznData(String UserID, MultipartFile mznFile) throws IOException, InterruptedException {
-        String url = bucketHandlerAddress + "/TaskBucket/uploadurl/{taskID}";
-        BucketResponse bucketResponse = restTemplate.getForObject(url, BucketResponse.class);
-
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+
         String fileExtension = StringUtils.cleanPath(mznFile.getOriginalFilename());
         String fileName = UserID + timestamp.getTime() + fileExtension;
+        String problemID = fileName.replace(fileExtension, "");
+
+        String url = bucketHandlerAddress + "/TaskBucket/uploadurl/" + problemID;
+        BucketResponse bucketResponse = restTemplate.getForObject(url, BucketResponse.class);
 
         byte[] fileData = mznFile.getBytes();
         OutputStream out = new FileOutputStream(new File("/tmp/" + fileName));
@@ -106,17 +109,18 @@ public class BackendService {
         File file = new File(fileName);
         file.delete();
 
-        return fileName.replace(fileExtension, "");
+        return problemID;
     }
 
     public String addDznData(String UserID, MultipartFile dznFile) throws IOException, InterruptedException {
-        String url = bucketHandlerAddress + "/TaskBucket/uploadurl/{taskID}";
-        BucketResponse bucketResponse = restTemplate.getForObject(url, BucketResponse.class);
-
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
         String fileExtension = StringUtils.cleanPath(dznFile.getOriginalFilename());
         String fileName = UserID + timestamp.getTime() + fileExtension;
+
+        String problemID = fileName.replace(fileExtension, "");
+        String url = bucketHandlerAddress + "/TaskBucket/uploadurl/{taskID}";
+        BucketResponse bucketResponse = restTemplate.getForObject(url, BucketResponse.class);
 
         if (bucketResponse != null) {
             String uploadUrl = bucketResponse.getDataFileUrl();
@@ -134,7 +138,7 @@ public class BackendService {
         File file = new File(fileName);
         file.delete();
 
-        return fileName.replace(fileExtension, "");
+        return problemID;
     }
 
     public String getDznData(String ProblemID) {
