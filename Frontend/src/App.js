@@ -1,14 +1,11 @@
 import './App.css';
 import { useState, useContext } from 'react';
-import { v4 as uuidv4 } from 'uuid';
 import Header from './components/Header';
 import LoginForm from './components/LoginForm'
 import UserInterfaceComponent from './components/UserInterfaceComponent';
 import SignupForm from './components/SignupForm';
 import AdminInterfaceComponent from './components/AdminInterfaceComponent';
 import AuthContext from "./context/AuthProvider";
-import EndUserManager from './classes/EndUserManager';
-import AdminManager from './classes/AdminManager';
 import SolverManager from './classes/SolverManager';
 
 function App() {
@@ -20,7 +17,6 @@ function App() {
     new SolverManager('solver 5')
   ];
   const { auth } = useContext(AuthContext);
-  const [users, setUsers] = useState([new EndUserManager("user"), new AdminManager("a")]);
   const [solvers, setSolvers] = useState(testList);
   const [running, setRunning] = useState(false);
 
@@ -35,10 +31,10 @@ function App() {
   return (
     <div className="App">
       <Header className="App-header"/>
-      <LoginForm users={users}/>
-      <SignupForm users={users} setUsers={setUsers} />
-      { auth instanceof EndUserManager ? <UserInterfaceComponent solvers={solvers} setSolvers={setSolvers} running={running} setRunning={setRunning}/> 
-      : auth instanceof AdminManager ? <AdminInterfaceComponent solvers={solvers} setSolvers={setSolvers} running={running} setRunning={setRunning} addSolver={addSolver} removeSolver={removeSolver} users={users} setUsers={setUsers}/> 
+      <LoginForm />
+      <SignupForm />
+      { auth.role === 1 ? <UserInterfaceComponent solvers={solvers} setSolvers={setSolvers} running={running} setRunning={setRunning}/> 
+      : auth.role === 2 ? <AdminInterfaceComponent solvers={solvers} setSolvers={setSolvers} running={running} setRunning={setRunning} addSolver={addSolver} removeSolver={removeSolver}/> 
       : <h3>Please sign in to continue</h3>}
     </div>
   );

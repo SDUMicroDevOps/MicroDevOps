@@ -1,10 +1,10 @@
 import React from 'react'
 import ActiveUsers from './ActiveUsers'
 
-export default function AdminActiveUsersWrapper({users, setUsers}) {
+export default function AdminActiveUsersWrapper() {
   return (
     <div className="super-button active-users-view">
-        <ActiveUsers users={users} setUsers={setUsers}/>
+        <ActiveUsers/>
     </div>
   )
 }
