@@ -7,14 +7,14 @@
 # To get a newer version, you will need to update the SHA.
 # You can also reference a tag or branch, but the action may change without warning.
 
-name: Deploy BucketHandler To GKE
+name: Deploy Frontend To GKE
 
 on:
   push:
     branches:
       - main
     paths:
-      - BucketHandlerService/**
+      - Frontend/**
 env:
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
   GKE_CLUSTER: public-cluster
