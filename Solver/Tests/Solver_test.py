@@ -26,7 +26,7 @@ class TestSolverMethods(unittest.TestCase):
         json = solver.get_result_as_json(result)
 
         #Assert
-        self.assertEqual(json, '{"taskId": "tid", "user": "uid", "content": "123", "data": "2022-12-19", "isOptimal": false}')
+        self.assertEqual(json, '{"taskId": "tid", "user": "uid", "content": "123", "date": "2022-12-19", "isOptimal": false}')
 
     def test_get_result_as_json_isOptimal_is_assigned(self):
         #Arrange
@@ -37,7 +37,7 @@ class TestSolverMethods(unittest.TestCase):
         json = solver.get_result_as_json(result, True)
 
         #Assert
-        self.assertEqual(json, '{"taskId": "tid", "user": "uid", "content": "123", "data": "2022-12-19", "isOptimal": true}')
+        self.assertEqual(json, '{"taskId": "tid", "user": "uid", "content": "123", "date": "2022-12-19", "isOptimal": true}')
 
     def test_solver_reads_env_variables(self):
         #Arrange
