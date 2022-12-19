@@ -24,8 +24,6 @@ jobs:
     name: Apply all deployments
     runs-on: ubuntu-latest
     environment: production
-    env:
-      SWAP: "{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"date\":\"`date +'%s'`\"}}}}}"
     
     steps:
     - name: Checkout
@@ -52,9 +50,9 @@ jobs:
     # Deploy the Docker image to the GKE cluster
     - name: Deploy
       run: |-
-        kubectl patch deployment buckethandler -p \ $SWAP
-        kubectl patch deployment auth -p \ $SWAP
-        kubectl patch deployment backend -p \ $SWAP
-        kubectl patch deployment frontend -p \ $SWAP
-        kubectl patch deployment solver-manager -p \ $SWAP
-        kubectl patch deployment sqlquery -p \ $SWAP
+        kubectl patch deployment buckethandler -p \ "{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"date\":\"`date +'%s'`\"}}}}}"
+        kubectl patch deployment auth -p \ "{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"date\":\"`date +'%s'`\"}}}}}"
+        kubectl patch deployment backend -p \ "{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"date\":\"`date +'%s'`\"}}}}}"
+        kubectl patch deployment frontend -p \ "{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"date\":\"`date +'%s'`\"}}}}}"
+        kubectl patch deployment solver-manager -p \ "{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"date\":\"`date +'%s'`\"}}}}}"
+        kubectl patch deployment sqlquery -p \ "{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"date\":\"`date +'%s'`\"}}}}}"
