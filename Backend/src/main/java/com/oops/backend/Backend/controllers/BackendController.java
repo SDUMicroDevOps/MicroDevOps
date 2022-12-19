@@ -83,7 +83,7 @@ public class BackendController {
         }
     }
 
-    @GetMapping("/Solvers/{UserID}")
+    @GetMapping("/Solvers/user/{UserID}")
     public ResponseEntity<String> getSolversForUser(@PathVariable String UserID) {
         String solvers;
         try {
@@ -95,7 +95,7 @@ public class BackendController {
 
     }
 
-    @GetMapping("/Solvers/{TaskID}")
+    @GetMapping("/Solvers/task/{TaskID}")
     public ResponseEntity<String> getSolversForTask(@PathVariable String ProblemID) {
         String solvers;
         try {
