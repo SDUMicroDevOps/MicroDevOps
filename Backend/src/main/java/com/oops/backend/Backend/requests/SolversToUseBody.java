@@ -3,14 +3,14 @@ package com.oops.backend.Backend.requests;
 public class SolversToUseBody {
     private int NumberVCPU;
     private int MaxMemory;
-    private int TimeOutPeriod;
+    private int TimeOut;
     private String SolverName;
 
-    public SolversToUseBody(String SolverName, int NumberVCPU, int MaxMemory, int TimeOutPeriod) {
+    public SolversToUseBody(String SolverName, int NumberVCPU, int MaxMemory, int TimeOut) {
         this.SolverName = SolverName;
         this.NumberVCPU = NumberVCPU;
         this.MaxMemory = MaxMemory;
-        this.TimeOutPeriod = TimeOutPeriod;
+        this.TimeOut = TimeOut;
     }
 
     public String getSolverName() {
@@ -37,12 +37,12 @@ public class SolversToUseBody {
         this.MaxMemory = MaxMemory;
     }
 
-    public int getTimeOutPeriod() {
-        return TimeOutPeriod;
+    public int getTimeOut() {
+        return TimeOut;
     }
 
-    public void setTimeOutPeriod(int TimeOutPeriod) {
-        this.TimeOutPeriod = TimeOutPeriod;
+    public void setTimeOut(int TimeOut) {
+        this.TimeOut = TimeOut;
     }
 
 }
