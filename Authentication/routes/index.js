@@ -79,7 +79,7 @@ router.post('/create', async (req, res) => {
     var newUser = {
         username:req.body.Username,
         pwd:crypto.createHash("sha256").update(req.body.Password).digest("hex"),
-        privilege_id:res.body.Type,
+        privilege_id:req.body.Type,
         vcpulimit:6
     }
 
