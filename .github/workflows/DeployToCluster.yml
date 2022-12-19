@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     env:
-      Update_Annotation: \"{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"date\":\"`date +'%s'`\"}}}}}"
+      Update_Annotation: \"{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"date\":\"`date +'\%s'`\"}}}}}"
     
     steps:
     - name: Checkout
