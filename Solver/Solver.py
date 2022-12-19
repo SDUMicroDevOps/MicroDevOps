@@ -4,6 +4,8 @@ import json
 import time
 import os
 from minizinc import Instance, Model, Solver, Result
+import google.cloud.logging
+import logging
 import sys
 
 '''
@@ -24,6 +26,9 @@ Environment variables expected:
     BUCKET_HANDLER_PORT                     - The port for the bucket handler service
 '''
 class SolverInstance:
+    def setup_logging():
+        client = google.cloud.logging.Client()
+        client.setup_logging()
 
     def get_result_as_json(self, result: Result, isOptimal = False):
         return json.dumps(
@@ -37,18 +42,19 @@ class SolverInstance:
     def notify_intermediate_solution_found(self, result: Result):
         try:    
             result_as_json = self.get_result_as_json(result)
-            print("solution: " + str(result_as_json))
             requests.post(self.solution_manager_url + "/SolutionFound", data=result_as_json)
+            logging.info(f"An intermediate solution has been found. Sending it to {self.solution_manager_url}")
         except:
-            print("Intermediate solution failed")
-
-    def notify_final_solution_found(self, result: Result):
+            logging.error("Connection to the solution manager was not possible")
+            
+    def notify_optimal_solution(self, result: Result):
         try:
             result_as_json = self.get_result_as_json(result, True)
             requests.post(self.solver_manager_url + f"/Solution/{self.taskID}", data=json.dumps({"UserID" : self.userID}))
             requests.post(self.solution_manager_url + "/SolutionFound", data=result_as_json)
+            logging.info(f"An optimal solution has been found. Sending it to {self.solution_manager_url}")
         except:
-            print("Final solution failed")
+            logging.error("Connection to the solver manager was not possible")
         
     #Downloads and saves the files corresponding to this taskID
     #Returns True if a DZN file was found, otherwise returns false
@@ -86,15 +92,21 @@ class SolverInstance:
         try:
             solver = Solver.lookup(self.solver_name)
         except:
+            logging.warning(f"No solver found locally with name {self.solver_name}. Looking in bucket.")
             await self.download_solver()
             solver = Solver.lookup(self.solver_name, refresh=True)
+
+        logging.info("Solver found")
+        
         minizinc_model = Model()
 
         has_dzn_file = await self.get_files()
         minizinc_model.add_file("mzn.mzn")
+        logging.info("Mzn file found.")
 
         if (has_dzn_file):
-            minizinc_model.add_file("dzn.dzn")      
+            minizinc_model.add_file("dzn.dzn")     
+            logging.info("Dzn file found") 
 
         to_solve = Instance(solver, minizinc_model)
         
@@ -102,7 +114,7 @@ class SolverInstance:
 
         zero_time = time.time()             #Returns current time in seconds
         next_update_interval = zero_time    #Always send first satisfied solution
-
+        logging.info("Looking for solutions:")
         async for i in result:
             timer = time.time() - zero_time
             if ( (zero_time + timer) >= next_update_interval):    #Post the first solution, and thereafter one every 20 seconds
@@ -112,9 +124,10 @@ class SolverInstance:
             if (i.solution != None):
                 bestResult = i
 
-        self.notify_final_solution_found(bestResult)
+        self.notify_optimal_solution(bestResult)
 
     def __init__(self, args):
+
         self.solver_manager_service = os.getenv("SOLVER_MANAGER_SERVICE", "0.0.0.0")
         self.solution_manager_service = os.getenv("SOLUTION_MANAGER_SERVICE", "0.0.0.0")
         self.solver_manager_port = os.getenv("SOLVER_MANAGER_PORT", "5000")
@@ -126,6 +139,8 @@ class SolverInstance:
         self.number_processors = args[2]
         self.userID = args[3]
         self.taskID = args[4]
+
+        logging.info(f"Starting solver with arguments: {self.solver_name}, {self.number_processors}, {self.userID}, {self.taskID}")
 
         self.solver_manager_url = f"http://{self.solver_manager_service}:{self.solver_manager_port}"
         self.solution_manager_url = f"http://{self.solution_manager_service}:{self.solution_manager_port}"
