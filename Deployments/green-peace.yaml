@@ -9,6 +9,8 @@ data:
     DB_PASS=Yc67i?\&7U"_yqO@
     DB_NAME=oopsdb
     CONNECTION_NAME=optical-empire-364322:europe-west1:oopssql
+    AUTH_SERVICE=auth-service
+    AUTH_PORT=3000
 kind: ConfigMap
 metadata:
   creationTimestamp: null
