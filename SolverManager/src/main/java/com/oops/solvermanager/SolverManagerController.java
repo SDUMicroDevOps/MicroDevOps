@@ -180,7 +180,7 @@ public class SolverManagerController {
                 ProblemRequest problemRequest = new ProblemRequest(taskid, taskid, toUse, userID);
                 createJob(problemRequest);
                 deleteTaskFromDatabase(taskid);
-                cpuAvailable -= vcpuMap.get(taskid);// TODO delete this from database
+                cpuAvailable -= vcpuMap.get(taskid);
             }
         }
     }
