@@ -2,6 +2,11 @@ package com.oops.backend.Backend.services;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.net.http.HttpResponse.BodyHandlers;
 import java.sql.Timestamp;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -13,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import com.oops.backend.Backend.models.BucketResponse;
 import com.oops.backend.Backend.models.Solution;
 import com.oops.backend.Backend.models.Solver;
@@ -120,16 +126,31 @@ public class BackendService {
 
         String problemID = fileName.replace(fileExtension, "");
         String url = bucketHandlerAddress + "/TaskBucket/uploadurl/" + problemID;
-        BucketResponse bucketResponse = restTemplate.getForObject(url, BucketResponse.class);
+
+        HttpClient client = HttpClient.newHttpClient();
+        Gson gson = new Gson();
+        var request = HttpRequest.newBuilder(
+                URI.create(
+                        bucketHandlerAddress + "/TaskBucket/uploadurl/" + problemID))
+                .GET()
+                .header("accept", "application/json")
+                .build();
+        HttpResponse<String> response = client.send(request,
+                BodyHandlers.ofString());
+        BucketResponse bucketResponse = gson.fromJson(response.body(), BucketResponse.class);
+        // return solver.getSolverName();
+
+        // BucketResponse bucketResponse = restTemplate.getForObject(url,
+        // BucketResponse.class);
 
         byte[] fileData = dznFile.getBytes();
         OutputStream out = new FileOutputStream(new File(fileName));
         out.write(fileData);
         out.close();
 
-        if (bucketResponse != null) {
-            String uploadUrl = bucketResponse.getDataFileUrl();
+        String uploadUrl = bucketResponse.getDataFileUrl();
 
+        if (bucketResponse != null) {
             ProcessBuilder pb = new ProcessBuilder(
                     "curl",
                     "-X", "PUT",
@@ -140,6 +161,7 @@ public class BackendService {
             Process p = pb.start();
             p.waitFor();
         }
+
         File file = new File(fileName);
         file.delete();
 
