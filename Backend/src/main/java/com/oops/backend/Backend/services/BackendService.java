@@ -81,7 +81,8 @@ public class BackendService {
         HttpEntity<SolveRequest> requestEntity = new HttpEntity<SolveRequest>(solveRequest);
 
         System.out.println(requestEntity.getHeaders().toString());
-        System.out.println(requestEntity.getBody().toString());
+        System.out.println(requestEntity.getBody().getProblemID());
+        System.out.println(requestEntity.getBody().getDataID());
 
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(url, requestEntity,
