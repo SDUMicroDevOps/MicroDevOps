@@ -44,7 +44,7 @@ router.get('/verify', async (req, res) => {
     try {
         var decoded = jwt.verify(token, secret)
         var user = await fetch(baseURL+'/users/'+decoded.username).then((response) => {return response.json()})
-        if(user != {} && user.pwd == decoded.pwd && user.privilege_id == decoded.privilege_id && req.body.Username == user.username) {
+        if(user != {} && user.pwd == decoded.pwd && user.privilege_id == decoded.privilege_id) {
             res.sendStatus(401)
             return
         }
@@ -93,6 +93,7 @@ router.post('/create', async (req, res) => {
 
     if(response != 200) {
         res.json({error:"Failed to create new user"}).status(400)
+        return
     }
     res.sendStatus(200)
 })
