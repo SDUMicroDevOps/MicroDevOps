@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 import AuthContext from "../context/AuthProvider";
-const LOGIN_URL = 'http://35.228.41.77:3000/login';
+const LOGIN_URL = 'http://34.88.245.201:3000/login';
 
 export default function LoginForm() {
   const [showLogin, setShowLogin] = useState(false);
