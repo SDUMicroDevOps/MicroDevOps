@@ -65,7 +65,7 @@ public class BackendService {
     }
 
     public void postSolversToSolverManager(SolveRequest request) {
-        String url = solverManagerAddress + "/New";
+        String url = solverManagerAddress + "/new";
         restTemplate.postForEntity(url, request, SolveRequest.class);
     }
 
@@ -112,8 +112,6 @@ public class BackendService {
         String url = bucketHandlerAddress + "/TaskBucket/uploadurl/" + problemID;
         ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
 
-        System.out.println("response:" + response.getBody());
-
         ObjectMapper objectMapper = new ObjectMapper();
         BucketResponse bucketResponse = objectMapper.readValue(response.getBody(), BucketResponse.class);
 
@@ -135,8 +133,6 @@ public class BackendService {
 
             Process p = pb.start();
             p.waitFor();
-
-            System.out.println("process info: " + p.exitValue());
         }
 
         File file = new File(fileName);
