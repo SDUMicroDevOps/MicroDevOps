@@ -135,6 +135,7 @@ public class SolverManagerController {
     public ResponseEntity<String> solutionFound(@PathVariable String taskID, @RequestBody SolutionFound req)
             throws Exception {
         CancelTaskRequest cancelReq = new CancelTaskRequest(req.getUserID());
+        System.out.println(req.getUserID());
         cancelTask(taskID, cancelReq);
         fetchJobFromQueue(req.getUserID());
         System.out.println("Solution found for problem: " + taskID);
