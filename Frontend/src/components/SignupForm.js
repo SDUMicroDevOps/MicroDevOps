@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 // Try to hard code it bro
-const SIGNUP_URL = 'http://' + process.env.AUTH_SERVICE + ':' + process.env.AUTH_PORT + '/create';
+const SIGNUP_URL = 'http://' + process.env.REACT_APP_AUTH_SERVICE + ':' + process.env.REACT_APP_AUTH_PORT + '/create';
 
 export default function SignupForm() {
   const [showSignup, setShowSignup] = useState(false);

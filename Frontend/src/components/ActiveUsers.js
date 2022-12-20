@@ -1,7 +1,7 @@
 import React from 'react'
 import axios from 'axios'
 import ActiveUserComponent from './ActiveUserComponent'
-const ALL_USERS_URL = 'http://' + process.env.DATABASE_SERVICE + ':' + process.env.DATBASE_PORT + '/users';
+const ALL_USERS_URL = 'http://' + process.env.REACT_APP_DATABASE_SERVICE + ':' + process.env.REACT_APP_DATBASE_PORT + '/users';
 
 export default function ActiveUsers() {
     const users = axios.get(ALL_USERS_URL)
