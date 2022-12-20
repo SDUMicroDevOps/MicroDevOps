@@ -15,7 +15,7 @@ export default function ActiveUsers() {
             return [];
         });
     }
-    const users = getUsers()
+    const users = []//getUsers()
     return (
         users.map( user => { return <ActiveUserComponent key={user.username} user={user}/>}
         )
