@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
@@ -139,7 +140,12 @@ public class SolverManagerController {
         System.out.println("Solution found for problem: " + taskID);
         return ResponseEntity.status(HttpStatus.OK).body("Removing other solvers working on task: " + taskID);
     }
+    @PostMapping("/debug")
+    public ResponseEntity<String> debugTest(@RequestBody String test){
+        System.out.println(test);
+        return ResponseEntity.status(HttpStatus.OK).body("Debug of the century");
 
+    }
     private SolverBody[] constructSolversFromJobs(List<Job> jobs) {
         SolverBody[] solvers = new SolverBody[jobs.size()];
         for (int i = 0; i < jobs.size(); i++) {
@@ -304,7 +310,11 @@ public class SolverManagerController {
                 .endSpec()
                 .build();
         api.batch().v1().jobs().inNamespace("default").resource(job).create();
-        System.out.print("starting solver: " + problem.getProblemID().toLowerCase() + solver.getSolverName().toLowerCase());
+        System.out.println("starting solver: " + problem.getProblemID().toLowerCase() + solver.getSolverName().toLowerCase());
+        System.out.println("Name: " + solver.getSolverName());
+        System.out.println("Timeout: " + solver.getTimeout());
+        System.out.println("Memory: " + solver.getMaxMemory());
+        System.out.println("VCPU: " + solver.getNumberVCPU());
     }
 
     private void addJobToQueue(SolverBody solver, ProblemRequest problem) throws IOException, InterruptedException {
