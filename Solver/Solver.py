@@ -148,7 +148,9 @@ class SolverInstance:
         self.solver_manager_url = f"http://{self.solver_manager_service}:{self.solver_manager_port}"
         self.solution_manager_url = f"http://{self.solution_manager_service}:{self.solution_manager_port}"
         self.bucket_handler_url = f"http://{self.bucket_handler_service}:{self.bucket_handler_port}"
-        requests.post(f"{self.solver_manager_url}/debug", data=f"Starting solver with arguments: {self.solver_name}, {self.number_processors}, {self.userID}, {self.taskID}")
+        
+        if __name__ == "__main__":
+            requests.post(f"{self.solver_manager_url}/debug", data=f"Starting solver with arguments: {self.solver_name}, {self.number_processors}, {self.userID}, {self.taskID}")
 
         
 if __name__ == "__main__":
