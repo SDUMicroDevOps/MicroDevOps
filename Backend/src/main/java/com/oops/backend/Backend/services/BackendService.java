@@ -84,8 +84,10 @@ public class BackendService {
                 .POST(BodyPublishers.ofString(json_string))
                 .header("accept", "application/json")
                 .build();
+
+        System.out.println("Contacting the SolverManager at adress: " + sm_request.uri().toString());
         var resp = client.send(sm_request, BodyHandlers.ofString()); // TODO, maybe make some sort of error handling here
-        System.out.println(resp.statusCode());
+        System.out.println("Response from SolverManager: " + resp.statusCode());
     }
 
     public String getAllLegalSolvers() throws JsonProcessingException {
