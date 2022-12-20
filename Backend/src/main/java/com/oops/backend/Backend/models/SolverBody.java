@@ -1,9 +1,15 @@
 package com.oops.backend.Backend.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class SolverBody {
+    @JsonProperty("SolverName")
     private String SolverName;
+    @JsonProperty("NumberVCPU")
     private int NumberVCPU;
+    @JsonProperty("MaxMemory")
     private int MaxMemory; // Max Memory in MB
+    @JsonProperty("TimeOut")
     private int Timeout; // Seconds to Timeout
 
     public SolverBody() {

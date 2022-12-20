@@ -33,17 +33,14 @@ public class BackendController {
     private BackendService backendService = new BackendService();
 
     @PostMapping("/Solve")
-    public ResponseEntity<String> startSolvers(@RequestBody String request) throws JsonMappingException, JsonProcessingException {
+    public ResponseEntity<String> startSolvers(@RequestBody String request) {
         System.out.println(request);
-        ObjectMapper mapper = new ObjectMapper();
-        SolveRequest request2 = mapper.readValue(request, SolveRequest.class);
-        System.out.println("Problem: " + request2.getProblemID());
-        System.out.println("Data: " + request2.getDataID());
-        System.out.println("Solvers length: " + request2.getSolversToUse().length);
-        backendService.postSolversToSolverManager(request2);
+        // backendService.postSolversToSolverManager(request);
 
-        String taskID = request2.getProblemID();
-        return new ResponseEntity<String>(taskID, HttpStatus.OK);
+        // String taskID = request.getProblemID();
+
+        return new ResponseEntity<String>("taskID", HttpStatus.OK);
+
     }
 
     @GetMapping("/ProblemInstance/{ProblemID}")
