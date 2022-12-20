@@ -37,7 +37,7 @@ export default function LoginForm() {
       setShowLogin(false);
       })
     .catch(function (error) {
-      window.alert(error + 'Login failed: User already exists');
+      window.alert(error.response.status + 'Login failed');
       console.log(error);
       console.log('login failed');
     }); 
