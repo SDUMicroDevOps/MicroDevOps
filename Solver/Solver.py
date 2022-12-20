@@ -42,9 +42,8 @@ class SolverInstance:
         try:
             result_as_json = self.get_result_as_json(result)
             requests.post(self.solution_manager_url + "/solutions", json=result_as_json)
-            logging.info(f"An intermediate solution has been found. Sending it to {self.solution_manager_url}")
         except:
-            logging.error("Connection to the solution manager was not possible")
+            self.logger(f"{self.solver_manager_url}/debug", data="Connection to the solution manager was not possible")
             
     def notify_optimal_solution(self, result: Result):
         try:
@@ -53,7 +52,8 @@ class SolverInstance:
             requests.post(self.solution_manager_url + "/solutions", json=result_as_json)
             logging.info(f"An optimal solution has been found. Sending it to {self.solution_manager_url}")
         except:
-            logging.error("Connection to the solver manager was not possible")
+            self.logger(f"{self.solver_manager_url}/debug", data="Connection to the solver manager was not possible")
+
         
     #Downloads and saves the files corresponding to this taskID
     #Returns True if a DZN file was found, otherwise returns false
@@ -91,21 +91,16 @@ class SolverInstance:
         try:
             solver = Solver.lookup(self.solver_name)
         except:
-            logging.warning(f"No solver found locally with name {self.solver_name}. Looking in bucket.")
             await self.download_solver()
             solver = Solver.lookup(self.solver_name, refresh=True)
 
-        logging.info("Solver found")
-        
         minizinc_model = Model()
 
         has_dzn_file = await self.get_files()
         minizinc_model.add_file("mzn.mzn")
-        logging.info("Mzn file found.")
 
         if (has_dzn_file):
             minizinc_model.add_file("dzn.dzn")     
-            logging.info("Dzn file found") 
 
         to_solve = Instance(solver, minizinc_model)
         
@@ -113,7 +108,6 @@ class SolverInstance:
 
         zero_time = time.time()             #Returns current time in seconds
         next_update_interval = zero_time    #Always send first satisfied solution
-        logging.info("Looking for solutions:")
         async for i in result:
             timer = time.time() - zero_time
             if ( (zero_time + timer) >= next_update_interval):    #Post the first solution, and thereafter one every 20 seconds
