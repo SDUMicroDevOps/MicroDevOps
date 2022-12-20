@@ -58,4 +58,6 @@ jobs:
         
     # Deploy the Docker image to the GKE cluster
     - name: Deploy
-      run: kubectl patch deployment sqlquery -p \ "{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"date\":\"`date +'%s'`\"}}}}}"
+      run: |
+        kubeclt apply -f Deployments/sql-query-deployment.yaml
+        kubectl patch deployment sqlquery -p \ "{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"date\":\"`date +'%s'`\"}}}}}"
