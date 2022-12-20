@@ -50,7 +50,6 @@ class SolverInstance:
             result_as_json = self.get_result_as_json(result, True)
             requests.post(self.solver_manager_url + f"/solution/{self.taskID}", json=json.dumps({"userID" : self.userID}))
             requests.post(self.solution_manager_url + "/solutions", json=result_as_json)
-            logging.info(f"An optimal solution has been found. Sending it to {self.solution_manager_url}")
         except:
             self.logger(f"{self.solver_manager_url}/debug", data="Connection to the solver manager was not possible")
 
@@ -126,9 +125,11 @@ class SolverInstance:
             self.logger = print_log
         
 
-        self.solver_manager_service = os.getenv("SOLVER_MANAGER_SERVICE", "0.0.0.0")
+        # self.solver_manager_service = os.getenv("SOLVER_MANAGER_SERVICE", "0.0.0.0")
+        self.solver_manager_service = "solver-manager-service"
         self.solution_manager_service = os.getenv("DATABASE_SERVICE", "0.0.0.0")
-        self.solver_manager_port = os.getenv("SOLVER_MANAGER_PORT", "5000")
+        # self.solver_manager_port = os.getenv("SOLVER_MANAGER_PORT", "5000")
+        self.solver_manager_port = 80
         self.solution_manager_port = os.getenv("DATABASE_PORT", "5001")
         self.bucket_handler_service = os.getenv("BUCKET_HANDLER_SERVICE", "0.0.0.0")
         self.bucket_handler_port = os.getenv("BUCKET_HANDLER_PORT", "5165")
