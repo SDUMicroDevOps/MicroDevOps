@@ -12,6 +12,7 @@ import java.net.http.HttpResponse;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.sql.Timestamp;
+import java.util.List;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -27,12 +28,14 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.oops.backend.Backend.models.BucketAddResponse;
 import com.oops.backend.Backend.models.BucketResponse;
 import com.oops.backend.Backend.models.Solution;
 import com.oops.backend.Backend.models.Solver;
 import com.oops.backend.Backend.models.SolverBody;
 import com.oops.backend.Backend.models.TaskQueue;
+import com.oops.backend.Backend.models.User;
 import com.oops.backend.Backend.requests.CancelSolverRequest;
 import com.oops.backend.Backend.requests.CancelTaskRequest;
 import com.oops.backend.Backend.requests.CancelUserTasksRequest;
@@ -70,10 +73,25 @@ public class BackendService {
     public BackendService() {
     }
 
-    // public void postSolversToSolverManager(SolveRequest request) {
-    // String url = solverManagerAddress + "/new";
-    // restTemplate.postForEntity(url, request, SolveRequest.class);
-    // }
+    public List<User> getUsers() throws IOException, InterruptedException {
+        String url = dbServiceAddress + "/users";
+        HttpClient client = HttpClient.newHttpClient();
+        Gson gson = new Gson();
+        var request = HttpRequest.newBuilder(
+                URI.create(
+                        url))
+                .GET()
+                .build();
+        HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
+
+        String responseBody = response.body();
+
+        List<User> users = gson.fromJson(responseBody, new TypeToken<List<User>>() {
+        }.getType());
+
+        return users;
+    }
+
     public void postSolversToSolverManager(SolveRequest request) throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
         Gson gson = new Gson();
