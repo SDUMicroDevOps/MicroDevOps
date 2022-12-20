@@ -68,7 +68,6 @@ public class SQLController {
             stmt.executeUpdate(String.format("INSERT INTO `user`(`username`, `pwd`, `privilage_id`, `vCPU_limit`) VALUES ('%s','%s','%d','%d')", newUser.getUsername(), newUser.getPwd(), newUser.getPrivilege_id(), newUser.getVCPULimit()));
             conn.close();
         } catch (SQLException e) {
-            e.printStackTrace();
             return null;
         }
         return newUser;
