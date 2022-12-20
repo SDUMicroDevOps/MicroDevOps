@@ -32,24 +32,26 @@ class SolverInstance:
         return json.dumps(
             {
                 "taskId": self.taskID,
-                "user" : self.userID,
+                "user": self.userID,
                 "content": str(result.solution),
-                "date" : f"{date.today().year}-{date.today().month}-{date.today().day}",
-                "isOptimal" : isOptimal
+                "date": f"{date.today().year}-{date.today().month}-{date.today().day}",
+                "isOptimal": isOptimal
             })
 
     def notify_intermediate_solution_found(self, result: Result):
         try:
             result_as_json = self.get_result_as_json(result)
             requests.post(self.solution_manager_url + "/solutions", json=result_as_json)
+            self.logger(f"{self.solver_manager_url}/debug", data="Connection to the sqlquery service achieved")
         except:
-            self.logger(f"{self.solver_manager_url}/debug", data="Connection to the solution manager was not possible")
+            self.logger(f"{self.solver_manager_url}/debug", data="Connection to the sqlquery manager was not possible")
             
     def notify_optimal_solution(self, result: Result):
         try:
             result_as_json = self.get_result_as_json(result, True)
             requests.post(self.solver_manager_url + f"/solution/{self.taskID}", json=json.dumps({"userID" : self.userID}))
             requests.post(self.solution_manager_url + "/solutions", json=result_as_json)
+            self.logger(f"{self.solver_manager_url}/debug", data="Connection to the solver manager achieved")
         except:
             self.logger(f"{self.solver_manager_url}/debug", data="Connection to the solver manager was not possible")
 
@@ -117,6 +119,11 @@ class SolverInstance:
                 bestResult = i
 
         self.notify_optimal_solution(bestResult)
+        try:
+            self.logger(f"{self.solver_manager_url}/debug", data=f"The optimal solution was: {bestResult.solution}")
+        except:
+            pass
+        
 
     def __init__(self, args):
         self.logger = requests.post
@@ -140,7 +147,7 @@ class SolverInstance:
         self.bucket_handler_url = f"http://{self.bucket_handler_service}:{self.bucket_handler_port}"
         
         try:
-            resp = self.logger(f"{self.solver_manager_url}/debug", data=f"A new solver has been created")
+            self.logger(f"{self.solver_manager_url}/debug", data=f"A new solver has been created! \n URLS: {self.bucket_handler_url}, {self.solver_manager_url}, {self.solution_manager_url}")
         except:
             pass
 
