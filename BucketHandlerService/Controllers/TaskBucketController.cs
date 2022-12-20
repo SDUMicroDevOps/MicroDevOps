@@ -28,15 +28,17 @@ public class TaskBucketController : ControllerBase
         secretManager = SecretManagerServiceClient.Create();
         tasksBucket = "microservices22tasks_bucket";
         urlSigner = InitializeUrlSigner();
+        Console.WriteLine("TaskBucketController initialized.");
     }
 
     [HttpGet("{taskID}")]
     public ActionResult GetMznAndDzn(string taskID)
     {
-
+        Console.WriteLine($"GetMznAndDzn called for taskid: {taskID}");
         var responseData = new TaskBucketResponse() { TaskID = taskID, MethodAllowed = "GET" };
         if (!client.ListObjects(tasksBucket).Any(x => x.Name.StartsWith($"{taskID}")))
         {
+            Console.WriteLine($"No or too many files matched taskID: {taskID}");
             Conflict("No or too many files matched taskID");
         }
 
@@ -45,9 +47,12 @@ public class TaskBucketController : ControllerBase
         //The following lines will mean that problems can no longer be downloaded using the same url after 1 day
         //This means that this endpoint needs to be called before downloading the data everytime
         responseData.ProblemFileUrl = urlSigner.Sign(tasksBucket, $"{taskID}.mzn", TimeSpan.FromDays(1), HttpMethod.Get);
+        Console.WriteLine($"ProblemFile has the signed url: {responseData.ProblemFileUrl}");
+
         if (hasDznFile)
         {
             responseData.DataFileUrl = urlSigner.Sign(tasksBucket, $"{taskID}.dzn", TimeSpan.FromDays(1), HttpMethod.Get);
+            Console.WriteLine($"DataFile has the signed url: {responseData.DataFileUrl}");
         }
         var jsonData = JsonSerializer.Serialize(responseData);
         return Ok(jsonData);
@@ -56,6 +61,7 @@ public class TaskBucketController : ControllerBase
     [HttpGet("UploadUrl/{taskID}")]
     public ActionResult PostMzn(string taskID)
     {
+        Console.WriteLine($"PostMzn called for taskid: {taskID}");
         var responseData = new TaskBucketResponse() { TaskID = taskID, MethodAllowed = "PUT" };
 
         var contentHeaders = new Dictionary<string, IEnumerable<string>>
@@ -80,6 +86,7 @@ public class TaskBucketController : ControllerBase
         responseData.ProblemFileUrl = urlSigner.Sign(mznTemplate, options);
         responseData.DataFileUrl = urlSigner.Sign(dznTemplate, options);
 
+        Console.WriteLine($"PostMzn completed and gave the problem url: {responseData.ProblemFileUrl}");
         var jsonData = JsonSerializer.Serialize(responseData).Replace("\\u0026", "&");
         return Ok(jsonData);
     }
