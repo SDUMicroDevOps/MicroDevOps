@@ -27,7 +27,7 @@ router.put('/login', async (req, res) => {
         }).status(200)
         return
     }
-    res.json({error:"Failed to authenticat"}).status(401)
+    res.status(401).json({error:"Failed to authenticat"})
 })
 
 router.get('/verify', async (req, res) => {
