@@ -11,6 +11,8 @@ data:
   CONNECTION_NAME: soptical-empire-364322:europe-west1:oopssql
   AUTH_SERVICE: auth-service
   AUTH_PORT: "3000"
+  REACT_APP_AUTH_SERVICE: auth-service
+  REACT_APP_AUTH_PORT: "3000"
 kind: ConfigMap
 metadata:
   creationTimestamp: null
