@@ -197,6 +197,10 @@ public class Controller {
     @PostMapping("/solutions")
     @ResponseBody
     public ResponseEntity<Solution> addSolution(@RequestBody Solution newsolutionName) {
+        int status = sqlController.deleteSolution(newsolutionName.getTaskId());
+        if(status == 400) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         Solution solution = sqlController.addSolution(newsolutionName);
         if(solution == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

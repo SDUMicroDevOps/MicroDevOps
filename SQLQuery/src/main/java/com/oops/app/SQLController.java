@@ -254,12 +254,20 @@ public class SQLController {
     }
 
     public Solution addSolution(Solution newSolutionName) {
-        try (Connection conn = pool.getConnection()) {
+        Connection conn = null;
+        try {
+            conn = pool.getConnection();
             Statement stmt = conn.createStatement();
             stmt.executeUpdate(String.format("INSERT INTO `solution`(`task_id`, `user`, `content`, `date`, `is_optimal`) VALUES ('%s','%s','%s','%s','%d')", 
                 newSolutionName.getTaskId(), newSolutionName.getUser(), newSolutionName.getContent(), newSolutionName.getDate(), newSolutionName.getIsOptimal() ? 1 : 0 ));
             conn.close();
         } catch (SQLException e) {
+            try {
+                conn.close();
+            } catch (SQLException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
