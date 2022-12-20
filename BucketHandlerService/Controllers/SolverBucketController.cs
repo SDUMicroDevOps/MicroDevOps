@@ -29,15 +29,19 @@ public class SolverBucketController : ControllerBase
         secretManager = SecretManagerServiceClient.Create();
         solverBucket = "microservices22solvers_bucket";
         urlSigner = InitializeUrlSigner();
+        Console.WriteLine("SolverBucketController initialized.");
     }
 
     [HttpGet("{solverName}")]
     public ActionResult GetSolver(string solverName)
     {
+        Console.WriteLine($"GetSolver called for solvername: {solverName}");
+
         var responseData = new SolverBucketResponse() { SolverName = solverName, ConfigData = "Downloadable from ConfigURL", MethodAllowed = "GET" };
 
         if (!client.ListObjects(solverBucket).Any(x => x.Name.StartsWith($"{solverName}")))
         {
+            Console.WriteLine($"No solvers with the name '{solverName}' found on bucket storage");
             Conflict($"No solvers with the name '{solverName}' found on bucket storage");
         }
 
@@ -47,14 +51,17 @@ public class SolverBucketController : ControllerBase
         responseData.SolverURL = urlSigner.Sign(solverBucket, $"{solverName}", TimeSpan.FromDays(1), HttpMethod.Get);
 
         var jsonData = JsonSerializer.Serialize(responseData).Replace("\\u0026", "&");
+        Console.WriteLine($"Solver returned as URL: {responseData.SolverURL}");
         return Ok(jsonData);
     }
 
     [HttpPost]
     public ActionResult PostSolver([FromBody] SolverRequest request)
     {
+        Console.WriteLine($"PostSolver called with solvername: {request.SolverName}");
         if (client.ListObjects(solverBucket).Any(x => x.Name.StartsWith($"{request.SolverName}")))
         {
+            Console.WriteLine($"Solver already exists!");
             return Conflict($"A solver with the name '{request.SolverName}' is already present");
         }
 
@@ -98,6 +105,7 @@ public class SolverBucketController : ControllerBase
         responseData.ConfigURL = urlSigner.Sign(configTemplate, options);
 
         var jsonData = JsonSerializer.Serialize(responseData).Replace("\\u0026", "&").Replace("\\u0022", "\"");
+        Console.WriteLine($"SolverURLs correctly build: {responseData.SolverURL} && {responseData.ConfigURL}");
         return Ok(jsonData);
     }
 

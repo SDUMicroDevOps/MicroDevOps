@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.oops.app.exceptions.BadRequestException;
 import com.oops.app.requestType.SolverRequest;
 import com.oops.app.requestType.VCPULimit;
 import com.oops.app.requestType.PrivilageRequest;
@@ -78,7 +77,7 @@ public class Controller {
     public ResponseEntity<User> addUser(@RequestBody User newUser) {
         User user = sqlController.addUser(newUser);
         if(user == null) {
-            throw new BadRequestException();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<User>(HttpStatus.OK);
     }
