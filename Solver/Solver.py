@@ -30,13 +30,13 @@ class SolverInstance:
 
     def get_result_as_json(self, result: Result, isOptimal = False):
         return json.dumps(
-            {
-                "taskId": self.taskID,
-                "user": self.userID,
-                "content": str(result.solution),
-                "date": f"{date.today().year}-{date.today().month}-{date.today().day}",
-                "isOptimal": isOptimal
-            })
+            {{
+                "taskId": {self.taskID},
+                "user": {self.userID},
+                "content": {str(result.solution)},
+                "date": {f"{date.today().year}-{date.today().month}-{date.today().day}"},
+                "isOptimal": {isOptimal}
+            }})
 
     def notify_intermediate_solution_found(self, result: Result):
         try:
