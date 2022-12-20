@@ -33,17 +33,13 @@ public class BackendController {
     private BackendService backendService = new BackendService();
 
     @PostMapping("/Solve")
-    public ResponseEntity<String> startSolvers(@RequestBody String request) {
-        System.out.println(request);
-        SolveRequest request2 = new Gson().fromJson(request, SolveRequest.class);
-        System.out.println("Problem: " + request2.getProblemID());
-        System.out.println("Data: " + request2.getDataID());
-        System.out.println("Solvers length: " + request2.getSolversToUse().length);
-        
-        backendService.postSolversToSolverManager(request2);
+    public ResponseEntity<String> startSolvers(@RequestBody SolveRequest request) {
+        System.out.println(request.getProblemID());
+        System.out.println(request.getSolversToUse().length);
+        backendService.postSolversToSolverManager(request);
 
-        String taskID = request2.getProblemID();
-        return new ResponseEntity<String>(taskID, HttpStatus.OK);
+        return new ResponseEntity<String>("taskID", HttpStatus.OK);
+
     }
 
     @GetMapping("/ProblemInstance/{ProblemID}")

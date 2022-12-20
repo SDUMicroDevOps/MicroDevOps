@@ -1,6 +1,6 @@
 import React from 'react'
 import axios from 'axios'
-import ActiveUserComponent from './ActiveUserComponent'
+//import ActiveUserComponent from './ActiveUserComponent'
 const ALL_USERS_URL = 'http://' + process.env.REACT_APP_DATABASE_SERVICE + ':' + process.env.REACT_APP_DATBASE_PORT + '/users';
 
 export default function ActiveUsers() {
@@ -15,10 +15,8 @@ export default function ActiveUsers() {
             return [];
         });
     }
-    const users = []//getUsers()
     return (
-        users.length() != 0 ? 
-        users.map( user => { return <ActiveUserComponent key={user.username} user={user}/>}) 
-        : <></>
+        <></>
+        //users.map( user => { return <ActiveUserComponent key={user.username} user={user}/>}) 
     )
 }
