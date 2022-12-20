@@ -19,6 +19,7 @@ router.put('/login', async (req, res) => {
     })
     var empty = true
     allUsers.forEach(element => {
+        console.log(element)
         if(element.username == username) {
             empty = false
         }
