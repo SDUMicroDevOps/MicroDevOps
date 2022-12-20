@@ -42,8 +42,8 @@ class SolverInstance:
         try:
             result_as_json = self.get_result_as_json(result)
             self.logger(f"{self.solver_manager_url}/debug", data=f"Attempting to post data: {result_as_json}")
-            res = requests.post(self.solution_manager_url + "/solutions", data=result_as_json)
-            self.logger(f"{self.solver_manager_url}/debug", data=f"Connection to the sqlquery service achieved with response: {res.status_code} - {res.reason}")
+            res = requests.post(self.solution_manager_url + f"/solutions/{self.taskID}?content={result.solution}&isOptimal=false")
+            self.logger(f"{self.solver_manager_url}/debug", data=f"Connection to the sqlquery service achieved with response: {res.status_code}")
 
         except:
             self.logger(f"{self.solver_manager_url}/debug", data="Connection to the sqlquery manager was not possible")
@@ -51,8 +51,8 @@ class SolverInstance:
     def notify_optimal_solution(self, result: Result):
         try:
             result_as_json = self.get_result_as_json(result, True)
-            requests.post(self.solver_manager_url + f"/solution/{self.taskID}", data=json.dumps({"userID": self.userID}))
-            requests.post(self.solution_manager_url + "/solutions", data=result_as_json)
+            requests.post(self.solver_manager_url + f"/solution/{self.taskID}", data=json.dumps({{"userID" : {self.userID}}}))
+            requests.post(self.solution_manager_url + f"/solutions/{self.taskID}?content={result.solution}&isOptimal=true")
             self.logger(f"{self.solver_manager_url}/debug", data="Connection to the solver manager achieved")
         except:
             self.logger(f"{self.solver_manager_url}/debug", data="Connection to the solver manager was not possible")
