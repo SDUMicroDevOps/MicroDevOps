@@ -13,32 +13,32 @@ public class BucketResponse {
         return TaskID;
     }
 
-    public void setTaskID(String taskID) {
-        TaskID = taskID;
+    public void setTaskID(String TaskID) {
+        this.TaskID = TaskID;
     }
 
     public String getProblemFileUrl() {
         return ProblemFileUrl;
     }
 
-    public void setProblemFileUrl(String problemFileUrl) {
-        ProblemFileUrl = problemFileUrl;
+    public void setProblemFileUrl(String ProblemFileUrl) {
+        this.ProblemFileUrl = ProblemFileUrl;
     }
 
     public String getDataFileUrl() {
         return DataFileUrl;
     }
 
-    public void setDataFileUrl(String dataFileUrl) {
-        DataFileUrl = dataFileUrl;
+    public void setDataFileUrl(String DataFileUrl) {
+        this.DataFileUrl = DataFileUrl;
     }
 
     public String getMethodAllowed() {
         return MethodAllowed;
     }
 
-    public void setMethodAllowed(String methodAllowed) {
-        MethodAllowed = methodAllowed;
+    public void setMethodAllowed(String MethodAllowed) {
+        this.MethodAllowed = MethodAllowed;
     }
 
 }
