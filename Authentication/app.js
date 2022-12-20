@@ -1,4 +1,5 @@
 const express = require('express')
+const cors = require('cors')
 /*const https = require('https')
 const fs = require('fs')
 
@@ -16,6 +17,7 @@ const indexRouter = require('./routes/index')
 const app = express()
 
 app.use(express.json())
+app.use(cors({origin: true, credentials: true}));
 app.use('/', indexRouter)
 
 //var server = https.createServer(options, app)
