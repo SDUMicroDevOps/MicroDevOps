@@ -31,7 +31,7 @@ export default function SignupForm() {
     setShowSignup(true);
   };
 
-  const handleSubmitEndUser = (e) => {
+  const handleSubmitEndUser = () => {
     if(createUser(username, 1)){
       setUsername('');
       setPwd('');
@@ -39,7 +39,7 @@ export default function SignupForm() {
     }
   };
 
-  const handleSubmitAdmin = (e) => {
+  const handleSubmitAdmin = () => {
     if(createUser(username, 2)){
       setUsername('');
       setPwd('');
