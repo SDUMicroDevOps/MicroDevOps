@@ -14,6 +14,20 @@ router.put('/login', async (req, res) => {
     var username = req.body.Username
     var pwdhash = crypto.createHash("sha256").update(req.body.Password).digest("hex")
 
+    var allUsers = await fetch(baseURL+'/users').then((response) => {
+        return response.json()
+    })
+    var empty = true
+    allUsers.forEach(element => {
+        if(element.username == username) {
+            empty = false
+        }
+    });
+
+    if(!empty){
+        res.status(401).json({error:"Failed to authenticat"})
+    }
+
     //check if user exist and has correct pwd
     var user = await fetch(baseURL+'/users/'+username).then((response) => {
         return response.json()
