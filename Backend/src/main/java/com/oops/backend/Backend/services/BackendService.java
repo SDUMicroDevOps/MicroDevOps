@@ -86,7 +86,8 @@ public class BackendService {
                 .build();
 
         System.out.println("Contacting the SolverManager at adress: " + sm_request.uri().toString());
-        var resp = client.send(sm_request, BodyHandlers.ofString()); // TODO, maybe make some sort of error handling here
+        var resp = client.send(sm_request, BodyHandlers.ofString()); // TODO, maybe make some sort of error handling
+                                                                     // here
         System.out.println("Response from SolverManager: " + resp.statusCode());
     }
 
@@ -201,7 +202,7 @@ public class BackendService {
             ProcessBuilder pb = new ProcessBuilder(
                     "curl",
                     "-X", "PUT",
-                    "-H", "Content-Type: text/plain",
+                    "-H", "Content-Type: application/json",
                     "--upload-file", fileName,
                     uploadUrl);
 
