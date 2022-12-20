@@ -27,9 +27,6 @@ Environment variables expected:
     BUCKET_HANDLER_PORT                     - The port for the bucket handler service
 '''
 class SolverInstance:
-    def setup_logging():
-        client = google.cloud.logging.Client()
-        client.setup_logging()
 
     def get_result_as_json(self, result: Result, isOptimal = False):
         return json.dumps(
@@ -128,7 +125,12 @@ class SolverInstance:
 
         self.notify_optimal_solution(bestResult)
 
-    def __init__(self, args):
+    def __init__(self, args, debug):
+        if debug:
+            self.logger = requests.post
+        else:
+            self.logger = print_log
+        
 
         self.solver_manager_service = os.getenv("SOLVER_MANAGER_SERVICE", "0.0.0.0")
         self.solution_manager_service = os.getenv("DATABASE_SERVICE", "0.0.0.0")
@@ -137,22 +139,20 @@ class SolverInstance:
         self.bucket_handler_service = os.getenv("BUCKET_HANDLER_SERVICE", "0.0.0.0")
         self.bucket_handler_port = os.getenv("BUCKET_HANDLER_PORT", "5165")
         
-
         self.solver_name = args[1]
         self.number_processors = args[2]
         self.userID = args[3]
         self.taskID = args[4]
 
-        logging.info(f"Starting solver with arguments: {self.solver_name}, {self.number_processors}, {self.userID}, {self.taskID}")
-
         self.solver_manager_url = f"http://{self.solver_manager_service}:{self.solver_manager_port}"
         self.solution_manager_url = f"http://{self.solution_manager_service}:{self.solution_manager_port}"
         self.bucket_handler_url = f"http://{self.bucket_handler_service}:{self.bucket_handler_port}"
-        
-        if __name__ == "__main__":
-            requests.post(f"{self.solver_manager_url}/debug", data=f"Starting solver with arguments: {self.solver_name}, {self.number_processors}, {self.userID}, {self.taskID}")
 
-        
+        self.logger(f"{self.solver_manager_url}/debug", data=f"A new solver has been created")
+
+def print_log(url, data):
+    print(f"{data} was sent to {url}")
+
 if __name__ == "__main__":
-    solver = SolverInstance(sys.argv)
+    solver = SolverInstance(sys.argv, False)
     asyncio.run(solver.solve())
