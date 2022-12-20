@@ -86,6 +86,13 @@ router.get('/login', async (req, res) => {
 
 router.post('/create', async (req, res) => {
 
+    var user = await fetch(baseURL+'/users/' + req.body.Username).then(response => {return response.json()})
+
+    if(user != {}) {
+        res.json({error:"Failed to create new user"}).status(400)
+        return
+    }
+
     var newUser = {
         username:req.body.Username,
         pwd:crypto.createHash("sha256").update(req.body.Password).digest("hex"),
