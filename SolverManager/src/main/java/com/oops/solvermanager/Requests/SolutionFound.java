@@ -1,12 +1,15 @@
 package com.oops.solvermanager.Requests;
 
 public class SolutionFound {
-    private String UserID;
+    private String userID;
 
     public SolutionFound() {
     }
+    public SolutionFound(String userID){
+        this.userID = userID;
+    }
 
     public String getUserID() {
-        return UserID;
+        return userID;
     }
 }
