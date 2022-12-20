@@ -143,7 +143,9 @@ class SolverInstance:
         self.solution_manager_url = f"http://{self.solution_manager_service}:{self.solution_manager_port}"
         self.bucket_handler_url = f"http://{self.bucket_handler_service}:{self.bucket_handler_port}"
 
-        print(f"{self.solver_manager_url}/debug", data=f"A new solver has been created")
+        print(f"{self.solver_manager_url}/debug")
+        print(response.content)
+
         self.logger(f"{self.solver_manager_url}/debug", data=f"A new solver has been created")
 
 def print_log(url, data):
