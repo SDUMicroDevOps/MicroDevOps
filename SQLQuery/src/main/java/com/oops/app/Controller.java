@@ -197,6 +197,11 @@ public class Controller {
     @PostMapping("/solutions")
     @ResponseBody
     public ResponseEntity<Solution> addSolution(@RequestBody Solution newsolutionName) {
+        System.out.println(newsolutionName.getTaskId());
+        System.out.println(newsolutionName.getUser());
+        System.out.println(newsolutionName.getContent());
+        System.out.println(newsolutionName.getDate());
+        System.out.println(newsolutionName.getIsOptimal());
         int status = sqlController.deleteSolution(newsolutionName.getTaskId());
         if(status == 400) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
