@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - main
+    paths:
+      - Authentication/**
 jobs:
   build:
     name: Build Auth

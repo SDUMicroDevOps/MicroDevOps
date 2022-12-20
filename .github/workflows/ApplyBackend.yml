@@ -27,7 +27,7 @@ jobs:
     environment: production
     
     steps:
-    - name: Wait for buckethandler image to build
+    - name: Wait for backend image to build
       uses: lewagon/wait-on-check-action@v1.2.0
       with:
         ref: ${{ github.ref }}

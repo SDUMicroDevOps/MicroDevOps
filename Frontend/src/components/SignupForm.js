@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-// Try to hard code it bro
-const SIGNUP_URL = 'http://' + process.env.REACT_APP_AUTH_SERVICE + ':' + process.env.REACT_APP_AUTH_PORT + '/create';
+const SIGNUP_URL = 'http://35.228.41.77:3000/create';
 
 export default function SignupForm() {
   const [showSignup, setShowSignup] = useState(false);
@@ -32,7 +31,7 @@ export default function SignupForm() {
     setShowSignup(true);
   };
 
-  const handleSubmitEndUser = (e) => {
+  const handleSubmitEndUser = () => {
     if(createUser(username, 1)){
       setUsername('');
       setPwd('');
@@ -40,7 +39,7 @@ export default function SignupForm() {
     }
   };
 
-  const handleSubmitAdmin = (e) => {
+  const handleSubmitAdmin = () => {
     if(createUser(username, 2)){
       setUsername('');
       setPwd('');

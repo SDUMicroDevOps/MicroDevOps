@@ -14,7 +14,7 @@ on:
     branches:
       - main
     paths:
-      - sqlquery/**
+      - SQLQuery/**
 env:
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
   GKE_CLUSTER: public-cluster
@@ -58,4 +58,6 @@ jobs:
         
     # Deploy the Docker image to the GKE cluster
     - name: Deploy
-      run: kubectl patch deployment sqlquery -p \ "{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"date\":\"`date +'%s'`\"}}}}}"
+      run: |
+        kubectl apply -f Deployments/sql-query-deployment.yaml
+        kubectl patch deployment sqlquery -p \ "{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"date\":\"`date +'%s'`\"}}}}}"
