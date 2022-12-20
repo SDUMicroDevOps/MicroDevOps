@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.oops.app.exceptions.BadRequestException;
 import com.oops.app.requestType.SolverRequest;
+import com.oops.app.requestType.VCPULimit;
 import com.oops.app.requestType.PrivilageRequest;
 import com.oops.app.responseType.Solver;
 import com.oops.app.responseType.TaskQueue;
@@ -49,6 +51,22 @@ public class Controller {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<User>(user, HttpStatus.OK);
+    }
+
+    @PutMapping("/users/{username}")
+    @ResponseBody
+    public ResponseEntity<User> changeVCPULimit(@PathVariable String username, @RequestBody VCPULimit newVCPULimit) {
+        int status = sqlController.changeVCPULimit(username, newVCPULimit.getVCPULimit());
+        switch (status) {
+            case 200:
+                return new ResponseEntity<>(HttpStatus.OK);
+            
+            case 400:
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                
+            default:
+                return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
+        }
     }
 
     @ApiResponses(value = {
