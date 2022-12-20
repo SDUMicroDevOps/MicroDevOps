@@ -40,9 +40,14 @@ public class BackendController {
     }
 
     @GetMapping("/ProblemInstance/{ProblemID}")
-    public ResponseEntity<String> getMZNData(@PathVariable String ProblemID) {
-        String mznData = backendService.getMznData(ProblemID);
-        return new ResponseEntity<String>(mznData, HttpStatus.OK);
+    public ResponseEntity<byte[]> getMZNData(@PathVariable String ProblemID) {
+        byte[] mznData;
+        try {
+            mznData = backendService.getMznData(ProblemID);
+            return ResponseEntity.status(HttpStatus.OK).body(mznData);
+        } catch (IOException e) {
+            return new ResponseEntity<byte[]>(HttpStatus.I_AM_A_TEAPOT);
+        }
     }
 
     @PostMapping("/ProblemInstance")
@@ -66,10 +71,15 @@ public class BackendController {
         return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body("No file data provided, nothing to upload");
     }
 
-    @GetMapping("/DataInstance/{ProblemID}")
-    public ResponseEntity<String> getDZNData(@PathVariable String ProblemID) {
-        String dznData = backendService.getDznData(ProblemID);
-        return new ResponseEntity<String>(dznData, HttpStatus.OK);
+    @GetMapping("/DataInstance/{DataID}")
+    public ResponseEntity<byte[]> getDZNData(@PathVariable String DataID) {
+        byte[] dznData;
+        try {
+            dznData = backendService.getMznData(DataID);
+            return ResponseEntity.status(HttpStatus.OK).body(dznData);
+        } catch (IOException e) {
+            return new ResponseEntity<byte[]>(HttpStatus.I_AM_A_TEAPOT);
+        }
     }
 
     @GetMapping("/Solver")
