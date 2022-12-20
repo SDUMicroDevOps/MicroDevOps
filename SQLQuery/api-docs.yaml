@@ -6,6 +6,64 @@ servers:
 - url: http://localhost:8080
   description: Generated server url
 paths:
+  /users/{username}:
+    get:
+      tags:
+      - controller
+      operationId: getUserByName
+      parameters:
+      - name: username
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/User'
+    put:
+      tags:
+      - controller
+      operationId: changeVCPULimit
+      parameters:
+      - name: username
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VCPULimit'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/User'
+    delete:
+      tags:
+      - controller
+      operationId: deleteUser
+      parameters:
+      - name: username
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/User'
   /users:
     get:
       tags:
@@ -89,12 +147,6 @@ paths:
         required: true
         schema:
           type: string
-      - name: solver
-        in: query
-        required: true
-        schema:
-          type: integer
-          format: int32
       responses:
         "200":
           description: OK
@@ -195,41 +247,6 @@ paths:
             '*/*':
               schema:
                 $ref: '#/components/schemas/Privilage'
-  /users/{username}:
-    get:
-      tags:
-      - controller
-      operationId: getUserByName
-      parameters:
-      - name: username
-        in: path
-        required: true
-        schema:
-          type: string
-      responses:
-        "200":
-          description: OK
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/User'
-    delete:
-      tags:
-      - controller
-      operationId: deleteUser
-      parameters:
-      - name: username
-        in: path
-        required: true
-        schema:
-          type: string
-      responses:
-        "200":
-          description: OK
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/User'
   /solvers/{id}:
     get:
       tags:
@@ -260,6 +277,25 @@ paths:
         schema:
           type: integer
           format: int32
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Solver'
+  /solvers/byname:
+    get:
+      tags:
+      - controller
+      operationId: getSolverByName
+      parameters:
+      - name: name
+        in: query
+        required: false
+        schema:
+          type: string
+          default: ""
       responses:
         "200":
           description: OK
@@ -339,26 +375,14 @@ paths:
             '*/*':
               schema:
                 $ref: '#/components/schemas/Privilage'
-  /greeting/{name}:
-    get:
-      tags:
-      - controller
-      operationId: greeting
-      parameters:
-      - name: name
-        in: path
-        required: true
-        schema:
-          type: string
-      responses:
-        "200":
-          description: OK
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/Greeting'
 components:
   schemas:
+    VCPULimit:
+      type: object
+      properties:
+        vcpulimit:
+          type: integer
+          format: int32
     User:
       type: object
       properties:
@@ -385,6 +409,9 @@ components:
         solverTimestamp:
           type: string
           format: date-time
+        timeout:
+          type: integer
+          format: int32
         maxMemory:
           type: integer
           format: int32
@@ -434,12 +461,4 @@ components:
           type: integer
           format: int32
         roleName:
-          type: string
-    Greeting:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int64
-        content:
           type: string
