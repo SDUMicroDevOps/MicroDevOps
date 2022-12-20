@@ -9,8 +9,8 @@ public class SolversToUseBody {
     @JsonProperty("maxMemory")
     private int maxMemory;
 
-    @JsonProperty("timeOut")
-    private int timeOut;
+    @JsonProperty("timeout")
+    private int timeout;
 
     @JsonProperty("solverName")
     private String solverName;
@@ -18,11 +18,11 @@ public class SolversToUseBody {
     public SolversToUseBody() {
     }
 
-    public SolversToUseBody(String solverName, int numberVCPU, int maxMemory, int timeOut) {
+    public SolversToUseBody(String solverName, int numberVCPU, int maxMemory, int timeout) {
         this.solverName = solverName;
         this.numberVCPU = numberVCPU;
         this.maxMemory = maxMemory;
-        this.timeOut = timeOut;
+        this.timeout = timeout;
     }
 
     public int getNumberVCPU() {
@@ -42,11 +42,11 @@ public class SolversToUseBody {
     }
 
     public int getTimeOut() {
-        return timeOut;
+        return timeout;
     }
 
-    public void setTimeOut(int timeOut) {
-        this.timeOut = timeOut;
+    public void setTimeOut(int timeout) {
+        this.timeout = timeout;
     }
 
     public String getSolverName() {
