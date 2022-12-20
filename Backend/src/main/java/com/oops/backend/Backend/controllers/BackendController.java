@@ -57,15 +57,16 @@ public class BackendController {
             @RequestPart String UserID) throws IOException, InterruptedException {
 
         if (mznData != null && dznData == null) {
+            System.out.println("1st ");
             String problemId = backendService.addMznData(UserID, mznData);
-            ResponseEntity.status(HttpStatus.OK).body(problemId);
+            return ResponseEntity.status(HttpStatus.OK).body(problemId);
         } else if (mznData == null && dznData != null) {
             String dataID = backendService.addDznData(UserID, dznData);
-            ResponseEntity.status(HttpStatus.OK).body(dataID);
+            return ResponseEntity.status(HttpStatus.OK).body(dataID);
         } else if (mznData != null && dznData != null) {
             String problemId = backendService.addMznData(UserID, mznData);
             String dataID = backendService.addDznData(UserID, dznData);
-            ResponseEntity.status(HttpStatus.OK).body(problemId);
+            return ResponseEntity.status(HttpStatus.OK).body(problemId);
         }
 
         System.out.println("Mzn data: " + mznData.getOriginalFilename());
