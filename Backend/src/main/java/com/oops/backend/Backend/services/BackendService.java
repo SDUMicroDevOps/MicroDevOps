@@ -81,7 +81,10 @@ public class BackendService {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         SolveRequest solveRequest = request;
-        HttpEntity<SolveRequest> requestEntity = new HttpEntity<>(solveRequest, headers);
+        HttpEntity<SolveRequest> requestEntity = new HttpEntity<SolveRequest>(solveRequest, headers);
+
+        System.out.println(requestEntity.getHeaders().toString());
+        System.out.println(requestEntity.getBody().toString());
 
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<SolveRequest> responseEntity = restTemplate.postForEntity(url, requestEntity,

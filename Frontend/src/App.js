@@ -33,8 +33,8 @@ function App() {
       <Header className="App-header"/>
       <LoginForm />
       <SignupForm />
-      { auth.role === 1 ? <UserInterfaceComponent solvers={solvers} setSolvers={setSolvers} running={running} setRunning={setRunning}/> 
-      : auth.role === 2 ? <AdminInterfaceComponent solvers={solvers} setSolvers={setSolvers} running={running} setRunning={setRunning} addSolver={addSolver} removeSolver={removeSolver}/> 
+      { auth.type === 1 ? <UserInterfaceComponent solvers={solvers} setSolvers={setSolvers} running={running} setRunning={setRunning}/> 
+      : auth.type === 2 ? <AdminInterfaceComponent solvers={solvers} setSolvers={setSolvers} running={running} setRunning={setRunning} addSolver={addSolver} removeSolver={removeSolver}/> 
       : <h3>Please sign in to continue</h3>}
     </div>
   );
