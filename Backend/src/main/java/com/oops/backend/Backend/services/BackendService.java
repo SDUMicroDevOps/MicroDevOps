@@ -41,7 +41,7 @@ import com.oops.backend.Backend.requests.SolveRequest;
  * Environment variables needed
  * 
  * SOLVER_MANAGER_SERVICE   - Local network address of Solver manager
- * SOVER_MANAGER_PORT
+ * SOLVER_MANAGER_PORT
  * DB_SERVICE       - Address of db service 
  * DB_SERVICE_PORT
  * BUCKER_HANDLER_SERVICE   - Address of bucket handler
