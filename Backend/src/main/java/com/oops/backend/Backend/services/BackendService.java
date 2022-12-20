@@ -84,11 +84,11 @@ public class BackendService {
         System.out.println(requestEntity.getBody().toString());
 
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<SolveRequest> responseEntity = restTemplate.postForEntity(url, requestEntity,
-                SolveRequest.class);
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity(url, requestEntity,
+                String.class);
 
         System.out.println("Status Code: " + responseEntity.getStatusCode());
-        System.out.println("ProblemId: " + responseEntity.getBody().getProblemID());
+        System.out.println("ProblemId: " + responseEntity.getBody());
         System.out.println("Location: " + responseEntity.getHeaders().getLocation());
     }
 
