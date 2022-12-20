@@ -36,7 +36,10 @@ public class BackendController {
     public ResponseEntity<String> startSolvers(@RequestBody String request) {
         System.out.println(request);
         SolveRequest request2 = new Gson().fromJson(request, SolveRequest.class);
-        System.out.println(request2);
+        System.out.println("Problem: " + request2.getProblemID());
+        System.out.println("Data: " + request2.getDataID());
+        System.out.println("Solvers length: " + request2.getSolversToUse().length);
+        
         backendService.postSolversToSolverManager(request2);
 
         String taskID = request2.getProblemID();
