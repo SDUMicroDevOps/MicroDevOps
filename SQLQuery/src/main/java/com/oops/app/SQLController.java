@@ -54,6 +54,7 @@ public class SQLController {
             while(rs.next()) {
                 user = new User(rs.getString(1), rs.getString(2), rs.getInt(3), rs.getInt(4));
             }
+            conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -65,8 +66,8 @@ public class SQLController {
             Connection conn = pool.getConnection();
             Statement stmt = conn.createStatement();
             stmt.executeUpdate(String.format("INSERT INTO `user`(`username`, `pwd`, `privilage_id`, `vCPU_limit`) VALUES ('%s','%s','%d','%d')", newUser.getUsername(), newUser.getPwd(), newUser.getPrivilege_id(), newUser.getVCPULimit()));
+            conn.close();
         } catch (SQLException e) {
-            e.printStackTrace();
             return null;
         }
         return newUser;
@@ -77,6 +78,7 @@ public class SQLController {
             Connection conn = pool.getConnection();
             Statement stmt = conn.createStatement();
             stmt.executeUpdate("delete from user where username='" + username + "'");
+            conn.close();
         } catch(SQLException e) {
             e.printStackTrace();
             return 400;
@@ -95,6 +97,7 @@ public class SQLController {
                 Privilage privilage = new Privilage(rs.getInt(1), rs.getString(2));
                 privilages.add(privilage);
             }
+            conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -109,6 +112,7 @@ public class SQLController {
             while(rs.next()) {
                 privilage = new Privilage(id, rs.getString(2));
             }
+            conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -119,6 +123,7 @@ public class SQLController {
         try (Connection conn = pool.getConnection()) {
             Statement stmt = conn.createStatement();
             stmt.executeUpdate(String.format("INSERT INTO `privilage`(`role_name`) VALUES ('%s')", newRoleName));
+            conn.close();
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -130,6 +135,7 @@ public class SQLController {
         try (Connection conn = pool.getConnection()) {
             Statement stmt = conn.createStatement();
             stmt.executeUpdate(String.format("DELETE FROM `privilage` WHERE id=%d", id));
+            conn.close();
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -146,6 +152,7 @@ public class SQLController {
             while(rs.next()) {
                 solvers.add(new Solver(rs.getInt(1), rs.getString(2)));
             }
+            conn.close();
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -161,6 +168,7 @@ public class SQLController {
             while(rs.next()) {
                 solver = new Solver(rs.getInt(1), rs.getString(2));
             }
+            conn.close();
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -172,6 +180,7 @@ public class SQLController {
         try (Connection conn = pool.getConnection()) {
             Statement stmt = conn.createStatement();
             stmt.executeUpdate(String.format("INSERT INTO `solver`(`solver_name`) VALUES ('%s')", solverName));
+            conn.close();
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -183,6 +192,7 @@ public class SQLController {
         try (Connection conn = pool.getConnection()) {
             Statement stmt = conn.createStatement();
             stmt.executeUpdate(String.format("DELETE FROM `solver` WHERE id=%d", id));
+            conn.close();
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -199,6 +209,7 @@ public class SQLController {
             while(rs.next()) {
                 solutions.add(new Solution(rs.getString(1), rs.getString(2), rs.getString(3), rs.getDate(4), rs.getBoolean(5)));
             }
+            conn.close();
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -215,6 +226,7 @@ public class SQLController {
             while(rs.next()) {
                 solution = new Solution(rs.getString(1), rs.getString(2), rs.getString(3), rs.getDate(4), rs.getBoolean(5));
             }
+            conn.close();
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -226,6 +238,7 @@ public class SQLController {
         try (Connection conn = pool.getConnection()) {
             Statement stmt = conn.createStatement();
             stmt.executeUpdate(String.format("DELETE FROM `solution` WHERE task_id='%s' AND is_optimal != 1", taskId));
+            conn.close();
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -239,6 +252,7 @@ public class SQLController {
             Statement stmt = conn.createStatement();
             stmt.executeUpdate(String.format("INSERT INTO `solution`(`task_id`, `user`, `content`, `date`, `is_optimal`) VALUES ('%s','%s','%s','%s','%d')", 
                 newSolutionName.getTaskId(), newSolutionName.getUser(), newSolutionName.getContent(), newSolutionName.getDate(), newSolutionName.getIsOptimal() ? 1 : 0 ));
+            conn.close();
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -263,6 +277,7 @@ public class SQLController {
                     rs.getString(8), 
                     rs.getString(9)));
             }
+            conn.close();
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -287,6 +302,7 @@ public class SQLController {
                     rs.getString(8), 
                     rs.getString(9)));
             }
+            conn.close();
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -311,6 +327,7 @@ public class SQLController {
                     rs.getString(8), 
                     rs.getString(9)));
             }
+            conn.close();
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -331,6 +348,7 @@ public class SQLController {
                 taskQueue.getMaxMemory(), 
                 taskQueue.getMzn(), 
                 taskQueue.getDzn()));
+            conn.close();
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -343,8 +361,8 @@ public class SQLController {
         try (Connection conn = pool.getConnection()) {
             Statement stmt = conn.createStatement();
             stmt.executeUpdate(String.format("DELETE FROM `task_queue` WHERE task_id='%s'", taskId));
+            conn.close();
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
             return 400;
         }
@@ -356,10 +374,22 @@ public class SQLController {
         try (Connection conn = pool.getConnection()) {
             Statement stmt = conn.createStatement();
             stmt.executeQuery(String.format("SELECT * FROM `solver` WHERE id='%s'", name));
+            conn.close();
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return solver;
+    }
+
+    public int changeVCPULimit(String username, int vcpuLimit) {
+        try (Connection conn = pool.getConnection()) {
+            Statement stmt = conn.createStatement();
+            stmt.executeUpdate(String.format("UPDATE `user` SET `vCPU_limit`='%d' WHERE username='%s'", vcpuLimit, username));
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return 400;
+        }
+        return 200;
     }
 }

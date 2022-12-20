@@ -43,13 +43,22 @@ router.get('/verify', async (req, res) => {
 
     try {
         var decoded = jwt.verify(token, secret)
-        var user = await fetch(baseURL+'/users/'+decoded.username).then((response) => {return response.json()})
-        if(user != {} && user.pwd == decoded.pwd && user.privilege_id == decoded.privilege_id && req.body.Username == user.username) {
+        if(!(decoded)){
             res.sendStatus(401)
             return
         }
-        res.sendStatus(200)
+        var user = await fetch(baseURL+'/users/'+decoded.username).then((response) => {return response.json()})
+        //console.log(user)
+
+        if(!(user != {} && user.pwd == decoded.pwd && user.privilege_id == decoded.privilege_id)) {
+            res.sendStatus(401)
+            return
+        }
+        res.json({
+            Type:decoded.privilege_id
+        }).status(200)
     } catch(err) {
+        console.log(err.name)
         switch (err.name) {
             case JsonWebTokenError:
                 res.json({erorr:"Failed to authenticate"}).status(401)
@@ -60,6 +69,7 @@ router.get('/verify', async (req, res) => {
                 break;
             
             default:
+                console.log("Got to default")                
                 res.json({erorr:"Failed to authenticate"}).status(401)
                 break;
         }
@@ -92,7 +102,8 @@ router.post('/create', async (req, res) => {
     })
 
     if(response != 200) {
-        res.json({error:"Failed to create new user"}).status(400)
+        res.sendStatus(400)
+        return
     }
     res.sendStatus(200)
 })

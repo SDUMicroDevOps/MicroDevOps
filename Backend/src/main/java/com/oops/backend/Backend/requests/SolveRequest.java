@@ -1,47 +1,59 @@
 package com.oops.backend.Backend.requests;
 
-public class SolveRequest {
-    private String ProblemID;
-    private String DataID;
-    private SolversToUseBody[] SolversToUse;
-    private String UserID;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-    public SolveRequest(String ProblemID, String DataID, SolversToUseBody[] SolversToUse, String UserID) {
-        this.ProblemID = ProblemID;
-        this.DataID = DataID;
-        this.SolversToUse = SolversToUse;
-        this.UserID = UserID;
+public class SolveRequest {
+    @JsonProperty("problemID")
+    private String problemID;
+
+    @JsonProperty("dataID")
+    private String dataID;
+
+    @JsonProperty("solversToUse")
+    private SolversToUseBody[] solversToUse;
+
+    @JsonProperty("userID")
+    private String userID;
+
+    public SolveRequest() {
+    }
+
+    public SolveRequest(String problemID, String dataID, SolversToUseBody[] solversToUse, String userID) {
+        this.problemID = problemID;
+        this.dataID = dataID;
+        this.solversToUse = solversToUse;
+        this.userID = userID;
     }
 
     public String getProblemID() {
-        return ProblemID;
+        return problemID;
     }
 
-    public void setProblemID(String ProblemID) {
-        this.ProblemID = ProblemID;
+    public void setProblemID(String problemID) {
+        this.problemID = problemID;
     }
 
     public String getDataID() {
-        return DataID;
+        return dataID;
     }
 
-    public void setDataID(String DataID) {
-        this.DataID = DataID;
+    public void setDataID(String dataID) {
+        this.dataID = dataID;
     }
 
     public SolversToUseBody[] getSolversToUse() {
-        return SolversToUse;
+        return solversToUse;
     }
 
-    public void setSolversToUse(SolversToUseBody[] SolversToUse) {
-        this.SolversToUse = SolversToUse;
+    public void setSolversToUse(SolversToUseBody[] solversToUse) {
+        this.solversToUse = solversToUse;
     }
 
     public String getUserID() {
-        return UserID;
+        return userID;
     }
 
-    public void setUserID(String UserID) {
-        this.UserID = UserID;
+    public void setUserID(String userID) {
+        this.userID = userID;
     }
 }

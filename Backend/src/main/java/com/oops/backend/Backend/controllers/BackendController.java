@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.google.gson.Gson;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.oops.backend.Backend.models.Solver;
 import com.oops.backend.Backend.requests.CancelSolverRequest;
@@ -32,17 +33,26 @@ public class BackendController {
     private BackendService backendService = new BackendService();
 
     @PostMapping("/Solve")
-    public ResponseEntity<String> startSolvers(@RequestBody SolveRequest request) {
+    public ResponseEntity<String> startSolvers(@RequestBody SolveRequest request)
+            throws IOException, InterruptedException {
+        System.out.println(request.getProblemID());
+        System.out.println(request.getSolversToUse().length);
+        String problemID = request.getProblemID();
         backendService.postSolversToSolverManager(request);
 
-        String taskID = request.getProblemID();
-        return new ResponseEntity<String>(taskID, HttpStatus.OK);
+        return new ResponseEntity<String>(problemID, HttpStatus.OK);
+
     }
 
     @GetMapping("/ProblemInstance/{ProblemID}")
-    public ResponseEntity<String> getMZNData(@PathVariable String ProblemID) {
-        String mznData = backendService.getMznData(ProblemID);
-        return new ResponseEntity<String>(mznData, HttpStatus.OK);
+    public ResponseEntity<byte[]> getMZNData(@PathVariable String ProblemID) {
+        byte[] mznData;
+        try {
+            mznData = backendService.getMznData(ProblemID);
+            return ResponseEntity.status(HttpStatus.OK).body(mznData);
+        } catch (IOException e) {
+            return new ResponseEntity<byte[]>(HttpStatus.I_AM_A_TEAPOT);
+        }
     }
 
     @PostMapping("/ProblemInstance")
@@ -53,23 +63,28 @@ public class BackendController {
 
         if (mznData != null && dznData == null) {
             String problemId = backendService.addMznData(UserID, mznData);
-            ResponseEntity.status(HttpStatus.OK).body(problemId);
+            return ResponseEntity.status(HttpStatus.OK).body(problemId);
         } else if (mznData == null && dznData != null) {
             String dataID = backendService.addDznData(UserID, dznData);
-            ResponseEntity.status(HttpStatus.OK).body(dataID);
+            return ResponseEntity.status(HttpStatus.OK).body(dataID);
         } else if (mznData != null && dznData != null) {
             String problemId = backendService.addMznData(UserID, mznData);
             String dataID = backendService.addDznData(UserID, dznData);
-            ResponseEntity.status(HttpStatus.OK).body(problemId);
+            return ResponseEntity.status(HttpStatus.OK).body(problemId);
         }
 
         return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body("No file data provided, nothing to upload");
     }
 
-    @GetMapping("/DataInstance/{ProblemID}")
-    public ResponseEntity<String> getDZNData(@PathVariable String ProblemID) {
-        String dznData = backendService.getDznData(ProblemID);
-        return new ResponseEntity<String>(dznData, HttpStatus.OK);
+    @GetMapping("/DataInstance/{DataID}")
+    public ResponseEntity<byte[]> getDZNData(@PathVariable String DataID) {
+        byte[] dznData;
+        try {
+            dznData = backendService.getMznData(DataID);
+            return ResponseEntity.status(HttpStatus.OK).body(dznData);
+        } catch (IOException e) {
+            return new ResponseEntity<byte[]>(HttpStatus.I_AM_A_TEAPOT);
+        }
     }
 
     @GetMapping("/Solver")

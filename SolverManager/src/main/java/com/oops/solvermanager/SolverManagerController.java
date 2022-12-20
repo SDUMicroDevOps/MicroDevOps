@@ -80,6 +80,7 @@ public class SolverManagerController {
             }
 
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
@@ -89,7 +90,7 @@ public class SolverManagerController {
         KubernetesClient api = makeKubernetesClient(); // TODO make the user auth connect to the database, to check
                                                        // whether or not the user is an admin
         api.batch().v1().jobs().inNamespace("default").withLabel("problem", problemID)
-                .withLabel("user", req.getUserId()).delete();
+                .withLabel("user", req.getUserID()).delete();
         return ResponseEntity.status(HttpStatus.OK).body("Problem cancelled with ID : " + problemID);
     }
 
@@ -106,9 +107,9 @@ public class SolverManagerController {
     @PostMapping("/cancel/user")
     public ResponseEntity<String> cancelUserTasks(@RequestBody CancelUserTasksRequest req) {
         KubernetesClient api = makeKubernetesClient();
-        api.batch().v1().jobs().inNamespace("default").withLabel("user", req.getUserID()).delete();
+        api.batch().v1().jobs().inNamespace("default").withLabel("user", req.getUserToCancel()).delete();
         return ResponseEntity.status(HttpStatus.OK)
-                .body("Cancelled all tasks for the user: " + req.getUserID());
+                .body("Cancelled all tasks for the user: " + req.getUserToCancel());
     }
 
     @GetMapping("/user/{userid}/solvers")
@@ -135,6 +136,7 @@ public class SolverManagerController {
         CancelTaskRequest cancelReq = new CancelTaskRequest(req.getUserID());
         cancelTask(taskID, cancelReq);
         fetchJobFromQueue(req.getUserID());
+        System.out.println("Solution found for problem: " + taskID);
         return ResponseEntity.status(HttpStatus.OK).body("Removing other solvers working on task: " + taskID);
     }
 
@@ -302,6 +304,7 @@ public class SolverManagerController {
                 .endSpec()
                 .build();
         api.batch().v1().jobs().inNamespace("default").resource(job).create();
+        System.out.print("starting solver: " + problem.getProblemID().toLowerCase() + solver.getSolverName().toLowerCase());
     }
 
     private void addJobToQueue(SolverBody solver, ProblemRequest problem) throws IOException, InterruptedException {

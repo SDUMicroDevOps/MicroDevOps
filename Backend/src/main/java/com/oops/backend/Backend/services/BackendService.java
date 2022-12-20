@@ -1,18 +1,25 @@
 package com.oops.backend.Backend.services;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
+import java.net.URL;
+import java.net.URLConnection;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.sql.Timestamp;
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 
 import org.apache.commons.text.StringEscapeUtils;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StreamUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.oops.backend.Backend.models.BucketAddResponse;
 import com.oops.backend.Backend.models.BucketResponse;
 import com.oops.backend.Backend.models.Solution;
 import com.oops.backend.Backend.models.Solver;
@@ -29,12 +37,17 @@ import com.oops.backend.Backend.requests.CancelSolverRequest;
 import com.oops.backend.Backend.requests.CancelTaskRequest;
 import com.oops.backend.Backend.requests.CancelUserTasksRequest;
 import com.oops.backend.Backend.requests.SolveRequest;
+import com.oops.backend.Backend.requests.SolversToUseBody;
+
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 
 /*
  * Environment variables needed
  * 
  * SOLVER_MANAGER_SERVICE   - Local network address of Solver manager
- * SOVER_MANAGER_PORT
+ * SOLVER_MANAGER_PORT
  * DB_SERVICE       - Address of db service 
  * DB_SERVICE_PORT
  * BUCKER_HANDLER_SERVICE   - Address of bucket handler
@@ -57,9 +70,25 @@ public class BackendService {
     public BackendService() {
     }
 
-    public void postSolversToSolverManager(SolveRequest request) {
-        String url = solverManagerAddress + "/New";
-        restTemplate.postForEntity(url, request, SolveRequest.class);
+    // public void postSolversToSolverManager(SolveRequest request) {
+    // String url = solverManagerAddress + "/new";
+    // restTemplate.postForEntity(url, request, SolveRequest.class);
+    // }
+    public void postSolversToSolverManager(SolveRequest request) throws IOException, InterruptedException {
+        HttpClient client = HttpClient.newHttpClient();
+        Gson gson = new Gson();
+
+        var json_string = gson.toJson(request);
+        var sm_request = HttpRequest.newBuilder(
+                URI.create(solverManagerAddress + "/new"))
+                .POST(BodyPublishers.ofString(json_string))
+                .header("Content-Type", "application/json")
+                .build();
+
+        System.out.println("Contacting the SolverManager at adress: " + sm_request.uri().toString());
+        var resp = client.send(sm_request, BodyHandlers.ofString()); // TODO, maybe make some sort of error handling
+                                                                     // here
+        System.out.println("Response from SolverManager: " + resp.statusCode());
     }
 
     public String getAllLegalSolvers() throws JsonProcessingException {
@@ -70,17 +99,29 @@ public class BackendService {
         return jsonData;
     }
 
-    public String getMznData(String ProblemID) {
-        String url = dbServiceAddress + "/tasks";
-        TaskQueue[] taskQueue = restTemplate.getForObject(url, TaskQueue[].class);
-        if (taskQueue != null) {
-            for (TaskQueue task : taskQueue) {
-                if (task.getTaskID().equals(ProblemID)) {
-                    return task.getMzn();
-                }
-            }
-        }
-        return "";
+    public byte[] getMznData(String ProblemID) throws IOException {
+        String url = bucketHandlerAddress + "/TaskBucket/" + ProblemID;
+        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+        ObjectMapper objectMapper = new ObjectMapper();
+        BucketResponse bucketResponse = objectMapper.readValue(response.getBody(), BucketResponse.class);
+
+        // Set the URL of the file you want to download
+        URL downloadUrl = new URL(bucketResponse.getProblemFileUrl());
+
+        // Open a connection to the URL
+        URLConnection connection = downloadUrl.openConnection();
+
+        // Get an input stream for reading from the URL
+        InputStream in = connection.getInputStream();
+
+        // Read the contents of the file into a byte array
+        BufferedInputStream input = new BufferedInputStream(in);
+        byte[] fileContents = StreamUtils.copyToByteArray(input);
+
+        // Close the input stream
+        in.close();
+
+        return fileContents;
     }
 
     public String addMznData(String UserID, MultipartFile mznFile) throws IOException, InterruptedException {
@@ -91,7 +132,10 @@ public class BackendService {
         String problemID = fileName.replace(fileExtension, "");
 
         String url = bucketHandlerAddress + "/TaskBucket/uploadurl/" + problemID;
-        BucketResponse bucketResponse = restTemplate.getForObject(url, BucketResponse.class);
+        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        BucketResponse bucketResponse = objectMapper.readValue(response.getBody(), BucketResponse.class);
 
         byte[] fileData = mznFile.getBytes();
         OutputStream out = new FileOutputStream(new File(fileName));
@@ -105,7 +149,7 @@ public class BackendService {
             ProcessBuilder pb = new ProcessBuilder(
                     "curl",
                     "-X", "PUT",
-                    "-H", "Content-Type: text/plain",
+                    "-H", "Content-Type: application/json",
                     "--upload-file", fileName,
                     uploadUrl);
 
@@ -138,18 +182,14 @@ public class BackendService {
         Gson gson = new Gson();
         var request = HttpRequest.newBuilder(
                 URI.create(
-                        bucketHandlerAddress + "/TaskBucket/uploadurl/" + problemID))
+                        url))
                 .GET()
                 .header("accept", "application/json")
                 .build();
         HttpResponse<String> response = client.send(request,
                 BodyHandlers.ofString());
-        BucketResponse bucketResponse = gson.fromJson(this.removeQuotesAndUnescape(response.body()),
-                BucketResponse.class);
-        // return solver.getSolverName();
-
-        // BucketResponse bucketResponse = restTemplate.getForObject(url,
-        // BucketResponse.class);
+        BucketAddResponse bucketResponse = gson.fromJson(this.removeQuotesAndUnescape(response.body()),
+                BucketAddResponse.class);
 
         byte[] fileData = dznFile.getBytes();
         OutputStream out = new FileOutputStream(new File(fileName));
@@ -162,7 +202,7 @@ public class BackendService {
             ProcessBuilder pb = new ProcessBuilder(
                     "curl",
                     "-X", "PUT",
-                    "-H", "Content-Type: text/plain",
+                    "-H", "Content-Type: application/json",
                     "--upload-file", fileName,
                     uploadUrl);
 
@@ -176,17 +216,29 @@ public class BackendService {
         return problemID;
     }
 
-    public String getDznData(String ProblemID) {
-        String url = dbServiceAddress + "/tasks";
-        TaskQueue[] taskQueue = restTemplate.getForObject(url, TaskQueue[].class);
-        if (taskQueue != null) {
-            for (TaskQueue task : taskQueue) {
-                if (task.getTaskID().equals(ProblemID)) {
-                    return task.getDzn();
-                }
-            }
-        }
-        return "";
+    public byte[] getDznData(String dataID) throws IOException {
+        String url = bucketHandlerAddress + "/TaskBucket/" + dataID;
+        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+        ObjectMapper objectMapper = new ObjectMapper();
+        BucketResponse bucketResponse = objectMapper.readValue(response.getBody(), BucketResponse.class);
+
+        // Set the URL of the file you want to download
+        URL downloadUrl = new URL(bucketResponse.getDataFileUrl());
+
+        // Open a connection to the URL
+        URLConnection connection = downloadUrl.openConnection();
+
+        // Get an input stream for reading from the URL
+        InputStream in = connection.getInputStream();
+
+        // Read the contents of the file into a byte array
+        BufferedInputStream input = new BufferedInputStream(in);
+        byte[] fileContents = StreamUtils.copyToByteArray(input);
+
+        // Close the input stream
+        in.close();
+
+        return fileContents;
     }
 
     public String getAllUserSolvers(String UserID) throws JsonProcessingException {
