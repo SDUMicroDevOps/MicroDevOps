@@ -22,6 +22,7 @@ export default function SignupForm() {
       return true;
     })
     .catch(function (error) {
+      window.alert('Signup failed: User already exists');
       console.log(error);
       console.log('user not created: ' + username);
       return false;
