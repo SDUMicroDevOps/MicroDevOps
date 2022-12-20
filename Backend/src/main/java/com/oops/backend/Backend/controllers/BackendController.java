@@ -32,12 +32,13 @@ public class BackendController {
     private BackendService backendService = new BackendService();
 
     @PostMapping("/Solve")
-    public ResponseEntity<String> startSolvers(@RequestBody SolveRequest request) {
+    public ResponseEntity<String> startSolvers(@RequestBody String request) {
         System.out.println(request);
-        backendService.postSolversToSolverManager(request);
+        // backendService.postSolversToSolverManager(request);
 
-        String taskID = request.getProblemID();
-        return new ResponseEntity<String>(taskID, HttpStatus.OK);
+        // String taskID = request.getProblemID();
+
+        return new ResponseEntity<String>("taskID", HttpStatus.OK);
     }
 
     @GetMapping("/ProblemInstance/{ProblemID}")
