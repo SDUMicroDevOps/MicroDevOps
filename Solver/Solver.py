@@ -44,7 +44,7 @@ class SolverInstance:
     def notify_intermediate_solution_found(self, result: Result):
         try:
             result_as_json = self.get_result_as_json(result)
-            requests.post(self.solution_manager_url + "/solutions", data=result_as_json)
+            requests.post(self.solution_manager_url + "/solutions", json=result_as_json)
             logging.info(f"An intermediate solution has been found. Sending it to {self.solution_manager_url}")
         except:
             logging.error("Connection to the solution manager was not possible")
@@ -52,8 +52,8 @@ class SolverInstance:
     def notify_optimal_solution(self, result: Result):
         try:
             result_as_json = self.get_result_as_json(result, True)
-            requests.post(self.solver_manager_url + f"/solution/{self.taskID}", data=json.dumps({"userID" : self.userID}))
-            requests.post(self.solution_manager_url + "/solutions", data=result_as_json)
+            requests.post(self.solver_manager_url + f"/solution/{self.taskID}", json=json.dumps({"userID" : self.userID}))
+            requests.post(self.solution_manager_url + "/solutions", json=result_as_json)
             logging.info(f"An optimal solution has been found. Sending it to {self.solution_manager_url}")
         except:
             logging.error("Connection to the solver manager was not possible")
@@ -137,6 +137,7 @@ class SolverInstance:
         self.bucket_handler_service = os.getenv("BUCKET_HANDLER_SERVICE", "0.0.0.0")
         self.bucket_handler_port = os.getenv("BUCKET_HANDLER_PORT", "5165")
         
+
         self.solver_name = args[1]
         self.number_processors = args[2]
         self.userID = args[3]
@@ -148,7 +149,10 @@ class SolverInstance:
         self.solution_manager_url = f"http://{self.solution_manager_service}:{self.solution_manager_port}"
         self.bucket_handler_url = f"http://{self.bucket_handler_service}:{self.bucket_handler_port}"
         
+        if __name__ == "__main__":
+            requests.post(f"{self.solver_manager_url}/debug", data=f"Starting solver with arguments: {self.solver_name}, {self.number_processors}, {self.userID}, {self.taskID}")
+
+        
 if __name__ == "__main__":
-    print("Starting Solver!")
     solver = SolverInstance(sys.argv)
     asyncio.run(solver.solve())
