@@ -8,4 +8,3 @@ DB_USER: The username of the database
 DB_PASS: The password of the user
 DB_NAME: The name of the database
 CONNECTION_NAME: The connection name given by google.
-HERE WE GO AGAIN
