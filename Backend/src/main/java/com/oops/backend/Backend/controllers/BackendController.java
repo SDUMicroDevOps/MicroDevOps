@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.google.gson.Gson;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.oops.backend.Backend.models.Solver;
 import com.oops.backend.Backend.requests.CancelSolverRequest;
@@ -32,11 +33,12 @@ public class BackendController {
     private BackendService backendService = new BackendService();
 
     @PostMapping("/Solve")
-    public ResponseEntity<String> startSolvers(@RequestBody SolveRequest request) {
-        System.out.println(request);
-        backendService.postSolversToSolverManager(request);
+    public ResponseEntity<String> startSolvers(@RequestBody String request) {
+        SolveRequest request2 = new Gson().fromJson(request, SolveRequest.class);
+        System.out.println(request2);
+        backendService.postSolversToSolverManager(request2);
 
-        String taskID = request.getProblemID();
+        String taskID = request2.getProblemID();
         return new ResponseEntity<String>(taskID, HttpStatus.OK);
     }
 
