@@ -111,6 +111,9 @@ public class BackendService {
 
         String url = bucketHandlerAddress + "/TaskBucket/uploadurl/" + problemID;
         ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+
+        System.out.println("response:" + response.getBody());
+
         ObjectMapper objectMapper = new ObjectMapper();
         BucketResponse bucketResponse = objectMapper.readValue(response.getBody(), BucketResponse.class);
 
@@ -126,12 +129,14 @@ public class BackendService {
             ProcessBuilder pb = new ProcessBuilder(
                     "curl",
                     "-X", "PUT",
-                    "-H", "Content-Type: text/plain",
+                    "-H", "Content-Type: application/json",
                     "--upload-file", fileName,
                     uploadUrl);
 
             Process p = pb.start();
             p.waitFor();
+
+            System.out.println("process info: " + p.exitValue());
         }
 
         File file = new File(fileName);
