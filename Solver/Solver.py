@@ -41,8 +41,9 @@ class SolverInstance:
     def notify_intermediate_solution_found(self, result: Result):
         try:
             result_as_json = self.get_result_as_json(result)
-            requests.post(self.solution_manager_url + "/solutions", json=result_as_json)
-            self.logger(f"{self.solver_manager_url}/debug", data="Connection to the sqlquery service achieved")
+            res = requests.post(self.solution_manager_url + "/solutions", json=result_as_json)
+            self.logger(f"{self.solver_manager_url}/debug", data=f"Connection to the sqlquery service achieved with response: {res.status_code} - {res.reason}")
+
         except:
             self.logger(f"{self.solver_manager_url}/debug", data="Connection to the sqlquery manager was not possible")
             
