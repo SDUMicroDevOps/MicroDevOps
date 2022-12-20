@@ -48,7 +48,9 @@ router.get('/verify', async (req, res) => {
             res.sendStatus(401)
             return
         }
-        res.sendStatus(200)
+        res.json({
+            Type:decoded.privilege_id
+        }).status(200)
     } catch(err) {
         switch (err.name) {
             case JsonWebTokenError:
