@@ -118,12 +118,8 @@ class SolverInstance:
 
         self.notify_optimal_solution(bestResult)
 
-    def __init__(self, args, debug):
-        if debug:
-            self.logger = requests.post
-        else:
-            self.logger = print_log
-        
+    def __init__(self, args):
+        self.logger = requests.post
 
         # self.solver_manager_service = os.getenv("SOLVER_MANAGER_SERVICE", "0.0.0.0")
         self.solver_manager_service = "solver-manager-service"
@@ -142,15 +138,15 @@ class SolverInstance:
         self.solver_manager_url = f"http://{self.solver_manager_service}:{self.solver_manager_port}"
         self.solution_manager_url = f"http://{self.solution_manager_service}:{self.solution_manager_port}"
         self.bucket_handler_url = f"http://{self.bucket_handler_service}:{self.bucket_handler_port}"
-
-        print(f"{self.solver_manager_url}/debug")
-        print(response.content)
-
-        self.logger(f"{self.solver_manager_url}/debug", data=f"A new solver has been created")
+        
+        try:
+            resp = self.logger(f"{self.solver_manager_url}/debug", data=f"A new solver has been created")
+        except:
+            pass
 
 def print_log(url, data):
     print(f"{data} was sent to {url}")
 
 if __name__ == "__main__":
-    solver = SolverInstance(sys.argv, False)
+    solver = SolverInstance(sys.argv)
     asyncio.run(solver.solve())
