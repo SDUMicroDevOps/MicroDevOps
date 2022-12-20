@@ -30,19 +30,19 @@ class SolverInstance:
 
     def get_result_as_json(self, result: Result, isOptimal = False):
         return json.dumps(
-            {{
-                "taskId": {self.taskID},
-                "user": {self.userID},
-                "content": {str(result.solution)},
-                "date": {f"{date.today().year}-{date.today().month}-{date.today().day}"},
-                "isOptimal": {isOptimal}
-            }})
+            {
+                "taskId": self.taskID,
+                "user": self.userID,
+                "content": str(result.solution),
+                "date": f"{date.today().year}-{date.today().month}-{date.today().day}",
+                "isOptimal": isOptimal
+            })
 
     def notify_intermediate_solution_found(self, result: Result):
         try:
             result_as_json = self.get_result_as_json(result)
             self.logger(f"{self.solver_manager_url}/debug", data=f"Attempting to post data: {result_as_json}")
-            res = requests.post(self.solution_manager_url + "/solutions", json=result_as_json)
+            res = requests.post(self.solution_manager_url + "/solutions", data=result_as_json)
             self.logger(f"{self.solver_manager_url}/debug", data=f"Connection to the sqlquery service achieved with response: {res.status_code} - {res.reason}")
 
         except:
