@@ -33,7 +33,7 @@ public class BackendController {
     private BackendService backendService = new BackendService();
 
     @PostMapping("/Solve")
-    public ResponseEntity<String> startSolvers(@RequestBody SolveRequest request) {
+    public ResponseEntity<String> startSolvers(@RequestBody SolveRequest request) throws IOException, InterruptedException {
         System.out.println(request.getProblemID());
         System.out.println(request.getSolversToUse().length);
         backendService.postSolversToSolverManager(request);
