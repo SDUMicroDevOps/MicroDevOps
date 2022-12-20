@@ -9,16 +9,16 @@ public class SolverBody {
     private int numberVCPU;
     @JsonProperty("maxMemory")
     private int maxMemory; // Max Memory in MB
-    @JsonProperty("timeOut")
-    private int timeOut; // Seconds to timeOut
+    @JsonProperty("timeout")
+    private int timeout; // Seconds to timeOut
 
     public SolverBody() {
     }
 
-    public SolverBody(int maxMemory, int numberVCPU, int timeOut, String solverName) {
+    public SolverBody(int maxMemory, int numberVCPU, int timeout, String solverName) {
         this.maxMemory = maxMemory;
         this.numberVCPU = numberVCPU;
-        this.timeOut = timeOut;
+        this.timeout = timeout;
         this.solverName = solverName;
     }
 
@@ -35,6 +35,6 @@ public class SolverBody {
     }
 
     public int getTimeOut() {
-        return timeOut;
+        return timeout;
     }
 }
