@@ -87,7 +87,8 @@ router.get('/login', async (req, res) => {
 router.post('/create', async (req, res) => {
 
     var user = await fetch(baseURL+'/users/' + req.body.Username).then(response => {return response.json()})
-
+    console.log(user)
+    console.log(Object.keys(user).length)
     if(user != {}) {
         res.json({error:"Failed to create new user"}).status(400)
         return
