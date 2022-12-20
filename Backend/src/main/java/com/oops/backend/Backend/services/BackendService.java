@@ -9,6 +9,7 @@ import java.net.URLConnection;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.sql.Timestamp;
 import java.io.BufferedInputStream;
@@ -73,24 +74,18 @@ public class BackendService {
     // String url = solverManagerAddress + "/new";
     // restTemplate.postForEntity(url, request, SolveRequest.class);
     // }
-    public void postSolversToSolverManager(SolveRequest request) {
-        String url = solverManagerAddress + "/new";
-        // restTemplate.postForEntity(url, request, SolveRequest.class);
+    public void postSolversToSolverManager(SolveRequest request) throws IOException, InterruptedException {
+        HttpClient client = HttpClient.newHttpClient();
+        Gson gson = new Gson();
 
-        SolveRequest solveRequest = request;
-        HttpEntity<SolveRequest> requestEntity = new HttpEntity<SolveRequest>(solveRequest);
-
-        System.out.println(requestEntity.getHeaders().toString());
-        System.out.println(requestEntity.getBody().getProblemID());
-        System.out.println(requestEntity.getBody().getDataID());
-
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> responseEntity = restTemplate.postForEntity(url, requestEntity,
-                String.class);
-
-        System.out.println("Status Code: " + responseEntity.getStatusCode());
-        System.out.println("ProblemId: " + responseEntity.getBody());
-        System.out.println("Location: " + responseEntity.getHeaders().getLocation());
+        var json_string = gson.toJson(request);
+        var sm_request = HttpRequest.newBuilder(
+                URI.create(solverManagerAddress))
+                .POST(BodyPublishers.ofString(json_string))
+                .header("accept", "application/json")
+                .build();
+        var resp = client.send(sm_request, BodyHandlers.ofString()); // TODO, maybe make some sort of error handling here
+        System.out.println(resp.statusCode());
     }
 
     public String getAllLegalSolvers() throws JsonProcessingException {
