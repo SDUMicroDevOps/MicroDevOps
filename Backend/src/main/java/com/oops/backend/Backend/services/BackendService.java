@@ -112,7 +112,7 @@ public class BackendService {
         String url = bucketHandlerAddress + "/TaskBucket/uploadurl/" + problemID;
         ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
         ObjectMapper objectMapper = new ObjectMapper();
-        BucketAddResponse bucketResponse = objectMapper.readValue(response.getBody(), BucketAddResponse.class);
+        BucketResponse bucketResponse = objectMapper.readValue(response.getBody(), BucketResponse.class);
 
         byte[] fileData = mznFile.getBytes();
         OutputStream out = new FileOutputStream(new File(fileName));
