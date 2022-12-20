@@ -77,11 +77,8 @@ public class BackendService {
         String url = solverManagerAddress + "/new";
         // restTemplate.postForEntity(url, request, SolveRequest.class);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
         SolveRequest solveRequest = request;
-        HttpEntity<SolveRequest> requestEntity = new HttpEntity<SolveRequest>(solveRequest, headers);
+        HttpEntity<SolveRequest> requestEntity = new HttpEntity<SolveRequest>(solveRequest);
 
         System.out.println(requestEntity.getHeaders().toString());
         System.out.println(requestEntity.getBody().toString());
