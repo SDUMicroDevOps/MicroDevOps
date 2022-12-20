@@ -1,5 +1,7 @@
 import os
 import unittest
+from datetime import date
+
 
 from minizinc import Result, Status
 from Solver import SolverInstance
@@ -21,23 +23,25 @@ class TestSolverMethods(unittest.TestCase):
         #Arrange
         solver = self.get_new_solver()
         result = Result(statistics=None, solution="123", status=Status.OPTIMAL_SOLUTION)
+        today = f"{date.today().year}-{date.today().month}-{date.today().day}"
 
         #Act
         json = solver.get_result_as_json(result)
-
+    
         #Assert
-        self.assertEqual(json, '{"taskId": "tid", "user": "uid", "content": "123", "date": "2022-12-19", "isOptimal": false}')
+        self.assertEqual(json, f'{{"taskId": "tid", "user": "uid", "content": "123", "date": "{today}", "isOptimal": false}}')
 
     def test_get_result_as_json_isOptimal_is_assigned(self):
         #Arrange
         solver = self.get_new_solver()
         result = Result(statistics=None, solution="123", status=Status.OPTIMAL_SOLUTION)
+        today = f"{date.today().year}-{date.today().month}-{date.today().day}"
 
         #Act
         json = solver.get_result_as_json(result, True)
 
         #Assert
-        self.assertEqual(json, '{"taskId": "tid", "user": "uid", "content": "123", "date": "2022-12-19", "isOptimal": true}')
+        self.assertEqual(json, f'{{"taskId": "tid", "user": "uid", "content": "123", "date": "{today}", "isOptimal": true}}')
 
     def test_solver_reads_env_variables(self):
         #Arrange

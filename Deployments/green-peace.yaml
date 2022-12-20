@@ -13,6 +13,8 @@ data:
   AUTH_PORT: "3000"
   REACT_APP_AUTH_SERVICE: auth-service
   REACT_APP_AUTH_PORT: "3000"
+  REACT_APP_DATABASE_SERVICE: database-service
+  REACT_APP_DATABASE_PORT: "8080"
 kind: ConfigMap
 metadata:
   creationTimestamp: null
