@@ -20,6 +20,9 @@ spec:
           image: oopsaccount/auth:latest
           ports:
             - containerPort: 3000
+          envFrom:
+            - configMapRef:
+                name: green-peace
 ---
 apiVersion: v1
 kind: Service
