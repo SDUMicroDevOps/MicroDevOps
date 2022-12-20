@@ -43,6 +43,10 @@ router.get('/verify', async (req, res) => {
 
     try {
         var decoded = jwt.verify(token, secret)
+        if(!(decoded)){
+            res.sendStatus(401)
+            return
+        }
         var user = await fetch(baseURL+'/users/'+decoded.username).then((response) => {return response.json()})
         //console.log(user)
 
