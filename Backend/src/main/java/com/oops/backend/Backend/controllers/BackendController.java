@@ -68,7 +68,8 @@ public class BackendController {
             ResponseEntity.status(HttpStatus.OK).body(problemId);
         }
 
-        System.out.println(mznData);
+        System.out.println("Mzn data: " + mznData.getOriginalFilename());
+        System.out.println("file size: " + mznData.getSize());
 
         return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body("No file data provided, nothing to upload");
     }
