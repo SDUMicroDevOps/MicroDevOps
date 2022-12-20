@@ -4,6 +4,9 @@ public class CancelSolverRequest {
     private String ProblemID;
     private String UserID;
 
+    CancelSolverRequest() {
+    }
+
     public CancelSolverRequest(String ProblemID, String UserID) {
         this.ProblemID = ProblemID;
         this.UserID = UserID;
