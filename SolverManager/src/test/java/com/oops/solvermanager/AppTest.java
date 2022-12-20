@@ -110,6 +110,29 @@ public class AppTest {
             assertTrue(!solver.equals("chuffed"));
         }
     }
+    @Test
+    public void panicButtonTest(){
+        Gson gson = new Gson();
+        User testUser = new User("breadIsBack", "soup", 0, 4);
+        stubFor(get("/users/breadIsBack")
+                .willReturn(ok().withHeader("Content-Type", "application/json").withBody(gson.toJson(testUser))));
+        SolverBody[] toUse = new SolverBody[3];
+        toUse[0] = new SolverBody(100, 1, 100, "chuffed");
+        toUse[1] = new SolverBody(100, 1, 100, "coffeeGogoSolver");
+        toUse[2] = new SolverBody(100, 1, 100, "brilliantSolver");
+        ProblemRequest request = new ProblemRequest("testID", "testData", toUse, testUser.getUsername());
+        ResponseEntity<String> response = toTest.createJob(request);
+        assertTrue(response.getStatusCode() == HttpStatus.OK);
+        ResponseEntity<SolverBody[]> solverResponse = toTest.getJobsForUser("breadIsBack");
+        assertTrue(solverResponse.getStatusCode() == HttpStatus.OK);
+        SolverBody[] solvers = solverResponse.getBody();
+        assertTrue(solvers.length == 3);
+        toTest.cancelAllTasks();
+        assertTrue(response.getStatusCode() == HttpStatus.OK);
+        solverResponse = toTest.getJobsForUser("bread");
+        solvers = solverResponse.getBody();
+        assertTrue(solvers.length == 0);
+    }
 
     @Test
     public void requestTooLarge() {
