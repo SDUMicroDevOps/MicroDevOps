@@ -3,7 +3,7 @@ import AddSolverButton from './AddSolverButton';
 import AdminSolversWrapper from './AdminSolversWrapper';
 import AdminActiveUsersWrapper from './AdminActiveUsersWrapper';
 
-export default function AdminInterfaceComponent({solvers, setSolvers, running, setRunning, addSolver, removeSolver, users, setUsers}) {
+export default function AdminInterfaceComponent({solvers, setSolvers, running, setRunning, addSolver, removeSolver}) {
     function setUnavailable(id){
         const newSolvers = [...solvers];
         const solver = newSolvers.find(solver => solver.id === id);
@@ -26,7 +26,7 @@ export default function AdminInterfaceComponent({solvers, setSolvers, running, s
     <div className='admin-box'>
         <AddSolverButton addSolver={addSolver}/>
         <AdminSolversWrapper solvers={solvers} removeSolver={removeSolver}/>
-        <AdminActiveUsersWrapper users={users} setUsers={setUsers}/>
+        <AdminActiveUsersWrapper />
     </div>
   )
 }

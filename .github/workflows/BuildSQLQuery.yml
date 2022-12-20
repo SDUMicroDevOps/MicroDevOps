@@ -5,6 +5,7 @@ on:
       - main
 jobs:
   build:
+    name: Build SQLQuery
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

@@ -152,9 +152,9 @@ public class Controller {
         }
     }
 
-    @GetMapping("/solvers")
+    @GetMapping("/solvers/byname")
     @ResponseBody
-    public ResponseEntity<Solver> getSolverByName(@RequestParam(value = "name") String name) {
+    public ResponseEntity<Solver> getSolverByName(@RequestParam(value = "name", defaultValue = "") String name) {
         Solver solver = sqlController.getSolverByName(name);
         if(solver == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

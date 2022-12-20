@@ -19,7 +19,7 @@ spec:
           image: oopsaccount/backend:latest
           imagePullPolicy: Always
           ports:
-            - containerPort: 3200 
+            - containerPort: 8080
           envFrom:
             - configMapRef:
                 name: green-peace
@@ -32,5 +32,5 @@ spec:
   selector:
     app: backend
   ports:
-    - port: 3200
-      targetPort: 3200
+    - port: 5600
+      targetPort: 8080
