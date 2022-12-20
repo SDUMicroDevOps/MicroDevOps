@@ -88,6 +88,7 @@ public class SolverManagerController {
 
     @PostMapping("/cancel/task/{problemID}")
     public ResponseEntity<String> cancelTask(@PathVariable String problemID, @RequestBody CancelTaskRequest req) {
+        System.out.println(req.getUserID());
         KubernetesClient api = makeKubernetesClient(); // TODO make the user auth connect to the database, to check
                                                        // whether or not the user is an admin
         api.batch().v1().jobs().inNamespace("default").withLabel("problem", problemID)
