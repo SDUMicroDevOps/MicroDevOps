@@ -36,6 +36,11 @@ import com.oops.backend.Backend.requests.CancelSolverRequest;
 import com.oops.backend.Backend.requests.CancelTaskRequest;
 import com.oops.backend.Backend.requests.CancelUserTasksRequest;
 import com.oops.backend.Backend.requests.SolveRequest;
+import com.oops.backend.Backend.requests.SolversToUseBody;
+
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 
 /*
  * Environment variables needed
@@ -64,9 +69,27 @@ public class BackendService {
     public BackendService() {
     }
 
+    // public void postSolversToSolverManager(SolveRequest request) {
+    // String url = solverManagerAddress + "/new";
+    // restTemplate.postForEntity(url, request, SolveRequest.class);
+    // }
     public void postSolversToSolverManager(SolveRequest request) {
         String url = solverManagerAddress + "/new";
-        restTemplate.postForEntity(url, request, SolveRequest.class);
+        // restTemplate.postForEntity(url, request, SolveRequest.class);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        SolveRequest solveRequest = request;
+        HttpEntity<SolveRequest> requestEntity = new HttpEntity<>(solveRequest, headers);
+
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<SolveRequest> responseEntity = restTemplate.postForEntity(url, requestEntity,
+                SolveRequest.class);
+
+        System.out.println("Status Code: " + responseEntity.getStatusCode());
+        System.out.println("ProblemId: " + responseEntity.getBody().getProblemID());
+        System.out.println("Location: " + responseEntity.getHeaders().getLocation());
     }
 
     public String getAllLegalSolvers() throws JsonProcessingException {
