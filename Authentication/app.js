@@ -16,7 +16,6 @@ const indexRouter = require('./routes/index')
 const app = express()
 
 app.use(express.json())
-app.use(cors({origin: true, credentials: true}));
 app.use('/', indexRouter)
 
 //var server = https.createServer(options, app)
