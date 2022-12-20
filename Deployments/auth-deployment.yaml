@@ -29,8 +29,10 @@ kind: Service
 metadata:
   name: auth-service
 spec:
+  type: LoadBalancer
   selector:
     app: auth
   ports:
     - port: 3000
       targetPort: 3000
+      nodePort: 31333
