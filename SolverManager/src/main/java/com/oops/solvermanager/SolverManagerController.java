@@ -89,7 +89,7 @@ public class SolverManagerController {
         KubernetesClient api = makeKubernetesClient(); // TODO make the user auth connect to the database, to check
                                                        // whether or not the user is an admin
         api.batch().v1().jobs().inNamespace("default").withLabel("problem", problemID)
-                .withLabel("user", req.getUserId()).delete();
+                .withLabel("user", req.getUserID()).delete();
         return ResponseEntity.status(HttpStatus.OK).body("Problem cancelled with ID : " + problemID);
     }
 
