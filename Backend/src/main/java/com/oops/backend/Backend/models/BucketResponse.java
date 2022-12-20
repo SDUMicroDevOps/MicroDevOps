@@ -1,9 +1,20 @@
 package com.oops.backend.Backend.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class BucketResponse {
+    @JsonProperty("TaskID")
     private String TaskID;
+
+    @JsonProperty("ProblemFileUrl")
     private String ProblemFileUrl;
+
+    @JsonProperty("DataFileUrl")
     private String DataFileUrl;
+
+    @JsonProperty("MethodAllowed")
     private String MethodAllowed;
 
     BucketResponse() {
