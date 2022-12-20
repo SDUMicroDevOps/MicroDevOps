@@ -8,7 +8,7 @@ export default function ActiveUsers() {
         axios.get(ALL_USERS_URL)
         .then(response => {
             console.log(response);
-            return response.data;
+            return response.data.data;
         })
         .catch(error => {
             console.log(error);
