@@ -1,1 +1,1 @@
-# Readme for auth service
+# Readme for the auth service
