@@ -80,9 +80,9 @@ public class BackendService {
 
         var json_string = gson.toJson(request);
         var sm_request = HttpRequest.newBuilder(
-                URI.create(solverManagerAddress))
+                URI.create(solverManagerAddress + "/new"))
                 .POST(BodyPublishers.ofString(json_string))
-                .header("accept", "application/json")
+                .header("Content-Type", "application/json")
                 .build();
 
         System.out.println("Contacting the SolverManager at adress: " + sm_request.uri().toString());
