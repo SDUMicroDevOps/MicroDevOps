@@ -1,7 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 import AuthContext from "../context/AuthProvider";
-
 const LOGIN_URL = 'http://' + process.env.REACT_APP_AUTH_SERVICE + ':' + process.env.REACT_APP_AUTH_PORT + '/login';
 
 export default function LoginForm() {
