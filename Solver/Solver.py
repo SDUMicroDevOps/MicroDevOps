@@ -27,36 +27,36 @@ Environment variables expected:
     BUCKET_HANDLER_PORT                     - The port for the bucket handler service
 '''
 class SolverInstance:
-    def setup_logging():
-        client = google.cloud.logging.Client()
-        client.setup_logging()
 
     def get_result_as_json(self, result: Result, isOptimal = False):
         return json.dumps(
             {
                 "taskId": self.taskID,
-                "user" : self.userID,
+                "user": self.userID,
                 "content": str(result.solution),
-                "date" : f"{date.today().year}-{date.today().month}-{date.today().day}",
-                "isOptimal" : isOptimal
+                "date": f"{date.today().year}-{date.today().month}-{date.today().day}",
+                "isOptimal": isOptimal
             })
 
     def notify_intermediate_solution_found(self, result: Result):
         try:
             result_as_json = self.get_result_as_json(result)
-            requests.post(self.solution_manager_url + "/solutions", data=result_as_json)
-            logging.info(f"An intermediate solution has been found. Sending it to {self.solution_manager_url}")
+            self.logger(f"{self.solver_manager_url}/debug", data=f"Attempting to post data: {result_as_json}")
+            res = requests.post(self.solution_manager_url + "/solutions", json=result_as_json)
+            self.logger(f"{self.solver_manager_url}/debug", data=f"Connection to the sqlquery service achieved with response: {res.status_code} - {res.reason}")
+
         except:
-            logging.error("Connection to the solution manager was not possible")
+            self.logger(f"{self.solver_manager_url}/debug", data="Connection to the sqlquery manager was not possible")
             
     def notify_optimal_solution(self, result: Result):
         try:
             result_as_json = self.get_result_as_json(result, True)
-            requests.post(self.solver_manager_url + f"/solution/{self.taskID}", data=json.dumps({"userID" : self.userID}))
+            requests.post(self.solver_manager_url + f"/solution/{self.taskID}", data=json.dumps({{"userID" : {self.userID}}}))
             requests.post(self.solution_manager_url + "/solutions", data=result_as_json)
-            logging.info(f"An optimal solution has been found. Sending it to {self.solution_manager_url}")
+            self.logger(f"{self.solver_manager_url}/debug", data="Connection to the solver manager achieved")
         except:
-            logging.error("Connection to the solver manager was not possible")
+            self.logger(f"{self.solver_manager_url}/debug", data="Connection to the solver manager was not possible")
+
         
     #Downloads and saves the files corresponding to this taskID
     #Returns True if a DZN file was found, otherwise returns false
@@ -94,21 +94,16 @@ class SolverInstance:
         try:
             solver = Solver.lookup(self.solver_name)
         except:
-            logging.warning(f"No solver found locally with name {self.solver_name}. Looking in bucket.")
             await self.download_solver()
             solver = Solver.lookup(self.solver_name, refresh=True)
 
-        logging.info("Solver found")
-        
         minizinc_model = Model()
 
         has_dzn_file = await self.get_files()
         minizinc_model.add_file("mzn.mzn")
-        logging.info("Mzn file found.")
 
         if (has_dzn_file):
             minizinc_model.add_file("dzn.dzn")     
-            logging.info("Dzn file found") 
 
         to_solve = Instance(solver, minizinc_model)
         
@@ -116,7 +111,6 @@ class SolverInstance:
 
         zero_time = time.time()             #Returns current time in seconds
         next_update_interval = zero_time    #Always send first satisfied solution
-        logging.info("Looking for solutions:")
         async for i in result:
             timer = time.time() - zero_time
             if ( (zero_time + timer) >= next_update_interval):    #Post the first solution, and thereafter one every 20 seconds
@@ -127,12 +121,20 @@ class SolverInstance:
                 bestResult = i
 
         self.notify_optimal_solution(bestResult)
+        try:
+            self.logger(f"{self.solver_manager_url}/debug", data=f"The optimal solution was: {bestResult.solution}")
+        except:
+            pass
+        
 
     def __init__(self, args):
+        self.logger = requests.post
 
-        self.solver_manager_service = os.getenv("SOLVER_MANAGER_SERVICE", "0.0.0.0")
+        # self.solver_manager_service = os.getenv("SOLVER_MANAGER_SERVICE", "0.0.0.0")
+        self.solver_manager_service = "solver-manager-service"
         self.solution_manager_service = os.getenv("DATABASE_SERVICE", "0.0.0.0")
-        self.solver_manager_port = os.getenv("SOLVER_MANAGER_PORT", "5000")
+        # self.solver_manager_port = os.getenv("SOLVER_MANAGER_PORT", "5000")
+        self.solver_manager_port = 80
         self.solution_manager_port = os.getenv("DATABASE_PORT", "5001")
         self.bucket_handler_service = os.getenv("BUCKET_HANDLER_SERVICE", "0.0.0.0")
         self.bucket_handler_port = os.getenv("BUCKET_HANDLER_PORT", "5165")
@@ -142,13 +144,18 @@ class SolverInstance:
         self.userID = args[3]
         self.taskID = args[4]
 
-        logging.info(f"Starting solver with arguments: {self.solver_name}, {self.number_processors}, {self.userID}, {self.taskID}")
-
         self.solver_manager_url = f"http://{self.solver_manager_service}:{self.solver_manager_port}"
         self.solution_manager_url = f"http://{self.solution_manager_service}:{self.solution_manager_port}"
         self.bucket_handler_url = f"http://{self.bucket_handler_service}:{self.bucket_handler_port}"
         
+        try:
+            self.logger(f"{self.solver_manager_url}/debug", data=f"A new solver has been created! \n URLS: {self.bucket_handler_url}, {self.solver_manager_url}, {self.solution_manager_url}")
+        except:
+            pass
+
+def print_log(url, data):
+    print(f"{data} was sent to {url}")
+
 if __name__ == "__main__":
-    print("Starting Solver!")
     solver = SolverInstance(sys.argv)
     asyncio.run(solver.solve())
