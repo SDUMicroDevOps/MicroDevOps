@@ -344,7 +344,6 @@ public class SQLController {
             Statement stmt = conn.createStatement();
             stmt.executeUpdate(String.format("DELETE FROM `task_queue` WHERE task_id='%s'", taskId));
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
             return 400;
         }
@@ -357,9 +356,19 @@ public class SQLController {
             Statement stmt = conn.createStatement();
             stmt.executeQuery(String.format("SELECT * FROM `solver` WHERE id='%s'", name));
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return solver;
+    }
+
+    public int changeVCPULimit(String username, int vcpuLimit) {
+        try (Connection conn = pool.getConnection()) {
+            Statement stmt = conn.createStatement();
+            stmt.executeUpdate(String.format("UPDATE `user` SET `vCPU_limit`='%d' WHERE username='%s'", vcpuLimit, username));
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return 400;
+        }
+        return 200;
     }
 }
