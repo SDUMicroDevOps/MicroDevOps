@@ -28,14 +28,16 @@ export default function LoginForm() {
     axios.put(LOGIN_URL, requestBody)
     .then(function (response) {
       console.log(response);
-      const userType = response.data.Type;
-      const authToken = response.data.Token;
-      setAuth({name: username, type: userType, authToken: authToken});
+      setAuth({
+        name: username, 
+        type: response.data.Type, 
+        authToken: response.data.Token});
       console.log('logged in successfully.');
       resetForm();
       setShowLogin(false);
       })
     .catch(function (error) {
+      window.alert(error + 'Login failed: User already exists');
       console.log(error);
       console.log('login failed');
     }); 
