@@ -136,6 +136,7 @@ public class SolverManagerController {
         CancelTaskRequest cancelReq = new CancelTaskRequest(req.getUserID());
         cancelTask(taskID, cancelReq);
         fetchJobFromQueue(req.getUserID());
+        System.out.println("Solution found for problem: " + taskID);
         return ResponseEntity.status(HttpStatus.OK).body("Removing other solvers working on task: " + taskID);
     }
 
@@ -303,6 +304,7 @@ public class SolverManagerController {
                 .endSpec()
                 .build();
         api.batch().v1().jobs().inNamespace("default").resource(job).create();
+        System.out.print("starting solver: " + problem.getProblemID().toLowerCase() + solver.getSolverName().toLowerCase());
     }
 
     private void addJobToQueue(SolverBody solver, ProblemRequest problem) throws IOException, InterruptedException {

@@ -149,5 +149,6 @@ class SolverInstance:
         self.bucket_handler_url = f"http://{self.bucket_handler_service}:{self.bucket_handler_port}"
         
 if __name__ == "__main__":
+    print("Starting Solver!")
     solver = SolverInstance(sys.argv)
     asyncio.run(solver.solve())
