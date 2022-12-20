@@ -62,12 +62,18 @@ public class SQLController {
     }
 
     public User addUser(User newUser) {
+        Connection conn = null;
         try {
-            Connection conn = pool.getConnection();
+            conn = pool.getConnection();
             Statement stmt = conn.createStatement();
             stmt.executeUpdate(String.format("INSERT INTO `user`(`username`, `pwd`, `privilage_id`, `vCPU_limit`) VALUES ('%s','%s','%d','%d')", newUser.getUsername(), newUser.getPwd(), newUser.getPrivilege_id(), newUser.getVCPULimit()));
             conn.close();
         } catch (SQLException e) {
+            try {
+                conn.close();
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
             return null;
         }
         return newUser;
