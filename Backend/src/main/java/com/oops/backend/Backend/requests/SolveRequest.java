@@ -5,10 +5,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class SolveRequest {
     @JsonProperty("problemID")
     private String problemID;
+
     @JsonProperty("dataID")
     private String dataID;
+
     @JsonProperty("solversToUse")
     private SolversToUseBody[] solversToUse;
+
     @JsonProperty("userID")
     private String userID;
 
