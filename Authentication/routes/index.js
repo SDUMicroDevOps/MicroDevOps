@@ -44,6 +44,7 @@ router.get('/verify', async (req, res) => {
     try {
         var decoded = jwt.verify(token, secret)
         var user = await fetch(baseURL+'/users/'+decoded.username).then((response) => {return response.json()})
+        console.log(user)
         if(user != {} && user.pwd == decoded.pwd && user.privilege_id == decoded.privilege_id) {
             res.sendStatus(401)
             return
