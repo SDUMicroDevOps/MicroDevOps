@@ -114,6 +114,14 @@ public class SolverManagerController {
                 .body("Cancelled all tasks for the user: " + req.getUserToCancel());
     }
 
+    @PostMapping("/cancel/all")
+    public ResponseEntity<String> cancelAllTasks(){
+        KubernetesClient api = makeKubernetesClient();
+        api.batch().v1().jobs().inNamespace("default").withLabel("jobKind","solver").delete();
+        return ResponseEntity.status(HttpStatus.OK)
+                .body("Cancelled all tasks running on the cluster");
+    }
+
     @GetMapping("/user/{userid}/solvers")
     public ResponseEntity<SolverBody[]> getJobsForUser(@PathVariable String userid) {
         KubernetesClient api = makeKubernetesClient();
@@ -275,6 +283,7 @@ public class SolverManagerController {
         labels.put("numberVCPU", Integer.toString(solver.getNumberVCPU()));
         labels.put("timeout", Integer.toString(solver.getTimeout()));
         labels.put("maxMemory", Integer.toString(solver.getMaxMemory()));
+        labels.put("jobKind", "solver");
         Map<String, Quantity> requestedResources = new HashMap<>();
         requestedResources.put("cpu", Quantity.parse(Integer.toString(solver.getNumberVCPU())));
         requestedResources.put("memory", Quantity.parse(Integer.toString(solver.getMaxMemory())));
