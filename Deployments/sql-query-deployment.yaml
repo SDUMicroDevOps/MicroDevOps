@@ -30,8 +30,6 @@ metadata:
 spec:
   selector:
     app: sqlquery
-  type: LoadBalancer
   ports:
     - port: 8080
       targetPort: 8080
-      nodePort: 31420
