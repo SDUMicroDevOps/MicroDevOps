@@ -6,7 +6,7 @@ public class SolveRequest {
     private SolversToUseBody[] SolversToUse;
     private String UserID;
 
-    SolveRequest() {
+    public SolveRequest() {
     }
 
     public SolveRequest(String ProblemID, String DataID, SolversToUseBody[] SolversToUse, String UserID) {

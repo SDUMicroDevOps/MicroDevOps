@@ -6,7 +6,7 @@ public class SolversToUseBody {
     private int TimeOut;
     private String SolverName;
 
-    SolversToUseBody() {
+    public SolversToUseBody() {
     }
 
     public SolversToUseBody(String SolverName, int NumberVCPU, int MaxMemory, int TimeOut) {
