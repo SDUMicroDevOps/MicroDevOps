@@ -25,7 +25,7 @@ router.put('/login', async (req, res) => {
         }
     });
 
-    if(!empty){
+    if(empty){
         res.status(401).json({error:"Failed to authenticat"})
     }
 
