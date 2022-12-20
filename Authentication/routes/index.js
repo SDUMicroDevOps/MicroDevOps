@@ -52,6 +52,7 @@ router.get('/verify', async (req, res) => {
             Type:decoded.privilege_id
         }).status(200)
     } catch(err) {
+        console.log(err.name)
         switch (err.name) {
             case JsonWebTokenError:
                 res.json({erorr:"Failed to authenticate"}).status(401)
@@ -62,6 +63,7 @@ router.get('/verify', async (req, res) => {
                 break;
             
             default:
+                console.log("Got to default")                
                 res.json({erorr:"Failed to authenticate"}).status(401)
                 break;
         }
