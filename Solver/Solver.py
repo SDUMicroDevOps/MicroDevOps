@@ -52,7 +52,7 @@ class SolverInstance:
     def notify_optimal_solution(self, result: Result):
         try:
             result_as_json = self.get_result_as_json(result, True)
-            requests.post(self.solver_manager_url + f"/solution/{self.taskID}", data=json.dumps({"UserID" : self.userID}))
+            requests.post(self.solver_manager_url + f"/solution/{self.taskID}", data=json.dumps({"userID" : self.userID}))
             requests.post(self.solution_manager_url + "/solutions", data=result_as_json)
             logging.info(f"An optimal solution has been found. Sending it to {self.solution_manager_url}")
         except:
