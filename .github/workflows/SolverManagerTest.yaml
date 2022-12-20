@@ -1,0 +1,30 @@
+name: Solver Manager Tests
+on:
+  push:
+      branches:
+        - feature/**
+        
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      working-directory: SolverManager
+    defaults:
+      run:
+        working-directory: ${{env.working-directory}}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Java JDK
+        uses: actions/setup-java@v3.9.0
+        with:
+          java-version: 11
+          distribution: adopt
+      - name: setup-minikube
+        uses: medyagh/setup-minikube@latest
+      - name: Run Unit Tests
+        run: mvn test
+      
+      
+      
+    
+    
