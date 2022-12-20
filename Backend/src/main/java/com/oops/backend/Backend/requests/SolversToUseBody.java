@@ -1,12 +1,18 @@
 package com.oops.backend.Backend.requests;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class SolversToUseBody {
+    @JsonProperty("NumberVCPU")
     private int NumberVCPU;
+    @JsonProperty("MaxMemory")
     private int MaxMemory;
+    @JsonProperty("TimeOut")
     private int TimeOut;
+    @JsonProperty("SolverName")
     private String SolverName;
 
-    SolversToUseBody() {
+    public SolversToUseBody() {
     }
 
     public SolversToUseBody(String SolverName, int NumberVCPU, int MaxMemory, int TimeOut) {

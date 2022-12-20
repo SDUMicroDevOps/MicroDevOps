@@ -77,18 +77,18 @@ public class BackendService {
         String url = solverManagerAddress + "/new";
         // restTemplate.postForEntity(url, request, SolveRequest.class);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
         SolveRequest solveRequest = request;
-        HttpEntity<SolveRequest> requestEntity = new HttpEntity<>(solveRequest, headers);
+        HttpEntity<SolveRequest> requestEntity = new HttpEntity<SolveRequest>(solveRequest);
+
+        System.out.println(requestEntity.getHeaders().toString());
+        System.out.println(requestEntity.getBody().toString());
 
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<SolveRequest> responseEntity = restTemplate.postForEntity(url, requestEntity,
-                SolveRequest.class);
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity(url, requestEntity,
+                String.class);
 
         System.out.println("Status Code: " + responseEntity.getStatusCode());
-        System.out.println("ProblemId: " + responseEntity.getBody().getProblemID());
+        System.out.println("ProblemId: " + responseEntity.getBody());
         System.out.println("Location: " + responseEntity.getHeaders().getLocation());
     }
 

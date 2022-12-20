@@ -1,12 +1,18 @@
 package com.oops.backend.Backend.requests;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class SolveRequest {
+    @JsonProperty("ProblemID")
     private String ProblemID;
+    @JsonProperty("DataID")
     private String DataID;
+    @JsonProperty("SolversToUse")
     private SolversToUseBody[] SolversToUse;
+    @JsonProperty("UserID")
     private String UserID;
 
-    SolveRequest() {
+    public SolveRequest() {
     }
 
     public SolveRequest(String ProblemID, String DataID, SolversToUseBody[] SolversToUse, String UserID) {

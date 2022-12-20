@@ -106,9 +106,9 @@ public class SolverManagerController {
     @PostMapping("/cancel/user")
     public ResponseEntity<String> cancelUserTasks(@RequestBody CancelUserTasksRequest req) {
         KubernetesClient api = makeKubernetesClient();
-        api.batch().v1().jobs().inNamespace("default").withLabel("user", req.getUserID()).delete();
+        api.batch().v1().jobs().inNamespace("default").withLabel("user", req.getUserToCancel()).delete();
         return ResponseEntity.status(HttpStatus.OK)
-                .body("Cancelled all tasks for the user: " + req.getUserID());
+                .body("Cancelled all tasks for the user: " + req.getUserToCancel());
     }
 
     @GetMapping("/user/{userid}/solvers")
