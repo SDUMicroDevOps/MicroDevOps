@@ -3,38 +3,38 @@ package com.oops.backend.Backend.models;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class SolverBody {
-    @JsonProperty("SolverName")
-    private String SolverName;
-    @JsonProperty("NumberVCPU")
-    private int NumberVCPU;
-    @JsonProperty("MaxMemory")
-    private int MaxMemory; // Max Memory in MB
-    @JsonProperty("TimeOut")
-    private int Timeout; // Seconds to Timeout
+    @JsonProperty("solverName")
+    private String solverName;
+    @JsonProperty("numberVCPU")
+    private int numberVCPU;
+    @JsonProperty("maxMemory")
+    private int maxMemory; // Max Memory in MB
+    @JsonProperty("timeOut")
+    private int timeOut; // Seconds to timeOut
 
     public SolverBody() {
     }
 
-    public SolverBody(int MaxMemory, int NumberVCPU, int Timeout, String SolverName) {
-        this.MaxMemory = MaxMemory;
-        this.NumberVCPU = NumberVCPU;
-        this.Timeout = Timeout;
-        this.SolverName = SolverName;
+    public SolverBody(int maxMemory, int numberVCPU, int timeOut, String solverName) {
+        this.maxMemory = maxMemory;
+        this.numberVCPU = numberVCPU;
+        this.timeOut = timeOut;
+        this.solverName = solverName;
     }
 
     public int getMaxMemory() {
-        return MaxMemory;
+        return maxMemory;
     }
 
     public int getNumberVCPU() {
-        return NumberVCPU;
+        return numberVCPU;
     }
 
     public String getSolverName() {
-        return SolverName;
+        return solverName;
     }
 
-    public int getTimeout() {
-        return Timeout;
+    public int getTimeOut() {
+        return timeOut;
     }
 }

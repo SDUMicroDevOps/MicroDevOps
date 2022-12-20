@@ -1,12 +1,12 @@
 package com.oops.backend.Backend.requests;
 
 public class CancelUserTasksRequest {
-    private String UserID;
+    private String userID;
 
     public CancelUserTasksRequest() {
     }
 
     public String getUserID() {
-        return UserID;
+        return userID;
     }
 }
