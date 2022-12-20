@@ -1,7 +1,7 @@
 import React from 'react'
 import axios from 'axios'
 import ActiveUserComponent from './ActiveUserComponent'
-const ALL_USERS_URL = 'http://34.88.214.181:5600/Users' 
+const ALL_USERS_URL = 'http://34.88.139.44:5600/Users' 
 
 export default function ActiveUsers() {
     function getUsers(){

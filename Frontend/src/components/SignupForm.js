@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-const SIGNUP_URL = 'http://35.228.41.77:3000/create';
+const SIGNUP_URL = 'http://34.88.245.201:3000/create';
 
 export default function SignupForm() {
   const [showSignup, setShowSignup] = useState(false);
