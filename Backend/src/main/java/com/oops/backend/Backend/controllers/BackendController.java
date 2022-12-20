@@ -34,6 +34,7 @@ public class BackendController {
 
     @PostMapping("/Solve")
     public ResponseEntity<String> startSolvers(@RequestBody String request) {
+        System.out.println(request);
         SolveRequest request2 = new Gson().fromJson(request, SolveRequest.class);
         System.out.println(request2);
         backendService.postSolversToSolverManager(request2);
