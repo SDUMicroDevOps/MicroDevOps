@@ -10,7 +10,7 @@ data:
   DB_USER: dbmanager
   DB_PASS: Yc67i?\&7U"_yqO@
   DB_NAME: oopsdb
-  CONNECTION_NAME: soptical-empire-364322:europe-west1:oopssql
+  CONNECTION_NAME: optical-empire-364322:europe-west1:oopssql
   AUTH_SERVICE: auth-service
   AUTH_PORT: "3000"
   REACT_APP_AUTH_SERVICE: auth-service
