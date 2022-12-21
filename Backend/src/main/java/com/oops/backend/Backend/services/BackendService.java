@@ -34,17 +34,15 @@ import com.oops.backend.Backend.models.BucketResponse;
 import com.oops.backend.Backend.models.Solution;
 import com.oops.backend.Backend.models.Solver;
 import com.oops.backend.Backend.models.SolverBody;
-import com.oops.backend.Backend.models.TaskQueue;
 import com.oops.backend.Backend.models.User;
 import com.oops.backend.Backend.requests.CancelSolverRequest;
 import com.oops.backend.Backend.requests.CancelTaskRequest;
 import com.oops.backend.Backend.requests.CancelUserTasksRequest;
 import com.oops.backend.Backend.requests.SolveRequest;
-import com.oops.backend.Backend.requests.SolversToUseBody;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import org.springframework.http.HttpMethod;
 
 /*
  * Environment variables needed
@@ -65,12 +63,26 @@ public class BackendService {
             + System.getenv("DATABASE_PORT");
     private String bucketHandlerAddress = "http://" + System.getenv("BUCKET_HANDLER_SERVICE") + ":"
             + System.getenv("BUCKET_HANDLER_PORT");
+    private String authServiceAddress = "http://" + System.getenv("AUTH_SERVICE") + ":"
+            + System.getenv("AUTH_SERVICE_PORT");
 
     private RestTemplate restTemplate = new RestTemplate();
 
     ObjectMapper objectMapper = new ObjectMapper();
 
     public BackendService() {
+    }
+
+    public String testAuth(String token) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", token);
+        HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
+
+        ResponseEntity<String> response = restTemplate.exchange(authServiceAddress + "/verify", HttpMethod.GET, entity,
+                String.class);
+
+        System.out.println("Response: " + response.getBody());
+        return "toke";
     }
 
     public List<User> getUsers() throws IOException, InterruptedException {
