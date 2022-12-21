@@ -64,7 +64,7 @@ public class BackendService {
     private String bucketHandlerAddress = "http://" + System.getenv("BUCKET_HANDLER_SERVICE") + ":"
             + System.getenv("BUCKET_HANDLER_PORT");
     private String authServiceAddress = "http://" + System.getenv("AUTH_SERVICE") + ":"
-            + System.getenv("AUTH_SERVICE_PORT");
+            + System.getenv("AUTH_PORT");
 
     private RestTemplate restTemplate = new RestTemplate();
 
