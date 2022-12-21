@@ -119,3 +119,20 @@ Contacting the cluster:
    }'
 2. Getting a solution to a problem:
    curl --location --request GET 'http://<backend-service-ip>/Result/testTask'
+   
+# Auth endpoints
+## POST to /create 
+Endpoint for creating a user. Needs following json body\
+`{`\
+`"Username":[newUsername]`\
+`"Password":[newPassword]`\
+`}`\
+Returns 200 success. Returns 400 on fail
+
+## Put to /login
+Endpoint for getting a token to loging ind with. Needs following json body\
+`{`\
+`"Username":Username`\
+`"Password":Password`\
+`}`\
+Returns 200 and `{"Token":token}` on a success. Returns 401 on a fail.
