@@ -103,27 +103,6 @@ NOTE: Even if you added to our project, you should run 'gcloud auth application-
     3.	Run the ClusterSetup/Setup.py script
 
     The cluster should now be setting up, and once it's deployed, you should be able to go to the GKE and see the exposed services/endpoints that can be contacted. If the cluster is already running, we don't need to touch it. Any merges made into the github repo will trigger an automatic update of the deployed images.
-
-Contacting the cluster:
-
-1. Posting a new problem:
-   curl --location --request POST 'http://<backend-service-ip>/Solve' \
-    --header 'Content-Type: application/json' \
-    --data-raw '{
-   "problemID":"testTask",
-   "dataID":"testTask",
-   "solversToUse":[
-   {
-   "numberVCPU": 1,
-   "maxMemory": 700,
-   "timeout": 150,
-   "solverName":"gecode"
-   }
-   ],
-   "userID":"testUser"
-   }'
-2. Getting a solution to a problem:
-   curl --location --request GET 'http://<backend-service-ip>/Result/testTask'
    
 # Auth endpoints
 ## POST to /create 
