@@ -5,8 +5,6 @@ import json
 import time
 import os
 from minizinc import Instance, Model, Solver, Result
-import google.cloud.logging
-import logging
 import sys
 
 '''
