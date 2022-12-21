@@ -143,7 +143,7 @@ Endpoint for getting a token to loging ind with. Needs following json body\
 Returns 200 and `{"Token":token}` on a success. Returns 401 on a fail.
 
 
- Backend Endpoints
+# Backend Endpoints
 
 <aside>
 📍 All calls for backend have to have this in header:
