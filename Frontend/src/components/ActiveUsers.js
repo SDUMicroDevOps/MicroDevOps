@@ -14,11 +14,11 @@ export default function ActiveUsers() {
         const getUsers = async () => {
             axios.get(ALL_USERS_URL)
             .then( function (response){
-                console.log(response.body.data);
+                //console.log(response.body.data);
                 fillUsers(response.body.data);
             })
             .catch( function (error) {
-                console.log(error);
+                //console.log(error);
             })
         }
         getUsers();
