@@ -8,7 +8,12 @@ export default async function ActiveUsers() {
         try {
             const response = await axios.get(ALL_USERS_URL);
             console.log(response.body.data);
-            return response.body.data;
+            return response.body.data.map(user => {
+                return {
+                    username: user.username,
+                    vCPULimit: user.vCPULimit
+                };
+            });
         } catch (error) {
             console.log(error);
             return [];
