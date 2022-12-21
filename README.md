@@ -30,6 +30,46 @@ Setting up Google Cloud project:
     		i)		Secret Manager Admin
     		ii)		Storage Admin
 
+
+
+Under Workload Identity Federation
+	Create "oopspool" and "oopsprovider"
+	For pool and provider
+
+Create Service Accounts
+	sacreator
+		Cloud Composer API Service Agent
+		Composer Worker
+		Service Account Admin
+		Service Account Key Admin
+		Viewer
+		Give it an impersonator
+		
+	spinnaker-gcs-account
+		Eventarc Service Agent
+		GKE Hub Service Agent
+		Kubernetes Engine Cluster Admin
+		Kubernetes Engine Developer
+		Kubernetes Engine Viewer
+		Storage Admin
+
+Deploy Spinnaker
+	Replace every "859134286483" with your new project number
+	Replace every "optical-empire-364322" with your new project id
+	
+	Once deployed, 
+		execute these 6 commands in two consoles
+		gcloud auth login
+		gcloud container clusters get-credentials public-cluster --zone europe-north1-a --project optical-empire-364322
+		kubectl -n spinnaker port-forward service/spin-deck 9000:9000
+
+		gcloud auth login
+		gcloud container clusters get-credentials public-cluster --zone europe-north1-a --project optical-empire-364322
+		kubectl -n spinnaker port-forward service/spin-gate 8084:8084
+
+		go to localhost create application oopsdeployer
+
+
     Setup the database
     	1. Go into SQL and click CREATE INSTANCE
     	2. Choose MySQL
