@@ -16,6 +16,6 @@ export default async function ActiveUsers() {
     }
     const users = await getUsers();
     return (
-        users.map( user => { return <ActiveUserComponent key={user.username} user={user}/>}) 
+        await users.map( user => { return <ActiveUserComponent key={user.username} username={user}/>}) 
     )
 }
