@@ -89,8 +89,7 @@ public class SolverManagerController {
     @PostMapping("/cancel/task/{problemID}")
     public ResponseEntity<String> cancelTask(@PathVariable String problemID, @RequestBody CancelTaskRequest req) {
         System.out.println("Deleting task: " + problemID + " for user: " + req.getUserID());
-        KubernetesClient api = makeKubernetesClient(); // TODO make the user auth connect to the database, to check
-                                                       // whether or not the user is an admin
+        KubernetesClient api = makeKubernetesClient();
         api.batch().v1().jobs().inNamespace("default").withLabel("problem", problemID)
                 .withLabel("user", req.getUserID()).delete();
         return ResponseEntity.status(HttpStatus.OK).body("Problem cancelled with ID : " + problemID);
@@ -115,9 +114,9 @@ public class SolverManagerController {
     }
 
     @PostMapping("/cancel/all")
-    public ResponseEntity<String> cancelAllTasks(){
+    public ResponseEntity<String> cancelAllTasks() {
         KubernetesClient api = makeKubernetesClient();
-        api.batch().v1().jobs().inNamespace("default").withLabel("jobKind","solver").delete();
+        api.batch().v1().jobs().inNamespace("default").withLabel("jobKind", "solver").delete();
         return ResponseEntity.status(HttpStatus.OK)
                 .body("Cancelled all tasks running on the cluster");
     }
@@ -140,7 +139,7 @@ public class SolverManagerController {
         return ResponseEntity.status(HttpStatus.OK).body(solvers);
     }
 
-    @PostMapping("/solution/{taskID}") // TODO actually implement this
+    @PostMapping("/solution/{taskID}")
     public ResponseEntity<String> solutionFound(@PathVariable String taskID, @RequestBody SolutionFound req)
             throws Exception {
         CancelTaskRequest cancelReq = new CancelTaskRequest(req.getUserID());
@@ -150,12 +149,14 @@ public class SolverManagerController {
         System.out.println("Solution found for problem: " + taskID);
         return ResponseEntity.status(HttpStatus.OK).body("Removing other solvers working on task: " + taskID);
     }
+
     @PostMapping("/debug")
-    public ResponseEntity<String> debugTest(@RequestBody String test){
+    public ResponseEntity<String> debugTest(@RequestBody String test) {
         System.out.println(test);
         return ResponseEntity.status(HttpStatus.OK).body("Debug of the century");
 
     }
+
     private SolverBody[] constructSolversFromJobs(List<Job> jobs) {
         SolverBody[] solvers = new SolverBody[jobs.size()];
         for (int i = 0; i < jobs.size(); i++) {
@@ -321,7 +322,8 @@ public class SolverManagerController {
                 .endSpec()
                 .build();
         api.batch().v1().jobs().inNamespace("default").resource(job).create();
-        System.out.println("starting solver: " + problem.getProblemID().toLowerCase() + solver.getSolverName().toLowerCase());
+        System.out.println(
+                "starting solver: " + problem.getProblemID().toLowerCase() + solver.getSolverName().toLowerCase());
         System.out.println("Name: " + solver.getSolverName());
         System.out.println("Timeout: " + solver.getTimeout());
         System.out.println("Memory: " + solver.getMaxMemory());
@@ -341,7 +343,7 @@ public class SolverManagerController {
                 .POST(BodyPublishers.ofString(jsonTask))
                 .header("accept", "application/json")
                 .build();
-        client.send(request, BodyHandlers.ofString()); // TODO, maybe make some sort of error handling here
+        client.send(request, BodyHandlers.ofString());
     }
 
     private int getIdForSolver(String solverName) throws IOException, InterruptedException {
