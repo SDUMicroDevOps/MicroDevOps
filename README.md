@@ -141,3 +141,103 @@ Endpoint for getting a token to loging ind with. Needs following json body\
 `"Password":Password`\
 `}`\
 Returns 200 and `{"Token":token}` on a success. Returns 401 on a fail.
+
+
+ Backend Endpoints
+
+<aside>
+📍 All calls for backend have to have this in header:
+Application: Bearer <bearerToken>
+
+</aside>
+
+/users - GET
+
+- returns list of all users from the database
+
+/ProblemInstance/{ProblemID} - GET
+
+- returns the mzn data corresponding to the provided problemID
+
+/ProblemInstance - POST (Multipart post request)
+
+- requeres:
+    
+    key/name: mznFile file: mznFile.mzn
+    
+    key/name: dznFile file: dznFile.mzn
+    
+    key/name: UserID file: “userID”
+    
+- adds Mzn/Dzn data to the Google Storage  with a unique problemID and corresponding UserID, returns problemID.
+
+/DataInstance/{ProblemID} - GET
+
+- *Returns the dzn data corresponding to ProblemID*
+
+/Solver - GET
+
+- returns names of all legal solvers
+
+/Solvers/user/{userID} - GET
+
+- returns the solverID of all running and pending solvers for UserID
+
+/Solvers/task/{TaskID} - GET
+
+- returns all running and pending solvers for a specific taskID
+
+/Solve
+
+```json
+{	
+	"ProblemID": "ProblemID", 
+	"DataID": "DataID", 
+	"SolversToUse" : [
+	{
+		"SolverName": "SolverName",
+		"NumberVCPU": "NumberVCPU",
+		"MaxMemory": "MaxMemory",
+		"TimeOut": "TimeOutPeriod" 
+	}
+	]
+	"UserID" : "UserID"
+}
+```
+
+- contacts solver manager and tells it to start the solvers defined in solversToUse list. Returns the TaskID of the created task
+
+/Result/{problemID} - GET
+
+- returns the solution from database for the specified problemID
+
+/Cancel/Task/{TaskID} - DELETE
+
+```json
+{
+	"UserID": "userid"
+}
+```
+
+- cancel the task with the specific taskID
+
+/Cancel/Solver/{SolverName} - DELETE
+
+```json
+{
+	"ProblemID": "problemID",
+	"UserID": "userId"
+}
+```
+
+- Cancels the sovler with the taskID
+
+/Cancel/User - DELETE
+
+```json
+{
+	"UserToCancel":"userID"
+}
+```
+
+- Cancel all tasks initiated by user
