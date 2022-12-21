@@ -17,8 +17,8 @@ Arguments excpected:
 Environment variables expected:
     SOLVER_MANAGER_SERVICE                  - The K8 service for DNS lookup 
     SOLVER_MANAGER_PORT                     - The port for the solver manager
-    SOLUTION_MANAGER_SERVICE                - The K8 service for DNS lookup
-    SOLUTION_MANAGER_PORT                   - The port for the solution manager
+    sql_manager_service                - The K8 service for DNS lookup
+    sql_manager_service                   - The port for the solution manager
     BUCKET_HANDLER_SERVICE                  - The k8 service for DNS lookup
     BUCKET_HANDLER_PORT                     - The port for the bucket handler service
 '''
@@ -27,7 +27,9 @@ class SolverInstance:
     def notify_intermediate_solution_found(self, result: Result):
         try:
             self.logger(f"{self.solver_manager_url}/debug", data=f"Attempting to post data: /solutions/{self.taskID}?content={result.solution}&isOptimal=false")
+            
             res = requests.post(self.solution_manager_url + f"/solutions/{self.taskID}?user={self.userID}&content={result.solution}&isOptimal=false")
+            
             self.logger(f"{self.solver_manager_url}/debug", data=f"Connection to the sqlquery service achieved with response: {res.status_code} - {res.text}")
 
         except:
@@ -35,9 +37,11 @@ class SolverInstance:
             
     def notify_optimal_solution(self, result: Result):
         try:
-            requests.post(self.solver_manager_url + f"/solution/{self.taskID}", data=json.dumps({"userID" : self.userID}))
+            res = requests.post(self.solver_manager_url + f"/solution/{self.taskID}", data=json.dumps({"userID": self.userID}))
+
             requests.post(self.solution_manager_url + f"/solutions/{self.taskID}?user={self.userID}&content={result.solution}&isOptimal=true")
-            self.logger(f"{self.solver_manager_url}/debug", data="Connection to the solver manager achieved")
+            
+            self.logger(f"{self.solver_manager_url}/debug", data=f"Connection to the solver manager achieved with status code {res.status_code}")
         except:
             self.logger(f"{self.solver_manager_url}/debug", data="Connection to the solver manager was not possible")
 
@@ -112,13 +116,10 @@ class SolverInstance:
 
     def __init__(self, args):
         self.logger = requests.post
-
-        # self.solver_manager_service = os.getenv("SOLVER_MANAGER_SERVICE", "0.0.0.0")
-        self.solver_manager_service = "solver-manager-service"
-        self.solution_manager_service = os.getenv("DATABASE_SERVICE", "0.0.0.0")
-        # self.solver_manager_port = os.getenv("SOLVER_MANAGER_PORT", "5000")
-        self.solver_manager_port = 80
-        self.solution_manager_port = os.getenv("DATABASE_PORT", "5001")
+        self.solver_manager_service = os.getenv("SOLVER_MANAGER_SERVICE", "0.0.0.0")
+        self.sql_manager_service = os.getenv("DATABASE_SERVICE", "0.0.0.0")
+        self.solver_manager_port = os.getenv("SOLVER_MANAGER_PORT", "5000")
+        self.sql_manager_service = os.getenv("DATABASE_PORT", "5001")
         self.bucket_handler_service = os.getenv("BUCKET_HANDLER_SERVICE", "0.0.0.0")
         self.bucket_handler_port = os.getenv("BUCKET_HANDLER_PORT", "5165")
         
@@ -128,7 +129,7 @@ class SolverInstance:
         self.taskID = args[4]
 
         self.solver_manager_url = f"http://{self.solver_manager_service}:{self.solver_manager_port}"
-        self.solution_manager_url = f"http://{self.solution_manager_service}:{self.solution_manager_port}"
+        self.solution_manager_url = f"http://{self.sql_manager_service}:{self.sql_manager_service}"
         self.bucket_handler_url = f"http://{self.bucket_handler_service}:{self.bucket_handler_port}"
         
         try:
