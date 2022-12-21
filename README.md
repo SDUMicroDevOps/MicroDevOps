@@ -88,19 +88,19 @@ Setting up Google Cloud project:
 
 The above setup is stuff that need to happen if the project is clean, no setup done. When using the project that this group created, simply skip the above and follow these steps:
 
-Running the cluster:
-NOTE: Even if you added to our project, you should run 'gcloud auth application-default login' once to generate ADC:
+	Running the cluster:
+	NOTE: Even if you added to our project, you should run 'gcloud auth application-default login' once to generate ADC:
 
-    1.  Export the following environent variables to your local terminal:
-    'export PROJECT_ID=<YourProjectID>' - our project id: optical-empire-364322
-    'export CREDENTIAL_SECRET_ID=<secret_name>' - our secret id: default_service_account_key
+	    1.  Export the following environent variables to your local terminal:
+	    'export PROJECT_ID=<YourProjectID>' - our project id: optical-empire-364322
+	    'export CREDENTIAL_SECRET_ID=<secret_name>' - our secret id: default_service_account_key
 
-    2. Install google cloud libraries for python:
-        'pip install --upgrade google-api-python-client'
-        'pip install --upgrade google-cloud-container'
-        'pip install google-cloud-secret-manager'
+	    2. Install google cloud libraries for python:
+		'pip install --upgrade google-api-python-client'
+		'pip install --upgrade google-cloud-container'
+		'pip install google-cloud-secret-manager'
 
-    3.	Run the ClusterSetup/Setup.py script
+	    3.	Run the ClusterSetup/Setup.py script
 
     The cluster should now be setting up, and once it's deployed, you should be able to go to the GKE and see the exposed services/endpoints that can be contacted. If the cluster is already running, we don't need to touch it. Any merges made into the github repo will trigger an automatic update of the deployed images.
    
