@@ -12,13 +12,14 @@ export default function ActiveUsers() {
 
     useEffect(() => {
         const getUsers = async () => {
-            try {
-                const response = await axios.get(ALL_USERS_URL);
+            axios.get(ALL_USERS_URL)
+            .then( function (response){
                 console.log(response.body.data);
                 fillUsers(response.body.data);
-            } catch (error) {
+            })
+            .catch( function (error) {
                 console.log(error);
-            }
+            })
         }
         getUsers();
     }, [])  
