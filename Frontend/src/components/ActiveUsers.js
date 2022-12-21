@@ -3,7 +3,7 @@ import axios from 'axios'
 import ActiveUserComponent from './ActiveUserComponent'
 const ALL_USERS_URL = process.env.REACT_APP_BACKEND_SERVICE + ':' + process.env.REACT_APP_BACKEND_PORT + '/Users'
 
-export default async function ActiveUsers() {
+export default function ActiveUsers() {
     const [users, setUsers] = useState([]);
 
     useEffect(() => {
@@ -18,6 +18,7 @@ export default async function ActiveUsers() {
         }
         getUsers();
     }, [])    
+
     return (
         users?.map( user => { return <ActiveUserComponent key={user.username} username={user}/>}) 
     )
