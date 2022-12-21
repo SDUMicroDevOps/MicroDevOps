@@ -11,6 +11,7 @@
 - As a developer I want to have roles in the cloud, such that I can edit the cloud in a safe  manner.
 - As a developer I want to have a domain name, such that I can pronounce our domain name.
 - As a developer I want a secret store, such that sensitive information can be retrieved in a safe manner.
+- As a developer I want to be able to authenticate github actions with google cloud such that they can communicate without a key
 
 - As a PO I want to have a scalable application, such that it can easily handle high ammounts of traffic.
 
@@ -31,3 +32,5 @@
 - As an admin, I want to be able to get a visual representation for the activity on the website, such that I can see whether or not the site is overloaded.
 - As an admin, I want to be able to stop the execution of all solvers for a specific user, such that I can reduce the workload on the cluster.
 - As an admin, I want to be able to stop all the solvers running on the cluster, such that I can reduce the workload on the cluster
+- As an admin, I want to be able to add and remove new solvers, such that I can keep the solvers up to date.
+- As an admin, I want to be able to change the amount of VCPU's for an user, such that I can administer, how many ressources are used on the cloud.
