@@ -1,0 +1,265 @@
+{
+    "category": "CUSTOM",
+    "dashboardFilters": [],
+    "displayName": "Public Cluster Dashboard",
+    "mosaicLayout": {
+        "columns": 2,
+        "tiles": [
+            {
+                "height": 1,
+                "widget": {
+                    "title": "VM Instance - CPU utilization [MEAN]",
+                    "xyChart": {
+                        "chartOptions": {
+                            "mode": "COLOR"
+                        },
+                        "dataSets": [
+                            {
+                                "minAlignmentPeriod": "60s",
+                                "plotType": "LINE",
+                                "targetAxis": "Y1",
+                                "timeSeriesQuery": {
+                                    "apiSource": "DEFAULT_CLOUD",
+                                    "timeSeriesFilter": {
+                                        "aggregation": {
+                                            "alignmentPeriod": "60s",
+                                            "crossSeriesReducer": "REDUCE_NONE",
+                                            "perSeriesAligner": "ALIGN_MEAN"
+                                        },
+                                        "filter": "metric.type=\"compute.googleapis.com/instance/cpu/utilization\" resource.type=\"gce_instance\"",
+                                        "secondaryAggregation": {
+                                            "alignmentPeriod": "60s",
+                                            "crossSeriesReducer": "REDUCE_NONE",
+                                            "perSeriesAligner": "ALIGN_NONE"
+                                        }
+                                    }
+                                }
+                            }
+                        ],
+                        "thresholds": [],
+                        "timeshiftDuration": "0s",
+                        "yAxis": {
+                            "label": "y1Axis",
+                            "scale": "LINEAR"
+                        }
+                    }
+                },
+                "width": 1,
+                "xPos": 0,
+                "yPos": 0
+            },
+            {
+                "height": 1,
+                "widget": {
+                    "title": "Cloud SQL Connections for optical-empire-364322:oopssql [MEAN]",
+                    "xyChart": {
+                        "chartOptions": {
+                            "mode": "COLOR"
+                        },
+                        "dataSets": [
+                            {
+                                "minAlignmentPeriod": "60s",
+                                "plotType": "LINE",
+                                "targetAxis": "Y1",
+                                "timeSeriesQuery": {
+                                    "apiSource": "DEFAULT_CLOUD",
+                                    "timeSeriesFilter": {
+                                        "aggregation": {
+                                            "alignmentPeriod": "60s",
+                                            "crossSeriesReducer": "REDUCE_NONE",
+                                            "perSeriesAligner": "ALIGN_MEAN"
+                                        },
+                                        "filter": "metric.type=\"cloudsql.googleapis.com/database/network/connections\" resource.type=\"cloudsql_database\" resource.label.\"database_id\"=\"optical-empire-364322:oopssql\"",
+                                        "secondaryAggregation": {
+                                            "alignmentPeriod": "60s",
+                                            "crossSeriesReducer": "REDUCE_NONE",
+                                            "perSeriesAligner": "ALIGN_NONE"
+                                        }
+                                    }
+                                }
+                            }
+                        ],
+                        "thresholds": [],
+                        "timeshiftDuration": "0s",
+                        "yAxis": {
+                            "label": "y1Axis",
+                            "scale": "LINEAR"
+                        }
+                    }
+                },
+                "width": 1,
+                "xPos": 1,
+                "yPos": 0
+            },
+            {
+                "height": 1,
+                "widget": {
+                    "scorecard": {
+                        "gaugeView": {
+                            "lowerBound": 0,
+                            "upperBound": 1
+                        },
+                        "thresholds": [
+                            {
+                                "color": "RED",
+                                "direction": "ABOVE",
+                                "label": "",
+                                "value": 0.8
+                            },
+                            {
+                                "color": "YELLOW",
+                                "direction": "ABOVE",
+                                "label": "",
+                                "value": 0.6
+                            }
+                        ],
+                        "timeSeriesQuery": {
+                            "apiSource": "DEFAULT_CLOUD",
+                            "timeSeriesFilter": {
+                                "aggregation": {
+                                    "alignmentPeriod": "60s",
+                                    "crossSeriesReducer": "REDUCE_MEAN",
+                                    "groupByFields": [],
+                                    "perSeriesAligner": "ALIGN_MEAN"
+                                },
+                                "filter": "metric.type=\"compute.googleapis.com/instance/cpu/utilization\" resource.type=\"gce_instance\""
+                            }
+                        }
+                    },
+                    "title": "VM Instance - CPU utilization [MEAN]"
+                },
+                "width": 1,
+                "xPos": 0,
+                "yPos": 1
+            },
+            {
+                "height": 1,
+                "widget": {
+                    "title": "Objects in Tasks bucket",
+                    "xyChart": {
+                        "chartOptions": {
+                            "mode": "COLOR"
+                        },
+                        "dataSets": [
+                            {
+                                "minAlignmentPeriod": "60s",
+                                "plotType": "LINE",
+                                "targetAxis": "Y1",
+                                "timeSeriesQuery": {
+                                    "apiSource": "DEFAULT_CLOUD",
+                                    "timeSeriesFilter": {
+                                        "aggregation": {
+                                            "alignmentPeriod": "60s",
+                                            "crossSeriesReducer": "REDUCE_NONE",
+                                            "perSeriesAligner": "ALIGN_MEAN"
+                                        },
+                                        "filter": "metric.type=\"storage.googleapis.com/storage/object_count\" resource.type=\"gcs_bucket\" resource.label.\"bucket_name\"=\"microservices22tasks_bucket\"",
+                                        "secondaryAggregation": {
+                                            "alignmentPeriod": "60s",
+                                            "crossSeriesReducer": "REDUCE_NONE",
+                                            "perSeriesAligner": "ALIGN_NONE"
+                                        }
+                                    }
+                                }
+                            }
+                        ],
+                        "thresholds": [],
+                        "timeshiftDuration": "0s",
+                        "yAxis": {
+                            "label": "y1Axis",
+                            "scale": "LINEAR"
+                        }
+                    }
+                },
+                "width": 1,
+                "xPos": 1,
+                "yPos": 1
+            },
+            {
+                "height": 1,
+                "widget": {
+                    "timeSeriesTable": {
+                        "columnSettings": [
+                            {
+                                "column": "pod_name",
+                                "visible": true
+                            },
+                            {
+                                "column": "cluster_name",
+                                "visible": true
+                            }
+                        ],
+                        "dataSets": [
+                            {
+                                "minAlignmentPeriod": "60s",
+                                "timeSeriesQuery": {
+                                    "timeSeriesFilter": {
+                                        "aggregation": {
+                                            "alignmentPeriod": "60s",
+                                            "crossSeriesReducer": "REDUCE_NONE",
+                                            "perSeriesAligner": "ALIGN_MAX"
+                                        },
+                                        "filter": "metric.type=\"kubernetes.io/container/cpu/request_cores\" resource.type=\"k8s_container\" resource.label.\"namespace_name\"!=\"spinnaker\" resource.label.\"namespace_name\"!=\"kube-system\" resource.label.\"namespace_name\"!=\"gmp-system\"",
+                                        "secondaryAggregation": {
+                                            "alignmentPeriod": "60s",
+                                            "crossSeriesReducer": "REDUCE_NONE",
+                                            "perSeriesAligner": "ALIGN_NONE"
+                                        }
+                                    }
+                                }
+                            }
+                        ],
+                        "metricVisualization": "NUMBER"
+                    },
+                    "title": "Kubernetes Container - Request cores (filtered) [MAX]"
+                },
+                "width": 1,
+                "xPos": 0,
+                "yPos": 2
+            },
+            {
+                "height": 1,
+                "widget": {
+                    "title": "VM Instance - CPU utilization [MEAN]",
+                    "xyChart": {
+                        "chartOptions": {
+                            "mode": "COLOR"
+                        },
+                        "dataSets": [
+                            {
+                                "minAlignmentPeriod": "60s",
+                                "plotType": "LINE",
+                                "targetAxis": "Y1",
+                                "timeSeriesQuery": {
+                                    "apiSource": "DEFAULT_CLOUD",
+                                    "timeSeriesFilter": {
+                                        "aggregation": {
+                                            "alignmentPeriod": "60s",
+                                            "crossSeriesReducer": "REDUCE_NONE",
+                                            "perSeriesAligner": "ALIGN_MEAN"
+                                        },
+                                        "filter": "metric.type=\"compute.googleapis.com/instance/cpu/utilization\" resource.type=\"gce_instance\"",
+                                        "secondaryAggregation": {
+                                            "alignmentPeriod": "60s",
+                                            "crossSeriesReducer": "REDUCE_NONE",
+                                            "perSeriesAligner": "ALIGN_NONE"
+                                        }
+                                    }
+                                }
+                            }
+                        ],
+                        "thresholds": [],
+                        "timeshiftDuration": "0s",
+                        "yAxis": {
+                            "label": "y1Axis",
+                            "scale": "LINEAR"
+                        }
+                    }
+                },
+                "width": 1,
+                "xPos": 1,
+                "yPos": 2
+            }
+        ]
+    }
+}
