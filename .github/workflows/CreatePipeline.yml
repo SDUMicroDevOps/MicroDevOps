@@ -1,0 +1,50 @@
+name: Create A Pipeline
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - Deployments/**
+
+jobs:
+  build:
+    permissions:
+      id-token: write
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: update time
+        run: echo "$TIMES=$(date +%s)" >> $TIMES
+      - id: 'Auth'
+        name: login
+        uses: 'google-github-actions/auth@v1'
+        with:
+          workload_identity_provider: 'projects/859134286483/locations/global/workloadIdentityPools/oopspool/providers/oopsprovider'
+          service_account: 'sacreator@optical-empire-364322.iam.gserviceaccount.com'
+      - name: get new kubectl
+        run: curl -LO https://dl.k8s.io/release/v1.25.4/bin/linux/amd64/kubectl
+      - name: give permissions
+        run: chmod +x ./kubectl
+      - name: replace old kubectl
+        run: sudo mv ./kubectl /usr/local/bin/kubectl
+      - name: start it
+        run: minikube start
+      - name: find the cluster
+        run: gcloud container clusters get-credentials public-cluster --zone europe-north1-a --project optical-empire-364322
+      - name: Setup Kubernetes port-forward daemon
+        uses: vbem/k8s-port-forward@v1
+        with:
+          workload: 'service/spin-gate'
+          mappings: '8086:8084'
+          options: '--namespace=spinnaker'
+          sleep: '30'
+      - name: createconfig
+        run: |
+          curl --header "Content-Type: application/json" --request POST --data '{"id":"oopspipe","name":"oopspipe","application":"oopsdeployer","schema":"1","triggers":[],"index":0,"updateTs":"1671617370908","lastModifiedBy":"anonymous","stages":[{"account":"my-k8s-account","cloudProvider":"kubernetes","manifests":[{"apiVersion":"v1","data":{"AUTH_PORT":"3000","AUTH_SERVICE":"auth-service","BACKEND_SERVICE_PORT":"5600","BUCKET_HANDLER_PORT":"5165","BUCKET_HANDLER_SERVICE":"bucket-handler-service","CONNECTION_NAME":"optical-empire-364322:europe-west1:oopssql","DATABASE_PORT":"8080","DATABASE_SERVICE":"database-service","DB_NAME":"oopsdb","DB_PASS":"Yc67i?\\&7U\"_yqO@","DB_USER":"dbmanager","REACT_APP_AUTH_PORT":"3000","REACT_APP_AUTH_SERVICE":"auth-service","REACT_APP_DATABASE_PORT":"8080","REACT_APP_DATABASE_SERVICE":"database-service","SOLVER_MANAGER_PORT":"80","SOLVER_MANAGER_SERVICE":"solver-manager-service"},"kind":"ConfigMap","metadata":{"name":"green-peace"}}],"moniker":{"app":"oopsdeployer"},"name":"nameofstage","namespaceOverride":"default","refId":"1","requisiteStageRefIds":[],"skipExpressionEvaluation":false,"source":"text","trafficManagement":{"enabled":false,"options":{"enableTraffic":false,"services":[]}},"type":"deployManifest"}],"keepWaitingPipelines":false,"limitConcurrent":true,"spelEvaluator":"v4"}' http://localhost:8086/pipelines
+      - name: waitforupdate
+        run: sleep 3s
+      - name: execute
+        run: curl http://localhost:8086/pipelines/oopsdeployer/oopspipe
