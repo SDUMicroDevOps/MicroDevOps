@@ -18,7 +18,7 @@ export default function ActiveUsers() {
                 fillUsers(response.body.data);
             })
             .catch( function (error) {
-                //console.log(error);
+                console.log(error);
             })
         }
         getUsers();
