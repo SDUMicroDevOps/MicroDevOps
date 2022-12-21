@@ -16,7 +16,7 @@ export default class ActiveUserComponent extends Component {
     this.setState({
       user: {
         ...this.state.user,
-        vCPULimit: newNum
+        vcpulimit: newNum
       }
     });
   }
@@ -26,7 +26,7 @@ export default class ActiveUserComponent extends Component {
     return (
       <div className="running-solvers-view">
         <UserComponent user={user} />
-        <RunningVcpuComponent availableVcpus={user.vCPULimit} />
+        <RunningVcpuComponent availableVcpus={user.vcpuimit} />
         <SetAllocatedVcpuComponent setAllocatedVcpus={this.setAllocatedVcpus} />
         <RemoveUser username={user.username} />
       </div>
