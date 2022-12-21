@@ -273,16 +273,10 @@ public class BackendService {
         return jsonData;
     }
 
-    public String getResultOfTask(String ProblemID) {
+    public Solution getResultOfTask(String ProblemID) {
         String url = dbServiceAddress + "/solutions/" + ProblemID;
         Solution solution = restTemplate.getForObject(url, Solution.class);
-        if (solution != null) {
-            if (solution.getIsOptimal()) {
-                return solution.getContent();
-            } else
-                return null;
-        }
-        return null;
+        return solution;
     }
 
     public void cancelTasksForUser(CancelUserTasksRequest cancelUserTaskRequest) {

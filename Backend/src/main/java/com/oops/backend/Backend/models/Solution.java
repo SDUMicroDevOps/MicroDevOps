@@ -4,61 +4,61 @@ import java.sql.Date;
 
 public class Solution {
 
-    private String TaskId;
-    private String User;
-    private String Content;
-    private Date Date;
-    private boolean IsOptimal;
+    private String taskId;
+    private String user;
+    private String content;
+    private Date date;
+    private boolean isOptimal;
 
     Solution() {
     }
 
-    public Solution(String TaskId, String User, String Content, Date Date, boolean IsOptimal) {
-        this.TaskId = TaskId;
-        this.User = User;
-        this.Content = Content;
-        this.Date = Date;
-        this.IsOptimal = IsOptimal;
+    public Solution(String taskId, String user, String content, Date date, boolean isOptimal) {
+        this.taskId = taskId;
+        this.user = user;
+        this.content = content;
+        this.date = date;
+        this.isOptimal = isOptimal;
     }
 
     public String getTaskId() {
-        return TaskId;
+        return taskId;
     }
 
     public String getUser() {
-        return User;
+        return user;
     }
 
     public String getContent() {
-        return Content;
+        return content;
     }
 
     public Date getDate() {
-        return Date;
+        return date;
     }
 
     public boolean getIsOptimal() {
-        return IsOptimal;
+        return isOptimal;
     }
 
     public void setTaskId(String taskId) {
-        this.TaskId = taskId;
+        this.taskId = taskId;
     }
 
     public void setUser(String user) {
-        this.User = user;
+        this.user = user;
     }
 
     public void setContent(String content) {
-        this.Content = content;
+        this.content = content;
     }
 
     public void setDate(Date date) {
-        this.Date = date;
+        this.date = date;
     }
 
     public void setIsOptimal(boolean isOptimal) {
-        this.IsOptimal = isOptimal;
+        this.isOptimal = isOptimal;
     }
 
     public boolean equals(Object obj) {
@@ -67,11 +67,11 @@ public class Solution {
         if (!(obj instanceof Solution))
             return false;
         Solution other = (Solution) obj;
-        if (!(this.TaskId.equals(other.TaskId) &&
-                this.User.equals(other.User) &&
-                this.Content.equals(other.Content) &&
-                this.Date.equals(other.Date) &&
-                this.IsOptimal == other.IsOptimal))
+        if (!(this.taskId.equals(other.taskId) &&
+                this.user.equals(other.user) &&
+                this.content.equals(other.content) &&
+                this.date.equals(other.date) &&
+                this.isOptimal == other.isOptimal))
             return false;
         return true;
     }
