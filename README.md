@@ -147,19 +147,19 @@ Returns 200 and `{"Token":token}` on a success. Returns 401 on a fail.
 
 <aside>
 📍 All calls for backend have to have this in header:
-Application: Bearer <bearerToken>
+Application: Bearer 'bearerToken'
 
 </aside>
 
-/users - GET
+## /users - GET
 
 - returns list of all users from the database
 
-/ProblemInstance/{ProblemID} - GET
+## /ProblemInstance/{ProblemID} - GET
 
 - returns the mzn data corresponding to the provided problemID
 
-/ProblemInstance - POST (Multipart post request)
+## /ProblemInstance - POST (Multipart post request)
 
 - requeres:
     
@@ -171,23 +171,23 @@ Application: Bearer <bearerToken>
     
 - adds Mzn/Dzn data to the Google Storage  with a unique problemID and corresponding UserID, returns problemID.
 
-/DataInstance/{ProblemID} - GET
+## /DataInstance/{ProblemID} - GET
 
 - *Returns the dzn data corresponding to ProblemID*
 
-/Solver - GET
+## /Solver - GET
 
 - returns names of all legal solvers
 
-/Solvers/user/{userID} - GET
+## /Solvers/user/{userID} - GET
 
 - returns the solverID of all running and pending solvers for UserID
 
-/Solvers/task/{TaskID} - GET
+## /Solvers/task/{TaskID} - GET
 
 - returns all running and pending solvers for a specific taskID
 
-/Solve
+## /Solve
 
 ```json
 {	
@@ -207,11 +207,11 @@ Application: Bearer <bearerToken>
 
 - contacts solver manager and tells it to start the solvers defined in solversToUse list. Returns the TaskID of the created task
 
-/Result/{problemID} - GET
+## /Result/{problemID} - GET
 
 - returns the solution from database for the specified problemID
 
-/Cancel/Task/{TaskID} - DELETE
+## /Cancel/Task/{TaskID} - DELETE
 
 ```json
 {
@@ -221,7 +221,7 @@ Application: Bearer <bearerToken>
 
 - cancel the task with the specific taskID
 
-/Cancel/Solver/{SolverName} - DELETE
+## /Cancel/Solver/{SolverName} - DELETE
 
 ```json
 {
@@ -232,7 +232,7 @@ Application: Bearer <bearerToken>
 
 - Cancels the sovler with the taskID
 
-/Cancel/User - DELETE
+## /Cancel/User - DELETE
 
 ```json
 {
