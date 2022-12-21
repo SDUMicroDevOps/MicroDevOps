@@ -21,11 +21,12 @@ env:
   GKE_ZONE: europe-north1-a    # Add your cluster zone here.
   
 jobs:
-  deploy-buckethandler:
+  deploy-env:
     name: Apply GreenPeace Deployment
     runs-on: ubuntu-latest
     environment: production
-        
+    
+    steps:
     - name: Checkout
       uses: actions/checkout@v3
 
