@@ -43,7 +43,10 @@ Setting up Google Cloud project:
 			Service Account Admin
 			Service Account Key Admin
 			Viewer
-			Give it an impersonator
+			Give it a principal permissions
+				principal://iam.googleapis.com/projects/859134286483/locations/global/workloadIdentityPools/oopspool/subject/SDUMicroDevOps/MicroDevOps
+				with the role "Workload Identity User"
+				change repository and project Id as required
 
 		spinnaker-gcs-account
 			Eventarc Service Agent
