@@ -33,7 +33,7 @@
 |   fairness    |   Partially Complete      | Tasks are queued by on default kubernetes scheduler, and all jobs are assigned with a priority of 0.
 |Minimal documentation | Partially Complete | Providing Minimal Documentation for deployment to GKE is tough. Documentation for starting the cluster is clear, as it is just running a script. Documentation for setting up a project is not as clear. |
 |Provide user stories to explain how the system is intended to be use | Complete | User stories provided in USER_STORIES.md |
-| Security | No | Support for Authentication has been implemented in the Backend, and Authentication service, but it is not yet properly implemented. We also have a password in the environemnt file... |
+| Security | Partially | Support for Authentication has been implemented in the Backend, and Authentication service, but it is not yet properly implemented. We also have a password in the environemnt file... |
 |Have tests to test the system| Partially | The Solver and SolverManager have a few unit tests, but no integration tests have been set up. All in all, a lot of tests are lacking.|
 | Scalable | Completed | Running the entire thing on Google Cloud allows us to use their infrastructure to deploy auto scalars. Adding more vCPUs to a request is supported at all levels|
 |IaC w. DevOps pipeline| Paritally Completed | Our pipeline runs in Github Actions, and automatically builds and deploys to the cluster on changes merged into the branch. We still lack a automatic deployment to a staging environemtn for running tests |
