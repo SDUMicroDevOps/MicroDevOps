@@ -5,29 +5,24 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class SolversToUseBody {
     @JsonProperty("numberVCPU")
     private int numberVCPU;
+
     @JsonProperty("maxMemory")
     private int maxMemory;
-    @JsonProperty("timeOut")
-    private int timeOut;
+
+    @JsonProperty("timeout")
+    private int timeout;
+
     @JsonProperty("solverName")
     private String solverName;
 
     public SolversToUseBody() {
     }
 
-    public SolversToUseBody(String solverName, int numberVCPU, int maxMemory, int timeOut) {
+    public SolversToUseBody(String solverName, int numberVCPU, int maxMemory, int timeout) {
         this.solverName = solverName;
         this.numberVCPU = numberVCPU;
         this.maxMemory = maxMemory;
-        this.timeOut = timeOut;
-    }
-
-    public String getSolverName() {
-        return solverName;
-    }
-
-    public void setSolverName(String solverName) {
-        this.solverName = solverName;
+        this.timeout = timeout;
     }
 
     public int getNumberVCPU() {
@@ -47,11 +42,19 @@ public class SolversToUseBody {
     }
 
     public int getTimeOut() {
-        return timeOut;
+        return timeout;
     }
 
-    public void setTimeOut(int timeOut) {
-        this.timeOut = timeOut;
+    public void setTimeOut(int timeout) {
+        this.timeout = timeout;
+    }
+
+    public String getSolverName() {
+        return solverName;
+    }
+
+    public void setSolverName(String solverName) {
+        this.solverName = solverName;
     }
 
 }

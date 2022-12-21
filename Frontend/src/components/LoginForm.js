@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 import AuthContext from "../context/AuthProvider";
-const LOGIN_URL = 'http://35.228.41.77:3000/login';
+const LOGIN_URL = process.env.REACT_APP_AUTH_SERVICE + ':' + process.env.REACT_APP_AUTH_PORT + '/login';
 
 export default function LoginForm() {
   const [showLogin, setShowLogin] = useState(false);
@@ -28,14 +28,16 @@ export default function LoginForm() {
     axios.put(LOGIN_URL, requestBody)
     .then(function (response) {
       console.log(response);
-      const userType = response.data.Type;
-      const authToken = response.data.Token;
-      setAuth({name: username, type: userType, authToken: authToken});
+      setAuth({
+        name: username, 
+        type: response.data.Type, 
+        authToken: response.data.Token});
       console.log('logged in successfully.');
       resetForm();
       setShowLogin(false);
       })
     .catch(function (error) {
+      window.alert(error.response.status + 'Login failed');
       console.log(error);
       console.log('login failed');
     }); 

@@ -1,10 +1,12 @@
 package com.oops.backend.Backend.controllers;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,12 +20,14 @@ import org.springframework.web.multipart.MultipartFile;
 import com.google.gson.Gson;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.oops.backend.Backend.models.Solver;
+import com.oops.backend.Backend.models.User;
 import com.oops.backend.Backend.requests.CancelSolverRequest;
 import com.oops.backend.Backend.requests.CancelTaskRequest;
 import com.oops.backend.Backend.requests.CancelUserTasksRequest;
 import com.oops.backend.Backend.requests.SolveRequest;
 import com.oops.backend.Backend.services.BackendService;
 
+@CrossOrigin
 @RestController
 public class BackendController {
 
@@ -32,13 +36,27 @@ public class BackendController {
 
     private BackendService backendService = new BackendService();
 
+    @GetMapping("/Users")
+    public ResponseEntity<List<User>> getAllUsers() {
+        List<User> users;
+        try {
+            users = backendService.getUsers();
+            return ResponseEntity.status(HttpStatus.OK).body(users);
+        } catch (IOException | InterruptedException e) {
+            return new ResponseEntity<List<User>>(HttpStatus.I_AM_A_TEAPOT);
+        }
+
+    }
+
     @PostMapping("/Solve")
-    public ResponseEntity<String> startSolvers(@RequestBody SolveRequest request) throws IOException, InterruptedException {
+    public ResponseEntity<String> startSolvers(@RequestBody SolveRequest request)
+            throws IOException, InterruptedException {
         System.out.println(request.getProblemID());
         System.out.println(request.getSolversToUse().length);
+        String problemID = request.getProblemID();
         backendService.postSolversToSolverManager(request);
 
-        return new ResponseEntity<String>("taskID", HttpStatus.OK);
+        return new ResponseEntity<String>(problemID, HttpStatus.OK);
 
     }
 

@@ -1,22 +1,25 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import axios from 'axios'
-//import ActiveUserComponent from './ActiveUserComponent'
-const ALL_USERS_URL = 'http://' + process.env.REACT_APP_DATABASE_SERVICE + ':' + process.env.REACT_APP_DATBASE_PORT + '/users';
+import ActiveUserComponent from './ActiveUserComponent'
+const ALL_USERS_URL = process.env.REACT_APP_BACKEND_SERVICE + ':' + process.env.REACT_APP_BACKEND_PORT + '/Users'
 
 export default function ActiveUsers() {
-    function getUsers(){
-        axios.get(ALL_USERS_URL)
-        .then(response => {
-            console.log(response);
-            return response.data;
-        })
-        .catch(error => {
-            console.log(error);
-            return [];
-        });
-    }
+    const [users, setUsers] = useState([]);
+
+    useEffect(() => {
+        const getUsers = async () => {
+            try {
+                const response = await axios.get(ALL_USERS_URL);
+                console.log(response.body.data);
+                setUsers(response.body.data);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        getUsers();
+    }, [])    
+
     return (
-        <></>
-        //users.map( user => { return <ActiveUserComponent key={user.username} user={user}/>}) 
+        users?.map( user => { return <ActiveUserComponent key={user.username} username={user}/>}) 
     )
 }

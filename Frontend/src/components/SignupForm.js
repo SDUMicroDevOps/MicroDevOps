@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-const SIGNUP_URL = 'http://35.228.41.77:3000/create';
+const SIGNUP_URL = process.env.REACT_APP_AUTH_SERVICE + ':' + process.env.REACT_APP_AUTH_PORT + '/create';
 
 export default function SignupForm() {
   const [showSignup, setShowSignup] = useState(false);
@@ -22,6 +22,7 @@ export default function SignupForm() {
       return true;
     })
     .catch(function (error) {
+      window.alert('Signup failed: User already exists');
       console.log(error);
       console.log('user not created: ' + username);
       return false;

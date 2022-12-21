@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
@@ -87,8 +88,8 @@ public class SolverManagerController {
 
     @PostMapping("/cancel/task/{problemID}")
     public ResponseEntity<String> cancelTask(@PathVariable String problemID, @RequestBody CancelTaskRequest req) {
-        KubernetesClient api = makeKubernetesClient(); // TODO make the user auth connect to the database, to check
-                                                       // whether or not the user is an admin
+        System.out.println("Deleting task: " + problemID + " for user: " + req.getUserID());
+        KubernetesClient api = makeKubernetesClient();
         api.batch().v1().jobs().inNamespace("default").withLabel("problem", problemID)
                 .withLabel("user", req.getUserID()).delete();
         return ResponseEntity.status(HttpStatus.OK).body("Problem cancelled with ID : " + problemID);
@@ -112,6 +113,14 @@ public class SolverManagerController {
                 .body("Cancelled all tasks for the user: " + req.getUserToCancel());
     }
 
+    @PostMapping("/cancel/all")
+    public ResponseEntity<String> cancelAllTasks() {
+        KubernetesClient api = makeKubernetesClient();
+        api.batch().v1().jobs().inNamespace("default").withLabel("jobKind", "solver").delete();
+        return ResponseEntity.status(HttpStatus.OK)
+                .body("Cancelled all tasks running on the cluster");
+    }
+
     @GetMapping("/user/{userid}/solvers")
     public ResponseEntity<SolverBody[]> getJobsForUser(@PathVariable String userid) {
         KubernetesClient api = makeKubernetesClient();
@@ -130,13 +139,22 @@ public class SolverManagerController {
         return ResponseEntity.status(HttpStatus.OK).body(solvers);
     }
 
-    @PostMapping("/solution/{taskID}") // TODO actually implement this
+    @PostMapping("/solution/{taskID}")
     public ResponseEntity<String> solutionFound(@PathVariable String taskID, @RequestBody SolutionFound req)
             throws Exception {
         CancelTaskRequest cancelReq = new CancelTaskRequest(req.getUserID());
+        System.out.println(req.getUserID());
         cancelTask(taskID, cancelReq);
         fetchJobFromQueue(req.getUserID());
+        System.out.println("Solution found for problem: " + taskID);
         return ResponseEntity.status(HttpStatus.OK).body("Removing other solvers working on task: " + taskID);
+    }
+
+    @PostMapping("/debug")
+    public ResponseEntity<String> debugTest(@RequestBody String test) {
+        System.out.println(test);
+        return ResponseEntity.status(HttpStatus.OK).body("Debug of the century");
+
     }
 
     private SolverBody[] constructSolversFromJobs(List<Job> jobs) {
@@ -266,6 +284,7 @@ public class SolverManagerController {
         labels.put("numberVCPU", Integer.toString(solver.getNumberVCPU()));
         labels.put("timeout", Integer.toString(solver.getTimeout()));
         labels.put("maxMemory", Integer.toString(solver.getMaxMemory()));
+        labels.put("jobKind", "solver");
         Map<String, Quantity> requestedResources = new HashMap<>();
         requestedResources.put("cpu", Quantity.parse(Integer.toString(solver.getNumberVCPU())));
         requestedResources.put("memory", Quantity.parse(Integer.toString(solver.getMaxMemory())));
@@ -303,6 +322,12 @@ public class SolverManagerController {
                 .endSpec()
                 .build();
         api.batch().v1().jobs().inNamespace("default").resource(job).create();
+        System.out.println(
+                "starting solver: " + problem.getProblemID().toLowerCase() + solver.getSolverName().toLowerCase());
+        System.out.println("Name: " + solver.getSolverName());
+        System.out.println("Timeout: " + solver.getTimeout());
+        System.out.println("Memory: " + solver.getMaxMemory());
+        System.out.println("VCPU: " + solver.getNumberVCPU());
     }
 
     private void addJobToQueue(SolverBody solver, ProblemRequest problem) throws IOException, InterruptedException {
@@ -318,7 +343,7 @@ public class SolverManagerController {
                 .POST(BodyPublishers.ofString(jsonTask))
                 .header("accept", "application/json")
                 .build();
-        client.send(request, BodyHandlers.ofString()); // TODO, maybe make some sort of error handling here
+        client.send(request, BodyHandlers.ofString());
     }
 
     private int getIdForSolver(String solverName) throws IOException, InterruptedException {
