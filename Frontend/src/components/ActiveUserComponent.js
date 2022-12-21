@@ -26,7 +26,7 @@ export default class ActiveUserComponent extends Component {
     return (
       <div className="running-solvers-view">
         <UserComponent user={user} />
-        <RunningVcpuComponent availableVcpus={user.vcpuimit} />
+        <RunningVcpuComponent availableVcpus={user.vcpulimit} />
         <SetAllocatedVcpuComponent setAllocatedVcpus={this.setAllocatedVcpus} />
         <RemoveUser username={user.username} />
       </div>
