@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.google.gson.Gson;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.oops.backend.Backend.models.Solution;
 import com.oops.backend.Backend.models.Solver;
 import com.oops.backend.Backend.models.User;
 import com.oops.backend.Backend.requests.CancelSolverRequest;
@@ -138,9 +139,9 @@ public class BackendController {
     }
 
     @GetMapping("/Result/{ProblemID}")
-    public ResponseEntity<String> getResult(@PathVariable String ProblemID) {
-        String result = backendService.getResultOfTask(ProblemID);
-        return new ResponseEntity<String>(result, HttpStatus.OK);
+    public ResponseEntity<Solution> getResult(@PathVariable String ProblemID) {
+        Solution result = backendService.getResultOfTask(ProblemID);
+        return new ResponseEntity<Solution>(result, HttpStatus.OK);
     }
 
     @DeleteMapping("/Cancel/Task/{TaskID}")
