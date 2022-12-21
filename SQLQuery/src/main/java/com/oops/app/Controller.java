@@ -1,5 +1,6 @@
 package com.oops.app;
 
+import java.sql.Date;
 import java.util.List;
 
 import org.springframework.boot.SpringApplication;
@@ -194,19 +195,20 @@ public class Controller {
         return new ResponseEntity<Solution>(solution, HttpStatus.OK);
     }
 
-    @PostMapping("/solutions")
+    @PostMapping("/solutions/{taskId}")
     @ResponseBody
-    public ResponseEntity<Solution> addSolution(@RequestBody Solution newsolutionName) {
-        System.out.println(newsolutionName.getTaskId());
-        System.out.println(newsolutionName.getUser());
-        System.out.println(newsolutionName.getContent());
-        System.out.println(newsolutionName.getDate());
-        System.out.println(newsolutionName.getIsOptimal());
-        int status = sqlController.deleteSolution(newsolutionName.getTaskId());
+    public ResponseEntity<Solution> addSolution(@PathVariable String taskId, @RequestParam(value = "user") String user, @RequestParam(value = "content") String content, @RequestParam(value = "isOptimal") String isOptimal) {
+        System.out.println(taskId);
+        System.out.println(user);
+        System.out.println(content);
+        System.out.println(isOptimal);
+        int status = sqlController.deleteSolution(taskId);
         if(status == 400) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        Solution solution = sqlController.addSolution(newsolutionName);
+        Date date = new Date(System.currentTimeMillis());
+        System.out.println(date.toString());
+        Solution solution = sqlController.addSolution(new Solution(taskId, user, content, date, isOptimal.equals("true")?true:false));
         if(solution == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

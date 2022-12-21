@@ -271,7 +271,7 @@ public class SQLController {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        return null;
+        return newSolutionName;
     }
 
     public List<TaskQueue> getAllQueuedTask() {

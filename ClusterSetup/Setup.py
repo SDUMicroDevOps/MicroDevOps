@@ -3,6 +3,7 @@
 #pip install --upgrade google-cloud-container
 #pip install google-cloud-secret-manager
 import json
+import subprocess
 from time import sleep
 from google.cloud import container_v1
 from google.cloud import secretmanager
