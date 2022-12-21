@@ -145,13 +145,12 @@ Returns 200 and `{"Token":token}` on a success. Returns 401 on a fail.
 
 # Backend Endpoints
 
-<aside>
+
 📍 All calls for backend have to have this in header:
 Application: Bearer 'bearerToken'
 
-</aside>
 
-## /users - GET
+## /Users - GET
 
 - returns list of all users from the database
 
