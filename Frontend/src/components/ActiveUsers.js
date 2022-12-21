@@ -7,8 +7,8 @@ export default async function ActiveUsers() {
     async function getUsers(){
         try {
             const response = await axios.get(ALL_USERS_URL);
-            console.log(response.data);
-            return response.data;
+            console.log(response.body.data);
+            return response.body.data;
         } catch (error) {
             console.log(error);
             return [];
