@@ -2,7 +2,7 @@ The code for this project can be found here: https://github.com/SDUMicroDevOps/M
 
 This guide assumes you have a created a project in the gcloud project with the name <YourProjectID> and have a billing account connected.
 
-This part will likely still include some debugging:
+This part is only to be done if the project is your own, meaning you aren't using the project that was already setup by the authers of this README.
 Setting up Google Cloud project:
 
     Download and setup gcloud (https://cloud.google.com/sdk/docs/install#deb):
@@ -43,7 +43,7 @@ Setting up Google Cloud project:
     	8. Select the oops.sql file in the bucket. Select the newly created Database. Click import.
     	9. Back in the project folder. Go to deployments folder and then in the green-peace.yaml change the CONNECTION_NAME with the one that is given in the overview. Change DB_USER to root unless you have created another one you want to use. Change DB_NAME to the database name. Change DB_PASS to the password. (The password will probably later be changed to work with google secrets instead)
 
-The above setup is stuff that need to happen if the project is clean, no setup. When using the project that this group created, simply skip the above and follow these steps:
+The above setup is stuff that need to happen if the project is clean, no setup done. When using the project that this group created, simply skip the above and follow these steps:
 
 Running the cluster:
 NOTE: Even if you added to our project, you should run 'gcloud auth application-default login' once to generate ADC:
