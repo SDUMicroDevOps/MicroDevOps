@@ -8,7 +8,7 @@ export default async function ActiveUsers() {
         try {
             const response = await axios.get(ALL_USERS_URL);
             console.log(response.body.data);
-            return response.data.map(user => {
+            return response.body.data.map(user => {
                 return {
                     username: user.username,
                     vCPULimit: user.vCPULimit
@@ -21,6 +21,6 @@ export default async function ActiveUsers() {
     }
     const users = await getUsers();
     return (
-        await users.map( user => { return <ActiveUserComponent key={user.username} username={user}/>}) 
+        users.map( user => { return <ActiveUserComponent key={user.username} username={user}/>}) 
     )
 }
