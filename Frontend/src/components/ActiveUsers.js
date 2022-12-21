@@ -14,8 +14,8 @@ export default function ActiveUsers() {
         const getUsers = async () => {
             try {
                 const response = await axios.get(ALL_USERS_URL);
-                console.log(response.body.data);
-                fillUsers(response.body.data);
+                console.log(response.data);
+                fillUsers(response.data);
             } catch (error) {
                 console.log(error);
             }
