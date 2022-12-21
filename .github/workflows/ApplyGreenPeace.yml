@@ -25,7 +25,8 @@ jobs:
     name: Apply GreenPeace Deployment
     runs-on: ubuntu-latest
     environment: production
-        
+    
+    steps:
     - name: Checkout
       uses: actions/checkout@v3
 
