@@ -1,8 +1,11 @@
 package com.oops.app;
 
+import com.google.cloud.secretmanager.v1.AccessSecretVersionResponse;
+import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
+import java.io.IOException;
 import java.util.Properties;
 
 import javax.sql.DataSource;
@@ -10,12 +13,22 @@ import javax.sql.DataSource;
 public class SQLCloudController {
 
     private static final String DB_USER = System.getenv("DB_USER");
-    private static final String DB_PASS = System.getenv("DB_PASS");
+    private static String DB_PASS = "";
     private static final String DB_NAME = System.getenv("DB_NAME");
 
     private static final String CONNECTION_NAME = System.getenv("CONNECTION_NAME");
 
     public static DataSource createConnectionPool() {
+        
+        try {
+            SecretManagerServiceClient client = SecretManagerServiceClient.create();
+            AccessSecretVersionResponse response = client.accessSecretVersion("projects/859134286483/secrets/database_pass/versions/1");
+            DB_PASS = response.getPayload().getData().toStringUtf8();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
         HikariConfig config = new HikariConfig();
 
         Properties connProps = new Properties();
