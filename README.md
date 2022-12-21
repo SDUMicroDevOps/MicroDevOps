@@ -103,6 +103,9 @@ The above setup is stuff that need to happen if the project is clean, no setup d
 	    3.	Run the ClusterSetup/Setup.py script
 
     The cluster should now be setting up, and once it's deployed, you should be able to go to the GKE and see the exposed services/endpoints that can be contacted. If the cluster is already running, we don't need to touch it. Any merges made into the github repo will trigger an automatic update of the deployed images.
+	
+	Setting environment variables on the frontend:
+		Insert the new IP addresses for the Auth and Backend services int the Frontend/.env file.
    
 # Auth endpoints
 ## POST to /create 
