@@ -2,6 +2,7 @@ package com.oops.app;
 
 import com.google.cloud.secretmanager.v1.AccessSecretVersionResponse;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
+import com.google.cloud.secretmanager.v1.SecretVersionName;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
@@ -22,8 +23,10 @@ public class SQLCloudController {
         
         try {
             SecretManagerServiceClient client = SecretManagerServiceClient.create();
-            AccessSecretVersionResponse response = client.accessSecretVersion("projects/859134286483/secrets/database_pass/versions/1");
+            SecretVersionName name = SecretVersionName.of("859134286483","database_pass","1");
+            AccessSecretVersionResponse response = client.accessSecretVersion(name);
             DB_PASS = response.getPayload().getData().toStringUtf8();
+            client.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
