@@ -14,7 +14,6 @@ export default async function ActiveUsers() {
                 setUsers(response.body.data);
             } catch (error) {
                 console.log(error);
-                return [];
             }
         }
         getUsers();
