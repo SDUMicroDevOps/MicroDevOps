@@ -37,7 +37,7 @@ class SolverInstance:
             
     def notify_optimal_solution(self, result: Result):
         try:
-            res = requests.post(self.solver_manager_url + f"/solution/{self.taskID}", data=json.dumps({"userID": self.userID}))
+            res = requests.post(self.solver_manager_url + f"/solution/{self.taskID}", json=json.dumps({"userID": self.userID}))
 
             requests.post(self.solution_manager_url + f"/solutions/{self.taskID}?user={self.userID}&content={result.solution}&isOptimal=true")
             
