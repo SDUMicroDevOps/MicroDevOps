@@ -2,22 +2,234 @@ name: Deploy spinnaker to the cloud
 on:
   workflow_dispatch:
 
-permissions:
-  id-token: write
-  contents: read
 
 jobs:
   build:
+    permissions:
+      id-token: write
+      contents: read
     runs-on: ubuntu-latest
     steps:
-      #- name: Checkout
-      #  uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: environment
+        run: echo $KUBECONFIG
+        
+      # get halyard##############################################################
       - name: update
-        run: apt-get update
+        run: sudo apt-get update
       - name: download halyard
         run: curl -O https://raw.githubusercontent.com/spinnaker/halyard/master/install/debian/InstallHalyard.sh
+      - name: edit installer
+        run: sudo awk 'NR<262' InstallHalyard.sh > InstallHalyard2.sh
       - name: install halyard
-        run: sudo bash InstallHalyard.sh
+        run: sudo bash InstallHalyard2.sh
       - name: check halyard
         run: hal -v
-      #- id: 'auth'
+      #- name: sleep
+      #  run: sleep 20s
+      #- name: real test
+      #  run: hal config
+      # get halyard##############################################################
+
+
+      # GCLOUD###################################################################
+      - id: 'Auth'
+        name: login
+        uses: 'google-github-actions/auth@v1'
+        with:
+          workload_identity_provider: 'projects/859134286483/locations/global/workloadIdentityPools/oopspool/providers/oopsprovider'
+          service_account: 'sacreator@optical-empire-364322.iam.gserviceaccount.com'
+     # - id: 'get-credentials'
+       # uses: 'google-github-actions/get-gke-credentials@v1'
+       # with:
+       #   project_id: 'optical-empire-364322'
+       ##   cluster_name: 'public-cluster'
+       #   location: 'europe-north1-a'
+      #- name: another one
+      #  run: |
+      #    gcloud iam projects add-iam-policy-binding "optical-empire-364322" \
+      #    --member "serviceAccount:sacreator@optical-empire-364322.iam.gserviceaccount.com" \
+      #    --role "roles/iam.serviceAccounts.create"
+      #- name: check
+      #  run: gcloud iam service-accounts create spinnaker-gce-account2 --display-name spinnaker-gce-account2
+
+        
+        #GCLOUD###################################################################
+      
+        
+        #REPLACE KUBECTL HERE######################################################
+      - name: get new kubectl
+        run: curl -LO https://dl.k8s.io/release/v1.25.4/bin/linux/amd64/kubectl
+      - name: give permissions
+        run: chmod +x ./kubectl
+      - name: replace old kubectl
+        run: sudo mv ./kubectl /usr/local/bin/kubectl
+        #KUBECTL###################################################################
+      #Logging in a second time
+      #- name: change internal
+      #  run: kubectl config delete-cluster $(kubectl config current-context)
+      #- name: change external
+       # run: kubectl config set-context gke_optical-empire-364322_europe-north1-a_public-cluster --cluster=public-cluster
+      - name: start it
+        run: minikube start
+      #- name: fix
+      #  run: export KUBECONFIG='$HOME/.kube/config'
+      #- name: where is it
+      #  run: echo $KUBECONFIG
+      - name: login
+        run: gcloud container clusters get-credentials public-cluster --zone=europe-north1-a
+      - name: get file
+        run: wget https://spinnaker.io/downloads/kubernetes/service-account.yml #gke-gcloud-auth-plugin --version
+      #- name: create namespace 
+      #  run: kubectl create namespace spinnaker
+     # - name: create service account
+      #  run: kubectl create serviceaccount spinnaker-service-account --namespace spinnaker
+      - name: why does it say
+        run: kubectl config view
+      - name: apply service account to kubectl
+        run: |
+          export CONTEXT=gke_optical-empire-364322_europe-north1-a_public-cluster
+          
+          kubectl config use-context $CONTEXT
+          kubectl apply -f service-account.yml --context $CONTEXT
+          export TOKEN=$(kubectl create token spinnaker-service-account -n spinnaker)
+          echo $TOKEN
+          kubectl config set-credentials ${CONTEXT}-token-user --token $TOKEN
+          kubectl config set-context $CONTEXT --user ${CONTEXT}-token-user
+      #- name: login2
+      #  kubectl create namespace spinnaker
+      #  run: gcloud container clusters get-credentials staging-cluster --zone=europe-north1-a  #Logging in a second time
+      #- name: apply service account to staging
+      #  run: |
+      #    export CONTEXT=gke_optical-empire-364322_europe-north1-a_staging-cluster
+      #    kubectl config use-context $CONTEXT
+      #    kubectl apply -f service-account.yml --context $CONTEXT
+      #    export TOKEN=$(kubectl create token spinnaker-service-account -n spinnaker)
+      #    echo $TOKEN
+      #    kubectl config set-credentials ${CONTEXT}-token-user --token $TOKEN
+      #    kubectl config set-context $CONTEXT --user ${CONTEXT}-token-user
+      - name: print
+        run: kubectl config view
+        ##
+
+      
+      ###########################COMBINE
+      - name: enable kubernetes
+        run: hal config provider kubernetes enable
+      - name: add production as an account
+        run: hal config provider kubernetes account add my-k8s-account --context gke_optical-empire-364322_europe-north1-a_public-cluster #--kubeconfig-file $KUBECONFIG
+      #- name: add staging as an account
+      #  run: hal config provider kubernetes account add my-staging-account --context gke_optical-empire-364322_europe-north1-a_staging-cluster #--kubeconfig-file $KUBECONFIG
+      - name: set place to deploy spinnaker
+        run: hal config deploy edit --type distributed --account-name my-k8s-account
+        
+      - name: permit3
+        run: sudo chmod 777 ~
+      - name: permi4
+        run: sudo chmod 777 /home
+      - name: setup storage
+        run: |
+          SERVICE_ACCOUNT_NAME=spinnaker-gcs-account
+          SERVICE_ACCOUNT_DEST=~/.gcp/gcs-account.json
+          SA_EMAIL=$(gcloud iam service-accounts list --filter="displayName:$SERVICE_ACCOUNT_NAME" --format='value(email)')
+          mkdir -p $(dirname ~/.gcp/gcs-account.json)
+          sudo chmod 777 ~/.gcp
+          ls -la ~/.gcp
+          gcloud iam service-accounts keys create $HOME/.gcp/gcs-account.json --iam-account $SA_EMAIL
+          sudo chmod 777 ~/.gcp/gcs-account.json
+          cat ~/.gcp/gcs-account.json
+          PROJECT=$(gcloud config get-value project)
+          hal config storage gcs edit --project $PROJECT --bucket-location eu --json-path $SERVICE_ACCOUNT_DEST
+      #- name: commented out. might activate later for creation
+            # gcloud beta iam service-accounts keys get-public-key $(gcloud iam service-accounts keys list --iam-account=$SA_EMAIL | awk 'FNR == 2 {print $1}') --iam-account=$SA_EMAIL --output-file=$HOME/.gcp/gcs-account.json
+            #gcloud beta iam service-accounts keys get-public-key $() --output-file $SERVICE_ACCOUNT_DEST --iam-account $SA_EMAIL
+      #    BUCKET_LOCATION=eu
+      #- name: find storage
+        
+      - name: enable buckets
+        run: hal config storage edit --type gcs
+      
+      
+      
+      #- name: activate ssl
+      #  env:
+      #    GATEJKS: ${{secrets.GATEJKS}}
+      #    DECKCRT: ${{secrets.DECKCRT}}
+      #    DECKKEY: ${{secrets.DECKKEY}}
+      #  run: |
+      #    echo "$GATEJKS" > ~/gate.jks
+      #    echo "$DECKCRT" > ~/deck.crt
+      #    echo "$DECKKEY" > ~/deck.key
+      #    KEYSTORE_PATH=$(gate.jks)
+      #    SERVER_CERT=$(deck.crt)
+      #    SERVER_KEY=$(deck.key)
+      #    hal config security ui ssl edit --ssl-certificate-file ${SERVER_CERT} --ssl-certificate-key-file ${SERVER_KEY} --ssl-certificate-passphrase
+      #    hal config security ui ssl enable
+      - name: select version
+        run: hal config version edit --version 1.29.2
+        
+        
+      #- name: assign secret
+      #  env:
+      #    ghtoken: ${{ secrets.GITTOKEN }}
+      #  run: echo $ghtoken > tokenfile
+      - name: enable github
+        run: hal config artifact github enable
+      - name: add token to github
+        env:
+          ghtoken: ${{ secrets.GITTOKEN }}
+        run: hal config artifact github account add github-artifact-account --token $ghtoken #--token-file tokenfile 
+        
+      - name: last check
+        run: hal config
+
+      #- name: is it readable
+      #  run: cat $KUBECONFIG
+      - name: make .kube
+        run: mkdir .kube
+      #- name: move kubeconfig
+      #  run: mv $KUBECONFIG $HOME/.kube/config
+      - name: permit
+        run: sudo chmod 777 ~/.kube
+      - name: permit2
+        run: sudo chmod 777 ~/.kube/config
+      - name: permittoken
+      #  run: sudo chmod 777 ~/tokenfile
+      #- name: check
+        run: ls -la $HOME/.kube
+      - name: check2
+        run: lsattr
+      - name: check3
+        run: lsattr $HOME/.kube
+      - name: does it exist
+        run: cat ~/.kube/config
+      - name: print
+        run: |
+          sudo -H -u spinnaker bash
+          ls -la
+          lsattr
+          cd .kube
+          ls -la
+          cd 
+          lsattr
+      #- name: set ui
+      #  run: hal config security ui edit --override-base-url http://localhost:9000
+      #- name: set api
+      #  run: hal config security api edit --override-base-url http://localhost:8084
+      - name: final
+        run: sudo hal deploy apply
+      #- name: wait
+      #  run: sleep 10
+      #- name: expose gate
+      #  run: |
+      #    kubectl config use-context gke_optical-empire-364322_europe-north1-a_staging_cluster
+      #    hal config security api edit --override-base-url http://$(kubectl get svc spin-gate -o yaml -n spinnaker | grep clusterIP | awk '{print $2}'):8084
+      #    hal config security ui edit --override-base-url http://$(kubectl get svc spin-deck -o yaml -n spinnaker | grep clusterIP | awk '{print $2}'):9000
+      #- name: redeploy
+      #  run: sudo hal deploy apply
+        #  kubectl config use-context export CONTEXT=gke_optical-empire-364322_europe-north1-a_staging_cluster
+        #  kubectl patch svc spin-gate -n spinnaker -p '{"spec": {"type": "LoadBalancer"}}'
+          
+  
+      #Still need to switch all the public-cluster to staging-cluster
