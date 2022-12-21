@@ -197,8 +197,9 @@ public class Controller {
 
     @PostMapping("/solutions/{taskId}")
     @ResponseBody
-    public ResponseEntity<Solution> addSolution(@PathVariable String taskId, @RequestParam(value = "content") String content, @RequestParam(value = "isOptimal") String isOptimal) {
+    public ResponseEntity<Solution> addSolution(@PathVariable String taskId, @RequestParam(value = "user") String user, @RequestParam(value = "content") String content, @RequestParam(value = "isOptimal") String isOptimal) {
         System.out.println(taskId);
+        System.out.println(user);
         System.out.println(content);
         System.out.println(isOptimal);
         int status = sqlController.deleteSolution(taskId);
@@ -206,7 +207,8 @@ public class Controller {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         Date date = new Date(System.currentTimeMillis());
-        Solution solution = sqlController.addSolution(new Solution(taskId, isOptimal, content, date, isOptimal.equals("true")?true:false));
+        System.out.println(date.toString());
+        Solution solution = sqlController.addSolution(new Solution(taskId, user, content, date, isOptimal.equals("true")?true:false));
         if(solution == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
