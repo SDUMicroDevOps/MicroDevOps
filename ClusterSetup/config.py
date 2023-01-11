@@ -10,8 +10,9 @@ initial_node_count = 2
 cluster_zone = "europe-north1-a"        #europe-north1-a || europe-north1-b || europe-north1-c
 
 #Configurations for node pool:
-machine_type = "e2-standard-4"      #e2-standard-4
-disk_size_gb = 50               #Disk space available for each node. Default = 100 gb
+machine_type = "e2-standard-4"          #e2-micro || e2-medium
+
+disk_size_gb = 50                       #Disk space available for each node. Default = 100 gb
 scopes = [
             "https://www.googleapis.com/auth/devstorage.read_only", 
             "https://www.googleapis.com/auth/service.management.readonly",
