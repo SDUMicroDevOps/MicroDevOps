@@ -16,8 +16,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: update time
-        run: echo "$TIMES=$(date +%s)" >> $TIMES
+      #- name: update time
+      #  run: echo "$TIMES=$(date +%s)" >> $TIMES
       - id: 'Auth'
         name: login
         uses: 'google-github-actions/auth@v1'
