@@ -2,6 +2,8 @@ package com.oops.backend.Backend.controllers;
 
 import java.io.IOException;
 import java.util.List;
+import java.sql.Timestamp;
+
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -87,16 +89,18 @@ public class BackendController {
             @RequestPart(name = "dznFile", required = false) MultipartFile dznData,
             @RequestPart String UserID, @RequestHeader("Authorization") String bearerToken)
             throws IOException, InterruptedException {
+        
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
         if (mznData != null && dznData == null) {
-            String problemId = backendService.addMznData(UserID, mznData, bearerToken);
+            String problemId = backendService.addMznData(UserID, mznData, bearerToken, timestamp);
             return ResponseEntity.status(HttpStatus.OK).body(problemId);
         } else if (mznData == null && dznData != null) {
-            String dataID = backendService.addDznData(UserID, dznData, bearerToken);
+            String dataID = backendService.addDznData(UserID, dznData, bearerToken, timestamp);
             return ResponseEntity.status(HttpStatus.OK).body(dataID);
         } else if (mznData != null && dznData != null) {
-            String problemId = backendService.addMznData(UserID, mznData, bearerToken);
-            String dataID = backendService.addDznData(UserID, dznData, bearerToken);
+            String problemId = backendService.addMznData(UserID, mznData, bearerToken, timestamp);
+            String dataID = backendService.addDznData(UserID, dznData, bearerToken, timestamp);
             return ResponseEntity.status(HttpStatus.OK).body(problemId);
         }
 

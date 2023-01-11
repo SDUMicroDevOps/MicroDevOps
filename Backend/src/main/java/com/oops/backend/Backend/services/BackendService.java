@@ -186,15 +186,13 @@ public class BackendService {
         }
     }
 
-    public String addMznData(String UserID, MultipartFile mznFile, String token)
+    public String addMznData(String UserID, MultipartFile mznFile, String token, Timestamp timestamp)
             throws IOException, InterruptedException {
         String authRes = authenticate(token);
         if (!authRes.equals("Authorization error!")) {
-            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
-            String fileExtension = StringUtils.cleanPath(mznFile.getOriginalFilename());
-            String fileName = UserID + timestamp.getTime() + fileExtension;
-            String problemID = fileName.replace(fileExtension, "");
+            String fileName = UserID + timestamp.getTime() + ".mzn";
+            String problemID = fileName.replace(".mzn", "");
 
             String url = bucketHandlerAddress + "/TaskBucket/uploadurl/" + problemID;
             ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
@@ -236,11 +234,10 @@ public class BackendService {
         return StringEscapeUtils.unescapeJava(noQuotes);
     }
 
-    public String addDznData(String UserID, MultipartFile dznFile, String token)
+    public String addDznData(String UserID, MultipartFile dznFile, String token, Timestamp timestamp)
             throws IOException, InterruptedException {
         String authRes = authenticate(token);
         if (!authRes.equals("Authorization error!")) {
-            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
             String fileExtension = StringUtils.cleanPath(dznFile.getOriginalFilename());
             String fileName = UserID + timestamp.getTime() + fileExtension;
