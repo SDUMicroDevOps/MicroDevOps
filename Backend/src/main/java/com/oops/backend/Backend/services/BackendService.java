@@ -207,7 +207,7 @@ public class BackendService {
 
             if (bucketResponse != null) {
 
-                String uploadUrl = bucketResponse.getDataFileUrl();
+                String uploadUrl = bucketResponse.getProblemFileUrl();
 
                 ProcessBuilder pb = new ProcessBuilder(
                         "curl",
